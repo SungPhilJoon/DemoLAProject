@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aa7e17b32d015e42b71a820a1bcfd79, type: 3}
+  m_Name: AdvancedHoningTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.AdvancedHoningTable
+  Source: {fileID: 4900000, guid: e089fc7be2ddba04d9a5cf5641ad774a, type: 3}
+  Rows:
+  - Index: 1
+    RequiredExp: 1100
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 0.5
+  - Index: 2
+    RequiredExp: 1200
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 1
+  - Index: 3
+    RequiredExp: 1300
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 1.5
+  - Index: 4
+    RequiredExp: 1400
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 2
+  - Index: 5
+    RequiredExp: 1500
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 2.5
+  - Index: 6
+    RequiredExp: 1600
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 3
+  - Index: 7
+    RequiredExp: 1700
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 3.5
+  - Index: 8
+    RequiredExp: 1800
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 4
+  - Index: 9
+    RequiredExp: 1900
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 4.5
+  - Index: 10
+    RequiredExp: 2000
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 5
+  - Index: 11
+    RequiredExp: 2100
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 5.5
+  - Index: 12
+    RequiredExp: 2200
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 6
+  - Index: 13
+    RequiredExp: 2300
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 6.5
+  - Index: 14
+    RequiredExp: 2400
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 7
+  - Index: 15
+    RequiredExp: 2500
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 7.5
+  - Index: 16
+    RequiredExp: 2600
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 8
+  - Index: 17
+    RequiredExp: 2700
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 8.5
+  - Index: 18
+    RequiredExp: 2800
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 9
+  - Index: 19
+    RequiredExp: 2900
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 9.5
+  - Index: 20
+    RequiredExp: 3000
+    ExpPerAttempt: 100
+    GreatChance: 15
+    SuperChance: 5
+    StatPercent: 10

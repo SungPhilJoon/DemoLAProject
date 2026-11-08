@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2805feb8f293aea43a36dccac7912374, type: 3}
+  m_Name: BossPhaseTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.BossPhaseTable
+  Source: {fileID: 4900000, guid: 8aedf4082948e67458f233a1eb7a22cc, type: 3}
+  Rows:
+  - Index: 1
+    PhaseId: G1-P0
+    Name: "1\uAD00\uBB38 \uC870\uC6B0 (\uD3EC\uC2DD\uC790 \uB2E8\uB3C5)"
+    EnterCondition: "\uC804\uD22C \uC2DC\uC791"
+    PatternIds:
+    - G1-05
+    EndCondition: "\uBCF4\uC2A4 \uBD84\uC5F4(\uCCB4\uB825 46\uC904 \uBD80\uADFC)"
+    Notes: "\uBD84\uC5F4 \uC774\uD6C4 \uB8E8\uAC00\uB8E8 \uAD6C\uAC04\uC73C\uB85C
+      \uC774\uC5B4\uC9D0(S1\xB7S3\xB7S4). 45\uC904\uB85C \uC801\uC740 \uAE00\uB3C4
+      \uC788\uC74C(S1\xB7S2)."
+  - Index: 2
+    PhaseId: G1-P1
+    Name: "1\uAD00\uBB38 \uB8E8\uAC00\uB8E8 \uAD6C\uAC04"
+    EnterCondition: "\uBCF4\uC2A4 \uBD84\uC5F4 \uC644\uB8CC"
+    PatternIds:
+    - G1-01
+    - G1-02
+    - G1-03
+    - G1-09
+    - G1-23
+    EndCondition: "\uCCB4\uB825 30\uC904 \uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654
+      \uC131\uACF5"
+    Notes: "\uBB34\uB825\uD654 \uC131\uACF5 \uD6C4 \uB8E8\uCE74\uC2A4 \uAD6C\uAC04\uC73C\uB85C
+      \uC774\uC5B4\uC9D0(S1\xB7S2\xB7S4)."
+  - Index: 3
+    PhaseId: G1-P2
+    Name: "1\uAD00\uBB38 \uB8E8\uCE74\uC2A4 \uAD6C\uAC04"
+    EnterCondition: "30\uC904 \uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654 \uC131\uACF5"
+    PatternIds:
+    - G1-01
+    EndCondition: "\uCCB4\uB825 15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9
+      \uC774\uD6C4 \uD569\uCCB4"
+    Notes: "\uD569\uCCB4 \uD6C4 \uD3EC\uC2DD\uC790 \uBAA8\uC2B5\uC73C\uB85C \uB3CC\uC544\uC634(S1\xB7S2\xB7S4)."
+  - Index: 4
+    PhaseId: G1-P3
+    Name: "1\uAD00\uBB38 \uD3EC\uC2DD\uC790 \uD569\uCCB4 \uAD6C\uAC04"
+    EnterCondition: "15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9 \uC774\uD6C4
+      \uD569\uCCB4"
+    PatternIds:
+    - G1-04
+    EndCondition: "\uACA9\uD30C"
+    Notes: 
+  - Index: 5
+    PhaseId: G2-P1
+    Name: "2\uAD00\uBB38 \uAC11\uC637 \uAD6C\uAC04"
+    EnterCondition: "\uC804\uD22C \uC2DC\uC791"
+    PatternIds:
+    - G2-01
+    - G2-02
+    - G2-03
+    - G2-12
+    - G2-14
+    EndCondition: "\uCCB4\uB825 128~130\uC904 \uC989\uC0AC \uC7A5\uD310 \uCC98\uB9AC
+      \uD6C4"
+    Notes: "\uACBD\uACC4\uB294 \uC5EC\uB7EC \uAE00\uC774 \uC77C\uCE58(128\uC904\uC740
+      S11, \uB098\uBA38\uC9C0\uB294 130\uC904)."
+  - Index: 6
+    PhaseId: G2-P2
+    Name: "2\uAD00\uBB38 \uC9C0\uD615 \uD30C\uAD34 \uAD6C\uAC04"
+    EnterCondition: "128~130\uC904 \uC989\uC0AC \uC7A5\uD310 \uC774\uD6C4"
+    PatternIds:
+    - G2-04
+    - G2-05
+    - G2-06
+    - G2-07
+    - G2-08
+    - G2-09
+    - G2-17
+    - G2-18
+    - G2-19
+    EndCondition: "\uCCB4\uB825 15~16\uC904 \uBD80\uADFC \uC5F0\uC18D \uD0C0\uACA9
+      \uD328\uD134 \uC774\uD6C4 \uC720\uB839 \uC804\uD658"
+    Notes: "\uC774 \uAD6C\uAC04\uC744 \uB354 \uC138\uBD84\uD558\uB294 \uBC29\uC2DD\uC740
+      \uCD9C\uCC98\uB9C8\uB2E4 \uB2EC\uB77C \uB098\uB204\uC9C0 \uC54A\uC74C."
+  - Index: 7
+    PhaseId: G2-P3
+    Name: "2\uAD00\uBB38 \uC720\uB839 \uAD6C\uAC04"
+    EnterCondition: "15~16\uC904 \uBD80\uADFC \uC720\uB839 \uBC1C\uD0C4\uC73C\uB85C
+      \uC804\uD658"
+    PatternIds:
+    - G2-10
+    - G2-20
+    EndCondition: "\uACA9\uD30C"
+    Notes: "\uC0C8 \uBC1C\uD0C4\uC740 \uCCB4\uB825 40\uC904 \uC0C1\uD0DC\uB85C \uC2DC\uC791(S3\xB7S4)."
+  - Index: 8
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "1\uAD00\uBB38 \uACF5\uD1B5 \uD328\uD134"
+    EnterCondition: "\uAD6C\uAC04\uC744 \uAC00\uB9AC\uC9C0 \uC54A\uAC70\uB098 \uCD9C\uCC98\uAC00
+      \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134"
+    PatternIds:
+    - G1-01
+    - G1-06
+    - G1-07
+    - G1-08
+    - G1-10
+    - G1-11
+    - G1-12
+    - G1-13
+    - G1-14
+    - G1-15
+    - G1-16
+    - G1-17
+    - G1-18
+    - G1-19
+    - G1-20
+    - G1-21
+    - G1-22
+    EndCondition: "\uD574\uB2F9 \uC5C6\uC74C"
+    Notes: "\uC0AC\uC6A9 \uBCF4\uC2A4(\uB8E8\uAC00\uB8E8\xB7\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790)\uB294
+      \uAC01 \uD328\uD134 \uBE44\uACE0\uC5D0 \uC801\uC74C."
+  - Index: 9
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "2\uAD00\uBB38 \uACF5\uD1B5 \uD328\uD134"
+    EnterCondition: "\uAD6C\uAC04\uC744 \uAC00\uB9AC\uC9C0 \uC54A\uAC70\uB098 \uCD9C\uCC98\uAC00
+      \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134"
+    PatternIds:
+    - G2-11
+    - G2-13
+    - G2-15
+    - G2-16
+    - G2-21
+    - G2-22
+    - G2-23
+    EndCondition: "\uD574\uB2F9 \uC5C6\uC74C"
+    Notes: 

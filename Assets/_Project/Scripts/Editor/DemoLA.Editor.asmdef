@@ -1,0 +1,43 @@
+{
+    "name": "DemoLA.Editor",
+    "rootNamespace": "DemoLA.Editor",
+    "references": [
+        "DemoLA.Runtime",
+        "Framework.Runtime",
+        "Framework.Editor",
+        "Unity.AI.Navigation",
+        "Unity.AI.Navigation.Editor",
+        "Unity.Addressables",
+        "Unity.Addressables.Editor",
+        "Unity.Cinemachine",
+        "Unity.ProBuilder",
+        "Unity.ProBuilder.Editor",
+        "Unity.InputSystem",
+        "DemoLA.Network",
+        "Unity.Netcode.Runtime",
+        "Framework.Testing",
+        "DemoLA.Testing"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.cinemachine",
+            "expression": "3.0.0",
+            "define": "DEMOLA_CINEMACHINE"
+        },
+        {
+            "name": "com.unity.probuilder",
+            "expression": "6.0.0",
+            "define": "DEMOLA_PROBUILDER"
+        }
+    ],
+    "noEngineReferences": false
+}

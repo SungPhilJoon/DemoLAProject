@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G1-10
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G1-10
+  PhaseId: "G1-\uACF5\uD1B5"
+  DisplayName: "\uB3C4\uC57D \uD6C4 2\uC5F0 \uD560\uD034\uAE30"
+  Category: 0
+  Response: 0
+  ShapeText: 
+  LinkedPatternId: 
+  Confidence: 1
+  DamageTier: 0
+  Notes: "\uC810\uD504 \uD6C4 \uD560\uD034\uAE30 2\uD68C, \uB450 \uBC88\uC9F8\uAC00
+    \uC5D0\uC5B4\uBCF8\uACFC \uC8FC\uBCC0 \uD3ED\uBC1C\uC744 \uC720\uBC1C. \uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00
+    \uC0AC\uC6A9\uD558\uBA70 \uD3EC\uC2DD\uC790\uB294 \uCCAB \uD560\uD034\uAE30\uC5D0
+    \uC6D0\uAC70\uB9AC \uACF5\uACA9\uC774 \uCD94\uAC00\uB420 \uC218 \uC788\uC74C(S2).
+    \uB2E8\uC77C \uCD9C\uCC98."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 10
+  Weight: 1
+  MinRange: 0
+  MaxRange: 6
+  RandomSelectable: 1
+  Steps:
+  - Label: Hit
+    StartDelay: 0
+    Targeting: 1
+    Area:
+      Shape: 0
+      Radius: 3
+      InnerRadius: 0
+      Angle: 0
+      Width: 0
+      Length: 0
+      ForwardOffset: 0
+    TelegraphTime: 1
+    TrackDuringTelegraph: 0
+    TrackLockBefore: 0.5
+    ShowTelegraph: 1
+    DamageTier: 2
+    DamageFractionOverride: -1
+    ApplyStatus: 0
+    StatusDuration: 1
+    ConsumesDeathWard: 0
+    BossMoveDistance: 0
+    BossMoveDuration: 0.3
+    BreaksWalls: 0
+    BreaksAllStructures: 0
+    BossSpinSpeed: 0
+    LeapDuration: 0
+    LeapHeight: 4
+    ArmCount: 0
+    ArmLength: 20
+    ArmWidth: 4
+    ArmAngleOffset: 0
+    RandomCrossOrX: 0
+    KnockbackHeight: 1.5
+    ChaseTarget: 0
+    ChaseSpeed: 5
+    ChargeSweepHit: 1
+    KnockbackDistance: 4
+    KnockbackDuration: 0.25
+    CrashGroggyTime: 4
+    ClipTelegraphToStructure: 1
+    ChargeWindup: 0.25
+  - Label: Hit
+    StartDelay: 0
+    Targeting: 0
+    Area:
+      Shape: 0
+      Radius: 5
+      InnerRadius: 0
+      Angle: 0
+      Width: 0
+      Length: 0
+      ForwardOffset: 0
+    TelegraphTime: 0.5
+    TrackDuringTelegraph: 0
+    TrackLockBefore: 0.5
+    ShowTelegraph: 1
+    DamageTier: 2
+    DamageFractionOverride: -1
+    ApplyStatus: 4
+    StatusDuration: 1
+    ConsumesDeathWard: 0
+    BossMoveDistance: 0
+    BossMoveDuration: 0.3
+    BreaksWalls: 0
+    BreaksAllStructures: 0
+    BossSpinSpeed: 0
+    LeapDuration: 0
+    LeapHeight: 4
+    ArmCount: 0
+    ArmLength: 20
+    ArmWidth: 4
+    ArmAngleOffset: 0
+    RandomCrossOrX: 0
+    KnockbackHeight: 1.5
+    ChaseTarget: 0
+    ChaseSpeed: 5
+    ChargeSweepHit: 1
+    KnockbackDistance: 4
+    KnockbackDuration: 0.25
+    CrashGroggyTime: 4
+    ClipTelegraphToStructure: 1
+    ChargeWindup: 0.25
+  Recovery: 1
+  SuperArmor: 1
+  UntargetableDuring: 0
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  StaggerCheck: 0
+  StaggerGauge: 1000
+  StaggerTime: 10
+  StaggerFailOutcome: 0
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: 
+  GroggyOnStaggerSuccess: 5

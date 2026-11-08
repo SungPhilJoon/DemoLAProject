@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G2-11
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G2-11
+  PhaseId: "G2-\uACF5\uD1B5"
+  DisplayName: "\uB3CC\uC9C4 (\uACBD\uB85C \uD45C\uC2DC)"
+  Category: 0
+  Response: 1
+  ShapeText: "\uC9C1\uC120(\uC0AC\uAC01\uD615)"
+  LinkedPatternId: 
+  Confidence: 1
+  DamageTier: 0
+  Notes: "\uACE0\uAC1C\uB97C \uB450 \uBC88 \uC219\uC778 \uB4A4 \uB3CC\uC9C4\uD558\uBA70
+    \uBD89\uC740 \uBC14\uB2E5 \uD45C\uC2DC\uAC00 \uB738(S1). \uC774\uB3D9\uAE30\uB85C
+    \uD68C\uD53C(S1). \uC9C0\uD615 \uAD6C\uC870\uBB3C\uC5D0 \uC720\uB3C4\uD558\uBA74
+    \uBCF4\uC2A4\uAC00 \uADF8\uB85C\uAE30(G2-01 \uCC38\uACE0). \uCE74\uC6B4\uD130
+    \uC694\uAD6C \uC5EC\uBD80\uB294 \uCD9C\uCC98\uB9C8\uB2E4 \uB2EC\uB77C \uBBF8\uAE30\uC7AC(S3\xB7S5)."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 10
+  Weight: 2
+  MinRange: 0
+  MaxRange: 16
+  RandomSelectable: 1
+  Steps:
+  - Label: Hit
+    StartDelay: 0
+    Targeting: 5
+    Area:
+      Shape: 2
+      Radius: 0
+      InnerRadius: 0
+      Angle: 0
+      Width: 3.5
+      Length: 16
+      ForwardOffset: 0
+    TelegraphTime: 2
+    TrackDuringTelegraph: 1
+    TrackLockBefore: 0.3
+    ShowTelegraph: 1
+    DamageTier: 2
+    DamageFractionOverride: -1
+    ApplyStatus: 4
+    StatusDuration: 1
+    ConsumesDeathWard: 0
+    BossMoveDistance: 14
+    BossMoveDuration: 0.55
+    BreaksWalls: 0
+    BreaksAllStructures: 0
+    BossSpinSpeed: 0
+    LeapDuration: 0
+    LeapHeight: 4
+    ArmCount: 0
+    ArmLength: 20
+    ArmWidth: 4
+    ArmAngleOffset: 0
+    RandomCrossOrX: 0
+    KnockbackHeight: 2
+    ChaseTarget: 0
+    ChaseSpeed: 5
+    ChargeSweepHit: 1
+    KnockbackDistance: 6
+    KnockbackDuration: 0.25
+    CrashGroggyTime: 4
+    ClipTelegraphToStructure: 1
+    ChargeWindup: 0
+  Recovery: 1
+  SuperArmor: 1
+  UntargetableDuring: 0
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  StaggerCheck: 0
+  StaggerGauge: 1000
+  StaggerTime: 10
+  StaggerFailOutcome: 0
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: 
+  GroggyOnStaggerSuccess: 5

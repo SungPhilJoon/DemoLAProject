@@ -1,0 +1,630 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc71b02846da724d9e88771907d2dbd, type: 3}
+  m_Name: EngravingTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.EngravingTable
+  Source: {fileID: 4900000, guid: 6f13e8fa57606ea479423a2bc60f48eb, type: 3}
+  Rows:
+  - Index: 1
+    Name: "\uC815\uBC00 \uD0C0\uACA9"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 7
+    Mod1Op: 0
+    Mod1Values:
+    - 4
+    - 10
+    - 15
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uCE58\uBA85\uD0C0 \uC801\uC911\uB960"
+  - Index: 2
+    Name: "\uC57D\uC810 \uACF5\uB7B5"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 1
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 10
+    - 16
+    Description: "\uBCF4\uC2A4\uC5D0\uAC8C \uC8FC\uB294 \uD53C\uD574"
+  - Index: 3
+    Name: "\uADF8\uB9BC\uC790 \uC77C\uACA9"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 2
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 5
+    - 12
+    - 20
+    Description: "\uBC31\uC5B4\uD0DD \uD53C\uD574"
+  - Index: 4
+    Name: "\uCE58\uBA85 \uAC15\uD654"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 8
+    Mod1Op: 0
+    Mod1Values:
+    - 15
+    - 30
+    - 50
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uCE58\uBA85\uD0C0 \uD53C\uD574"
+  - Index: 5
+    Name: "\uAC00\uC18D"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 15
+    Mod1Op: 0
+    Mod1Values:
+    - 4
+    - 8
+    - 15
+    Mod2Attr: 16
+    Mod2Op: 0
+    Mod2Values:
+    - 4
+    - 8
+    - 15
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uACF5\uACA9\xB7\uC774\uB3D9 \uC18D\uB3C4"
+  - Index: 6
+    Name: "\uAC15\uCCA0 \uD53C\uBD80"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 22
+    Mod1Op: 0
+    Mod1Values:
+    - 5
+    - 10
+    - 15
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uBC1B\uB294 \uD53C\uD574 \uAC10\uC18C"
+  - Index: 7
+    Name: "\uD750\uB974\uB294 \uB9C8\uB098"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 17
+    Mod1Op: 0
+    Mod1Values:
+    - 3
+    - 6
+    - 10
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04 \uAC10\uC18C"
+  - Index: 8
+    Name: "\uCD95\uBCF5\uC758 \uC190\uAE38"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 26
+    Mod1Op: 0
+    Mod1Values:
+    - 8
+    - 16
+    - 25
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uCE58\uC720\uB7C9"
+  - Index: 9
+    Name: "\uB2E8\uB2E8\uD55C \uC758\uC9C0"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 24
+    Mod1Op: 0
+    Mod1Values:
+    - 10
+    - 20
+    - 30
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uBB34\uB825\uD654"
+  - Index: 10
+    Name: "\uBD80\uC704 \uD30C\uAD34 \uC804\uBB38\uAC00"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 25
+    Mod1Op: 0
+    Mod1Values:
+    - 1
+    - 2
+    - 3
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uBD80\uC704 \uD30C\uAD34"
+  - Index: 11
+    Name: "\uACB0\uC758"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 4
+    ConditionParam: 80
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 9
+    - 15
+    Description: "\uCCB4\uB825 80% \uC774\uC0C1\uC77C \uB54C \uD53C\uD574"
+  - Index: 12
+    Name: "\uC5ED\uACBD"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 5
+    ConditionParam: 50
+    ConditionGroup: 0
+    ConditionValues:
+    - 5
+    - 12
+    - 20
+    Description: "\uCCB4\uB825 50% \uC774\uD558\uC77C \uB54C \uD53C\uD574"
+  - Index: 13
+    Name: "\uBC29\uD328 \uC5F0\uACC4"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 7
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 8
+    - 12
+    Description: "\uBCF4\uD638\uB9C9\uC774 \uC788\uC744 \uB54C \uD53C\uD574"
+  - Index: 14
+    Name: "\uC9C8\uC8FC \uBCF8\uB2A5"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 9
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 0.15
+    - 0.3
+    - 0.45
+    Description: "\uC774\uB3D9\uC18D\uB3C4 \uCD08\uACFC\uBD84 \xD7 \uBE44\uC728 \uB9CC\uD07C
+      \uD53C\uD574"
+  - Index: 15
+    Name: "\uADFC\uC811 \uC9D1\uC911"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 10
+    ConditionParam: 3
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "3m \uC774\uB0B4 \uB300\uC0C1 \uD53C\uD574"
+  - Index: 16
+    Name: "\uC6D0\uAC70\uB9AC \uC9D1\uC911"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 11
+    ConditionParam: 5
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "5m \uBC16 \uB300\uC0C1 \uD53C\uD574"
+  - Index: 17
+    Name: "\uC77C\uACA9 \uC9D1\uC911"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 14
+    ConditionParam: 10
+    ConditionGroup: 0
+    ConditionValues:
+    - 5
+    - 10
+    - 16
+    Description: "\uCFE8\uB2E4\uC6B4 10\uCD08 \uC774\uC0C1 \uC2A4\uD0AC \uD53C\uD574"
+  - Index: 18
+    Name: "\uBB34\uB825\uD654 \uC751\uC9D5"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 8
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 10
+    - 18
+    Description: "\uBB34\uB825\uD654 \uC0C1\uD0DC \uB300\uC0C1 \uD53C\uD574"
+  - Index: 19
+    Name: "\uAE09\uC18C \uB178\uCD9C"
+    IsNegative: 0
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 2
+    ConditionValues:
+    - 5
+    - 10
+    - 15
+    Description: "\uCE58\uBA85\uD0C0 \uC801\uC911\uB960 (\uC870\uAC74 \uC5C6\uC74C
+      \xB7 \uC2E4\uD589 \uACBD\uB85C \uD655\uC778\uC6A9)"
+  - Index: 90
+    Name: "\uB454\uD654"
+    IsNegative: 1
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 15
+    Mod1Op: 0
+    Mod1Values:
+    - -2
+    - -4
+    - -8
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uACF5\uACA9 \uC18D\uB3C4 \uAC10\uC18C"
+  - Index: 91
+    Name: "\uC5F0\uC57D\uD568"
+    IsNegative: 1
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 22
+    Mod1Op: 0
+    Mod1Values:
+    - -5
+    - -10
+    - -15
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uBC1B\uB294 \uD53C\uD574 \uC99D\uAC00"
+  - Index: 92
+    Name: "\uBB34\uB825\uD568"
+    IsNegative: 1
+    IsClass: 0
+    ClassRestriction: 0
+    IdentityVariant: 0
+    Mod1Attr: 34
+    Mod1Op: 0
+    Mod1Values:
+    - -2
+    - -4
+    - -6
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues: []
+    Description: "\uACF5\uACA9\uB825 \uAC10\uC18C"
+  - Index: 101
+    Name: "\uC815\uB839 \uACF5\uBA85"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 0
+    IdentityVariant: 1
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 7
+    - 12
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uC815\uB839 \uC18C\uD658 \uC2DC
+      \uAD6C\uC2AC\uC744 \uD558\uB098 \uB354 \uC18C\uBAA8\uD558\uC9C0 \uC54A\uACE0
+      \uC9C0\uC18D\uC2DC\uAC04 \uC99D\uAC00"
+  - Index: 102
+    Name: "\uC815\uB839 \uC9D1\uC911"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 0
+    IdentityVariant: 2
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uC815\uB839 \uB300\uC2E0 \uC989\uC2DC
+      \uD3ED\uBC1C"
+  - Index: 111
+    Name: "\uCDA9\uACA9 \uC218\uB828"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 1
+    IdentityVariant: 1
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 7
+    - 12
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uCDA9\uACA9 \uD574\uBC29\uC774
+      \uBC94\uC704 \uB300\uC2E0 \uB2E8\uC77C \uAC15\uD0C0"
+  - Index: 112
+    Name: "\uD22C\uC9C0 \uD574\uBC29"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 1
+    IdentityVariant: 2
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uAE30\uB825 \uC18C\uBAA8 \uB300\uC2E0
+      \uC0C1\uC2DC \uD53C\uD574 \uC99D\uAC00"
+  - Index: 121
+    Name: "\uAD11\uAE30"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 2
+    IdentityVariant: 1
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 7
+    - 12
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uD3ED\uC8FC \uC9C0\uC18D \uC5F0\uC7A5
+      \xB7 \uCE58\uBA85\uD0C0 \uD53C\uD574 \uC99D\uAC00"
+  - Index: 122
+    Name: "\uCC98\uB2E8"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 2
+    IdentityVariant: 2
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uD3ED\uC8FC \uB300\uC2E0 \uAC8C\uC774\uC9C0
+      \uC18C\uBAA8 \uAC15\uD0C0"
+  - Index: 131
+    Name: "\uB9CC\uAC1C"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 3
+    IdentityVariant: 1
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 3
+    - 7
+    - 12
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uC870\uD654 \uAD6C\uC2AC \uD6A8\uACFC
+      \uAC15\uD654 (\uD68C\uBCF5\uB7C9)"
+  - Index: 132
+    Name: "\uC5EC\uBC31"
+    IsNegative: 0
+    IsClass: 1
+    ClassRestriction: 3
+    IdentityVariant: 2
+    Mod1Attr: 0
+    Mod1Op: 0
+    Mod1Values: []
+    Mod2Attr: 0
+    Mod2Op: 0
+    Mod2Values: []
+    Condition: 0
+    ConditionParam: 0
+    ConditionGroup: 0
+    ConditionValues:
+    - 4
+    - 9
+    - 16
+    Description: "\uC9C1\uC5C5 \uAC01\uC778 \u2014 \uC870\uD654 \uAD6C\uC2AC \uB300\uC2E0
+      \uC544\uAD70 \uD53C\uD574 \uC99D\uAC00 \uC7A5\uD310"

@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600e01078791b4945a7de5fc8a6927cd, type: 3}
+  m_Name: GemTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.GemTable
+  Source: {fileID: 4900000, guid: 208c51d366571224b8a4d039509f8e89, type: 3}
+  Rows:
+  - Index: 1
+    DamagePercent: 3
+    CooldownPercent: 2
+  - Index: 2
+    DamagePercent: 6
+    CooldownPercent: 4
+  - Index: 3
+    DamagePercent: 9
+    CooldownPercent: 6
+  - Index: 4
+    DamagePercent: 12
+    CooldownPercent: 8
+  - Index: 5
+    DamagePercent: 15
+    CooldownPercent: 10
+  - Index: 6
+    DamagePercent: 18
+    CooldownPercent: 12
+  - Index: 7
+    DamagePercent: 21
+    CooldownPercent: 14
+  - Index: 8
+    DamagePercent: 24
+    CooldownPercent: 16
+  - Index: 9
+    DamagePercent: 30
+    CooldownPercent: 18
+  - Index: 10
+    DamagePercent: 40
+    CooldownPercent: 20

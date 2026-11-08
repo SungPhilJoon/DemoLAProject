@@ -1,0 +1,957 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01214d111db1c004ebfc85944f6d5e73, type: 3}
+  m_Name: BossPatternTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.BossPatternTable
+  Source: {fileID: 4900000, guid: f9b7b53fa136dcb409ad648a8bed68c4, type: 3}
+  Rows:
+  - Index: 101
+    PatternId: G1-01
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uAD6C\uC2AC \uD68D\uB4DD \uD6C4 \uBB34\uB825\uD654"
+    Category: "\uD30C\uD2F0 \uAE30\uBBF9"
+    Shape: 
+    Response: "\uD30C\uD2F0 \uAE30\uBBF9 \uC218\uD589"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC2E4\uD328 \uC2DC \uC804\uBA78(S1\xB7S2\xB7S11)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 30\uC904, 15~17\uC904 \uBD80\uADFC\uC5D0\uC11C \uAC01 1\uD68C
+      \uBC1C\uC0DD. \uAD6C\uC2AC\uC744 \uC815\uD574 \uB454 \uC21C\uC11C\uB300\uB85C
+      \uD68D\uB4DD\uD55C \uB4A4 \uBB34\uB825\uD654(\uC2A4\uD0DC\uAC70). \uAD6C\uC2AC\uC740
+      \uBCF4\uC2A4\uB97C \uAE30\uC900\uC73C\uB85C 8\uBC29\uD5A5\uC5D0 \uBD89\uC740\uC0C9/\uD478\uB978\uC0C9\uC73C\uB85C
+      \uC0DD\uC131(S1\xB7S4). \uC11C\uB85C \uB2E4\uB978 \uC0C9\uC744 \uBC88\uAC08\uC544
+      \uD68D\uB4DD\uD574\uC57C \uD558\uBA70 \uAC19\uC740 \uC0C9\uC744 \uC5F0\uC18D\uC73C\uB85C
+      \uBA39\uC73C\uBA74 \uC804\uBA78(S1\xB7S2\xB7S11). \uAD6C\uC2AC\uC774 \uBCF4\uC2A4\uC5D0
+      \uB2FF\uC73C\uBA74 \uC2E4\uD328(S1\xB7S7). \uAD6C\uC2AC \uD68D\uB4DD \uC2DC
+      \uB514\uBC84\uD504\uAC00 \uAC78\uB9AC\uBA70 \uB9CC\uB2A5\uC57D\uC774\uB098
+      \uC815\uD654\uB85C \uD574\uC81C(S7\xB7S11). \uC5D0\uC2A4\uB354 '\uC6E8\uC774'\uB85C
+      \uBB34\uB825\uD654\uB97C \uB300\uCCB4\uD558\uB294 \uBC29\uBC95\uC774 \uC788\uC74C(S1\xB7S2\xB7S3\xB7S4).
+      \uCC38\uACE0 \uC6A9\uC5B4: \uACB0\uC18D."
+  - Index: 102
+    PatternId: G1-02
+    PhaseId: G1-P1
+    Name: "\uBC18\uB300 \uC0C9 \uBCF4\uC2A4 \uB09C\uC785"
+    Category: "\uD30C\uD2F0 \uAE30\uBBF9"
+    Shape: 
+    Response: "\uD30C\uD2F0 \uAE30\uBBF9 \uC218\uD589"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBC1C\uB3D9 \uCCB4\uB825 \uAD6C\uAC04 \uBBF8\uD655\uC815. \uBC18\uB300
+      \uC0C9 \uBCF4\uC2A4\uAC00 \uB09C\uC785\uD558\uBA74 \uB450 \uBCF4\uC2A4\uB97C
+      \uC11C\uB85C \uBA40\uB9AC \uB5A8\uC5B4\uB728\uB824\uC57C \uD558\uBA70, \uAC00\uAE4C\uC6B0\uBA74
+      \uD53C\uD574 \uAC10\uC18C \uBC84\uD504\uAC00 \uBD99\uC74C(S1\xB7S2\xB7S4).
+      \uB09C\uC785 \uB300\uC751 \uBC84\uD504\uB97C \uAC00\uC9C4 \uD50C\uB808\uC774\uC5B4\uB9CC
+      \uB09C\uC785 \uBCF4\uC2A4\uC5D0\uAC8C \uC720\uD6A8 \uD53C\uD574\uB97C \uC90C(S2\xB7S3\xB7S4).
+      \uC77C\uC815 \uD53C\uD574\uB97C \uC8FC\uBA74 \uB09C\uC785 \uBCF4\uC2A4\uAC00
+      \uBB3C\uB7EC\uB0A8(S1\xB7S2). \uCD5C\uC18C 2\uC778 \uC774\uC0C1 \uD544\uC694,
+      \uC2F1\uAE00 \uBAA8\uB4DC\uC5D0\uB294 \uC5C6\uC74C(S7). \uCC38\uACE0 \uC6A9\uC5B4:
+      \uB09C\uC785."
+  - Index: 103
+    PatternId: G1-03
+    PhaseId: G1-P1
+    Name: "\uCD94\uC801 \uD68C\uC624\uB9AC"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: "\uC6D0"
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uAC00\uB8E8 \uAD6C\uAC04\uC5D0\uC11C \uC0AC\uC6A9. \uD0C0\uACA9
+      \uBD88\uAC00 \uC0C1\uD0DC\uB85C \uC5B4\uADF8\uB85C \uB300\uC0C1\uC744 \uCC9C\uCC9C\uD788
+      \uCD94\uC801\uD558\uB294 \uC6D0\uD615 \uD68C\uC624\uB9AC(S1\xB7S2\xB7S3). \uB300\uC751
+      \uBC29\uC2DD\uC740 \uCD9C\uCC98 \uAC04 \uC0C1\uC774\uD558\uC5EC \uBBF8\uAE30\uC7AC."
+  - Index: 104
+    PatternId: G1-04
+    PhaseId: G1-P3
+    Name: "\uACF5\uD3EC \uD6C4 \uD6C4\uBC29 \uCC98\uD615"
+    Category: "\uC2A4\uD0DC\uAC70 \uCCB4\uD06C"
+    Shape: 
+    Response: "\uC2A4\uD0DC\uAC70"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC2E4\uD328 \uC2DC \uC989\uC0AC\uAE09 \uD53C\uD574(S1), 2\uBC88
+      \uC2E4\uD328\uD558\uBA74 \uC804\uBA78(S11)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 15~17\uC904 \uBD80\uADFC \uC774\uD6C4 \uD569\uCCB4 \uAD6C\uAC04\uC5D0\uC11C
+      \uC0AC\uC6A9. \uBB34\uC791\uC704 1\uBA85\uC5D0\uAC8C \uACF5\uD3EC\uB97C \uAC74
+      \uB4A4 \uADF8 \uB300\uC0C1 \uB4A4\uC5D0 \uB098\uD0C0\uB098 \uCC98\uD615\uC744
+      \uC2DC\uB3C4\uD558\uBA70, \uC774\uB54C \uBB34\uB825\uD654(\uC2A4\uD0DC\uAC70)\uB85C
+      \uC800\uC9C0(S1\xB7S3). \uACF5\uD3EC\uB97C \uBC18\uB4DC\uC2DC \uBB34\uB825\uD654\uB85C
+      \uB04A\uC5B4\uC57C \uD558\uACE0 2\uBC88 \uC2E4\uD328\uD558\uBA74 \uC804\uBA78(S11).
+      \uCD5C\uC18C 2\uC778 \uC774\uC0C1 \uD544\uC694, \uC2F1\uAE00 \uBAA8\uB4DC\uC5D0\uB294
+      \uC5C6\uC74C(S7). \uC77C\uBD80 \uAE00\uC5D0\uC11C\uB294 '\uC554\uC2B5'\uC73C\uB85C
+      \uD45C\uAE30."
+  - Index: 105
+    PatternId: G1-05
+    PhaseId: G1-P0
+    Name: "\uBCF4\uC2A4 \uBD84\uC5F4"
+    Category: "\uD398\uC774\uC988 \uC804\uD658"
+    Shape: 
+    Response: "\uD574\uB2F9 \uC5C6\uC74C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC911\uC559\uC5D0\uC11C \uCC44\uB110\uB9C1(\uD53C\uD574 \uAC10\uC18C
+      90%, S3\xB7S4)\uD55C \uB4A4 \uB450 \uBCF4\uC2A4\uB85C \uBD84\uC5F4. \uBD84\uC5F4
+      \uC911 \uBCF4\uC2A4 \uD0C0\uACA9 \uBD88\uAC00(S1\xB7S3\xB7S4). \uCCB4\uB825
+      46\uC904 \uBD80\uADFC(S3\xB7S4\xB7S11, S1\xB7S2\uB294 45\uC904)."
+  - Index: 201
+    PatternId: G2-01
+    PhaseId: G2-P1
+    Name: "\uAC11\uC637 \uBD80\uC704\uD30C\uAD34 (\uB3CC\uC9C4 \uC720\uB3C4)"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: "\uD30C\uD2F0 \uAE30\uBBF9 \uC218\uD589"
+    LinkedPatternId: G2-02
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC2DC\uC791 \uC2DC \uD53C\uD574 \uAC10\uC18C(\uAC11\uC637) \uBC84\uD504
+      2\uC911\uCCA9(S1\xB7S3). \uB3CC\uC9C4\uC744 \uC9C0\uD615 \uAD6C\uC870\uBB3C\uC5D0
+      \uC801\uC911\uC2DC\uCF1C \uBCF4\uC2A4\uB97C \uADF8\uB85C\uAE30 \uC0C1\uD0DC\uB85C
+      \uB9CC\uB4E0 \uB4A4 \uBD80\uC704 \uD30C\uAD34\uB85C \uC911\uCCA9\uC744 \uC81C\uAC70(S1\xB7S3\xB7S4).
+      \uBD80\uC704 \uD30C\uAD34\uC6A9 \uD30C\uAD34 \uD3ED\uD0C4\uC774 \uD544\uC218(S6)."
+  - Index: 202
+    PatternId: G2-02
+    PhaseId: G2-P1
+    Name: "\uBC29\uC5B4 \uAD6C\uC2AC \uD68D\uB4DD"
+    Category: "\uD30C\uD2F0 \uAE30\uBBF9"
+    Shape: 
+    Response: "\uD30C\uD2F0 \uAE30\uBBF9 \uC218\uD589"
+    LinkedPatternId: G2-03
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uAD6C\uC870\uBB3C(\uCCA8\uD0D1) \uD30C\uAD34 \uD6C4 \uC0DD\uC131\uB418\uB294
+      \uAD6C\uC2AC \uCD1D 8\uAC1C(\uAD6C\uC870\uBB3C\uB2F9 2\uAC1C). 1\uC778 1\uAC1C
+      \uD68D\uB4DD\uD558\uBA74 \uC774\uD6C4 \uC989\uC0AC \uD328\uD134 1\uD68C\uB97C
+      \uB9C9\uC544 \uC90C(S1\xB7S3\xB7S4). \uCC38\uACE0 \uC6A9\uC5B4: \uB85C\uB098\uC6B4\uC758
+      \uAE30\uC6B4."
+  - Index: 203
+    PatternId: G2-03
+    PhaseId: G2-P1
+    Name: "130\uC904 \uC989\uC0AC \uC7A5\uD310 2\uC5F0\uC18D"
+    Category: "\uD30C\uD2F0 \uAE30\uBBF9"
+    Shape: 
+    Response: "\uD30C\uD2F0 \uAE30\uBBF9 \uC218\uD589"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC989\uC0AC\uAE09 \uC7A5\uD310, \uC804\uBA78\uAE30(S1\xB7S3\xB7S4)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 128~130\uC904 \uBD80\uADFC(130\uC904: S1\xB7S3\xB7S4\xB7S5\xB7S10,
+      128\uC904: S11\xB7Y1 \uCC55\uD130). \uC989\uC0AC\uAE09 \uC7A5\uD310 \uACF5\uACA9\uC774
+      2\uD68C \uC5F0\uC18D. \uAD6C\uC2AC \uBC84\uD504\uAC00 \uC989\uC0AC 1\uD68C\uB97C
+      \uB9C9\uC544 \uC8FC\uBA70, \uCCAB \uC7A5\uD310\uC5D0 \uB9DE\uC73C\uBA74 \uBC84\uD504\uAC00
+      \uC18C\uBA78\uD574 \uB450 \uBC88\uC9F8 \uACF5\uACA9\uC5D0 \uC0AC\uB9DD(S1\xB7S3\xB7S4).
+      \uC5D0\uC2A4\uB354 '\uBC14\uD6C8\uD22C\uB974'\uB85C\uB3C4 \uB300\uC751 \uAC00\uB2A5(S1\xB7S3\xB7S4)."
+  - Index: 204
+    PatternId: G2-04
+    PhaseId: G2-P2
+    Name: "\uBB34\uC791\uC704 \uB300\uC0C1 \uCD94\uC801 \uC989\uC0AC \uC7A5\uD310"
+    Category: "\uAE30\uBBF9"
+    Shape: "\uBD80\uCC44\uAF34"
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: G2-18
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC989\uC0AC\uAE09(S1), \uC989\uC0AC \uD310\uC815(S3), \uAC15\uB825\uD55C
+      \uD53C\uD574(S4)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 110\uC904 \uBD80\uADFC(S1\xB7S3\xB7S10\xB7S11, S4\uB294
+      100\uC904). \uBB34\uC791\uC704 1\uBA85\uC5D0\uAC8C \uC870\uAC01 \uBAA8\uC591\uC758
+      \uBD89\uC740 \uC7A5\uD310(\uBD80\uCC44\uAF34, S3\xB7S10)\uC774 \uCD94\uC801\uD558\uB2E4\uAC00
+      \uACE0\uC815\uB418\uBA74 \uC774\uB3D9\uAE30\uB85C \uC774\uD0C8(S1\xB7S4). \uD30C\uD2F0\uC6D0\uC774
+      \uC5C6\uB294 \uCABD\uC73C\uB85C \uD53C\uD568(S10). \uC774\uD6C4 \uCDA9\uACA9\uD30C\uB294
+      \uB3CC \uB4A4\uB85C \uC228\uC5B4 \uD68C\uD53C(S1\xB7S3\xB7S4). \uC774 \uAD6C\uAC04
+      \uBCF4\uC2A4\uC5D0 \uC57D 50% \uD53C\uD574 \uAC10\uC18C(S11, \uB2E8\uC77C \uCD9C\uCC98)."
+  - Index: 205
+    PatternId: G2-05
+    PhaseId: G2-P2
+    Name: "\uC9C0\uD615 \uD30C\uAD34 1\uCC28 (\uD55C\uCABD \uC808\uBC18)"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uB099\uC0AC \uC989\uC0AC, \uD68C\uBCF5\xB7\uD53C\uD574 \uAC10\uC18C
+      \uBB34\uD6A8(S1)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 88\uC904 \uBD80\uADFC(S3\xB7S10\xB7S11\xB7Y1 \uCC55\uD130,
+      S1\xB7S4\uB294 85\uC904). \uB9F5\uC758 \uC88C/\uC6B0 \uD55C\uCABD \uC808\uBC18\uC774
+      \uD30C\uAD34\uB418\uBA70 \uC88C\uC6B0\uB294 \uBB34\uC791\uC704(S1\xB7S3). \uD30C\uAD34\uB41C
+      \uAC00\uC7A5\uC790\uB9AC\uC5D0\uC11C \uBC00\uB824\uB098\uBA74 \uB099\uC0AC
+      \uC989\uC0AC(S1\xB7S4\xB7S6). \uC774 \uAD6C\uAC04 \uBCF4\uC2A4\uC5D0 \uC57D
+      50% \uD53C\uD574 \uAC10\uC18C(S11, \uB2E8\uC77C \uCD9C\uCC98)."
+  - Index: 206
+    PatternId: G2-06
+    PhaseId: G2-P2
+    Name: "\uC9C0\uD615 \uD30C\uAD34 2\uCC28 (\uC911\uC559\uB9CC \uB0A8\uAE40)"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uB099\uC0AC \uC989\uC0AC(S1\xB7S4)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 30\uC904 \uBD80\uADFC(S3\xB7S4\xB7S10\xB7Y1 \uCC55\uD130,
+      S11\uC740 32\uC904, S1\uC740 35\uC904). \uB0A8\uC740 \uC9C0\uD615\uAE4C\uC9C0
+      \uD30C\uAD34\uB418\uC5B4 \uC911\uC559\uC758 \uC791\uC740 \uD310\uB9CC \uB0A8\uC74C(S1\xB7S4).
+      \uC9C0\uD615\uC774 \uD30C\uAD34\uB420\uC218\uB85D \uB099\uC0AC \uC704\uD5D8
+      \uC99D\uAC00(S1). \uC774 \uAD6C\uAC04 \uBCF4\uC2A4\uC5D0 \uC57D 50% \uD53C\uD574
+      \uAC10\uC18C(S11, \uB2E8\uC77C \uCD9C\uCC98)."
+  - Index: 207
+    PatternId: G2-07
+    PhaseId: G2-P2
+    Name: "\uCE74\uC6B4\uD130 \uD544\uC218 \uB3CC\uC9C4 \uD328\uD134"
+    Category: "\uCE74\uC6B4\uD130"
+    Shape: 
+    Response: "\uCE74\uC6B4\uD130"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uCE74\uC6B4\uD130 \uC2E4\uD328 \uC2DC \uC804\uBA78(S1)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 65\uC904 \uBD80\uADFC(S1\xB7S3\xB7S4\xB7S10). \uC720\uC800
+      \uBC1C\uBC11\uC5D0 \uC7A5\uD310\uC774 \uC0DD\uAE30\uACE0(S3\xB7S10), \uBCF4\uC2A4\uAC00
+      \uC228\uC744 \uBAB0\uC544\uC274 \uB54C \uC815\uBA74\uC5D0\uC11C \uCE74\uC6B4\uD130(S10).
+      \uCE74\uC6B4\uD130 \uD544\uC218\uC774\uBA70 \uC2E4\uD328 \uC2DC \uB3CC\uC9C4\uC5D0
+      \uBD99\uC7A1\uD788\uB294 \uC7A1\uAE30 \uD310\uC815(S1\xB7S7). \uC2F1\uAE00
+      \uBAA8\uB4DC\uC5D0\uC11C\uB294 \uC7A1\uAE30 \uD310\uC815 \uC5C6\uC74C(S7)."
+  - Index: 208
+    PatternId: G2-08
+    PhaseId: G2-P2
+    Name: "3\uC5F0 \uCE74\uC6B4\uD130"
+    Category: "\uCE74\uC6B4\uD130"
+    Shape: 
+    Response: "\uCE74\uC6B4\uD130"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "1\xB72\uD68C\uCC28 \uC2E4\uD328 \uC2DC \uC804\uCCB4 \uD070 \uD53C\uD574,
+      3\uD68C\uCC28 \uC2E4\uD328 \uC2DC \uC804\uBA78\uAE09(S1\xB7S3)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCD5C\uB300 3\uD68C \uC5F0\uC18D \uCE74\uC6B4\uD130. 2\uD68C\uCC28 \uC2E4\uD328\uBD80\uD130
+      \uD53C\uD574\uC640 \uC7A5\uD310\uC774 \uB298\uACE0, 3\uD68C\uCC28 \uC2E4\uD328
+      \uC2DC \uC804\uBA78\uAE09(S1\xB7S3). \uBAB8\uC774 \uD30C\uB797\uAC8C \uBCC0\uD55C
+      \uB4A4 \uCE74\uC6B4\uD130\uD574\uB3C4 \uB2A6\uC9C0 \uC54A\uC74C(S1\xB7S11).
+      \uCE74\uC6B4\uD130 \uC131\uACF5 \uC2DC 1\uBD84\uAC04 \uCE68\uBB35 \uC0C1\uD0DC(S1\xB7S3)."
+  - Index: 209
+    PatternId: G2-09
+    PhaseId: G2-P2
+    Name: "\uBC1C\uBC11 \uC7A5\uD310 \uC5F0\uC18D \uD0C0\uACA9"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: "\uD0F1\uD0B9/\uBC84\uD2F0\uAE30"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uB9E4\uC6B0 \uD070 \uD53C\uD574"
+    DamageText: "\uB192\uC740 \uD53C\uD574, \uBC14\uD6C8\uD22C\uB974\uAC00 \uC788\uC5B4\uB3C4
+      \uCCB4\uB825 \uC18C\uBAA8\uAC00 \uD07C(S4)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 15~16\uC904 \uBD80\uADFC(S3\xB7S4\xB7S10\xB7S11\xB7Y1 \uCC55\uD130).
+      4\uBC29\uD5A5 \uBC14\uB2E5 \uCC0D\uAE30 \uB4A4 \uBC1C\uBC11\uC5D0 \uC5F0\uC18D\uC73C\uB85C
+      \uD130\uC9C0\uB294 \uC7A5\uD310 \uACF5\uACA9(S4\xB7S10). \uD53C\uD574\uAC00
+      \uB9E4\uC6B0 \uCEE4\uC11C \uC5D0\uC2A4\uB354 '\uBC14\uD6C8\uD22C\uB974'\uC640
+      \uC2DC\uAC04 \uC815\uC9C0 \uBB3C\uC57D \uB4F1\uC73C\uB85C \uBC84\uD2F0\uB294
+      \uBC29\uBC95(S3\xB7S4)\uACFC, \uD53C\uD558\uB294 \uBC29\uD5A5\uC744 \uC815\uD574
+      \uD68C\uD53C\uD558\uB294 \uBC29\uBC95(S10)\uC774 \uC788\uC74C. \uCC38\uACE0
+      \uC6A9\uC5B4: \uC5F0\uD658\uD30C\uC2E0\uAD8C."
+  - Index: 210
+    PatternId: G2-10
+    PhaseId: G2-P3
+    Name: "\uBD84\uC2E0 \uCE74\uC6B4\uD130 (\uBC84\uD504 \uD574\uC81C)"
+    Category: "\uCE74\uC6B4\uD130"
+    Shape: 
+    Response: "\uCE74\uC6B4\uD130"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC720\uB839 \uC804\uD658 \uD6C4 \uB9F5 \uC911\uC559\uC5D0 \uACE0\uC815\uB41C
+      \uC0C8 \uBC1C\uD0C4(\uCCB4\uB825 40\uC904)\uC774 \uD53C\uD574 \uAC10\uC18C
+      \uBC84\uD504 \uB2E4\uC911 \uC911\uCCA9 \uC0C1\uD0DC\uB85C \uB4F1\uC7A5(S3\xB7S4).
+      \uBD84\uC2E0 \uD328\uD134\uC5D0\uC11C \uCE74\uC6B4\uD130 \uC131\uACF5 \uC2DC
+      \uBC84\uD504 1\uC911\uCCA9 \uD574\uC81C \uBC0F \uC5D0\uC2A4\uB354 \uAC8C\uC774\uC9C0
+      \uC0C1\uC2B9(S3\xB7S4). \uBC84\uD504 \uC911\uCCA9 \uC218 \uBBF8\uD655\uC815."
+  - Index: 106
+    PatternId: G1-06
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uC810\uBA78 \uD6C4 2\uC5F0 \uD560\uD034\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC21C\uAC04\uC774\uB3D9(\uC740\uC2E0)\uC774 \uC804\uC870. \uC5B4\uADF8\uB85C
+      \uB300\uC0C1 \uC55E\uC5D0 \uB098\uD0C0\uB098 \uD560\uD034\uAE30 2\uD68C, \uB450
+      \uBC88\uC9F8\uC5D0 \uC8FC\uBCC0\uC744 \uACF5\uACA9\uD558\uBA70 \uC5D0\uC5B4\uBCF8(\uB744\uC6B0\uAE30)(S1\xB7S2).
+      \uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uAC70\uB9AC\uB97C
+      \uBC8C\uB824 \uB450\uB294 \uAC83\uC774 \uB300\uC751(S1)."
+  - Index: 107
+    PatternId: G1-07
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "3\uB2E8 \uD560\uD034\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uD06C\uAC8C \uC138 \uBC88 \uD560\uD034\uB294 \uACF5\uACA9. \uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00
+      \uC0AC\uC6A9(S2). \uBCF4\uC2A4 \uBC14\uB85C \uC55E\uC5D0 \uBD99\uC5B4 \uC788\uC73C\uBA74
+      \uB9DE\uC9C0 \uC54A\uC74C(S3). \uCC44\uB110\uB9C1\uC774 \uAE34 \uC2A4\uD0AC\uC758
+      \uB51C \uD0C0\uC784\uC744 \uC7A1\uAE30 \uC26C\uC6C0(S2)."
+  - Index: 108
+    PatternId: G1-08
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uBD80\uCC44\uAF34 \uB9C8\uAD6C \uD560\uD034\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uBD80\uCC44\uAF34"
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uD070 \uD53C\uD574"
+    DamageText: "\uC815\uBA74 \uD53C\uACA9 \uC2DC \uB192\uC740 \uD53C\uD574(S2)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uBCF4\uC2A4
+      \uC815\uBA74\uC5D0\uC11C \uB9DE\uC73C\uBA74 \uD53C\uD574\uAC00 \uD06C\uACE0
+      \uB4A4\uB97C \uC7A1\uC73C\uBA74 \uD53C\uACA9\uC774 \uC801\uC74C(S2). \uB2E8\uC77C
+      \uCD9C\uCC98."
+  - Index: 109
+    PatternId: G1-09
+    PhaseId: G1-P1
+    Name: "\uCD9C\uD608 \uC2A4\uD0DD\uACFC \uCD94\uAC00 \uD560\uD034\uAE30"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uD070 \uD53C\uD574"
+    DamageText: "\uC5EC\uB7EC \uBA85\uC774 \uACB9\uCE58\uBA74 \uD070 \uD53C\uD574
+      \uAC00\uB2A5(S2)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uAC00\uB8E8\uC758 \uADFC\uC811 \uACF5\uACA9\uC5D0 \uCD9C\uD608\uC774
+      \uC313\uC774\uACE0, 3\uC2A4\uD0DD\uC774\uBA74 \uB300\uC0C1\uC5D0\uAC8C \uD45C\uC2DD\uC774
+      \uC0DD\uACA8 \uC774\uD6C4 \uB8E8\uAC00\uB8E8\uC758 \uD560\uD034\uAE30\uB9C8\uB2E4
+      \uADF8 \uB300\uC0C1 \uBC29\uD5A5\uC73C\uB85C \uCD94\uAC00 \uD560\uD034\uAE30\uAC00
+      \uB530\uB77C\uC634(S2). \uC815\uD654 \uB8EC/\uC2A4\uD0AC\uB85C \uCD9C\uD608\uC744
+      \uAD00\uB9AC(S1\xB7S2)."
+  - Index: 110
+    PatternId: G1-10
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uB3C4\uC57D \uD6C4 2\uC5F0 \uD560\uD034\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC810\uD504 \uD6C4 \uD560\uD034\uAE30 2\uD68C, \uB450 \uBC88\uC9F8\uAC00
+      \uC5D0\uC5B4\uBCF8\uACFC \uC8FC\uBCC0 \uD3ED\uBC1C\uC744 \uC720\uBC1C. \uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00
+      \uC0AC\uC6A9\uD558\uBA70 \uD3EC\uC2DD\uC790\uB294 \uCCAB \uD560\uD034\uAE30\uC5D0
+      \uC6D0\uAC70\uB9AC \uACF5\uACA9\uC774 \uCD94\uAC00\uB420 \uC218 \uC788\uC74C(S2).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 111
+    PatternId: G1-11
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uD68C\uC804\uCC28\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBAA8\uB4E0 \uAD6C\uAC04\uC5D0\uC11C \uC0AC\uC6A9. \uC8FC\uBCC0 \uD50C\uB808\uC774\uC5B4\uB97C
+      \uC5D0\uC5B4\uBCF8\uC2DC\uD0A4\uBA70 \uBCF4\uC2A4 \uB4A4\uB97C \uC7A1\uC73C\uBA74
+      \uD53C\uACA9\uC774 \uC801\uC74C(S2). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 112
+    PatternId: G1-12
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uC6C5\uD06C\uB9B0 \uB4A4 \uBC14\uB2E5 \uD3ED\uBC1C"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBAA8\uB4E0 \uAD6C\uAC04\uC5D0\uC11C \uC0AC\uC6A9. \uBC14\uB2E5\uC5D0
+      \uD3ED\uBC1C \uC9D5\uC870\uAC00 \uB728\uBA70 \uB9DE\uC73C\uBA74 \uC5D0\uC5B4\uBCF8.
+      \uB51C\uBCF4\uB2E4 \uD55C \uD134 \uB5A8\uC5B4\uC9C0\uB294 \uAC83\uC774 \uC548\uC804(S2).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 113
+    PatternId: G1-13
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uACBD\uB85C \uC608\uACE0 \uB3CC\uC9C4 (\uC18C\uB2C9)"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uC9C1\uC120(\uC0AC\uAC01\uD615)"
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uACBD\uB85C\uB97C
+      \uC608\uACE0\uD558\uBA70 \uB3CC\uC9C4\uD558\uACE0 \uC9C0\uB098\uAC04 \uC9C1\uC120
+      \uACBD\uB85C \uC8FC\uBCC0\uC5D0 \uC5D0\uC5B4\uBCF8 \uD3ED\uBC1C(S2). \uB2E8\uC77C
+      \uCD9C\uCC98."
+  - Index: 114
+    PatternId: G1-14
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uC9C1\uC120 \uBD99\uC7A1\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uC9C1\uC120(\uC0AC\uAC01\uD615)"
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uC77C\uC9C1\uC120 \uACBD\uB85C\uAC00
+      \uD45C\uC2DC\uB418\uACE0 \uACBD\uB85C \uC548 \uB300\uC0C1\uC740 \uBA74\uC5ED\uC744
+      \uBB34\uC2DC\uD558\uACE0 \uB04C\uB824\uAC00 \uD53C\uD574\uB97C \uC785\uC740
+      \uB4A4 \uB0A0\uC544\uAC10(S2). \uAC01\uC131\uAE30 \uB3C4\uC911\uC5D0\uB3C4
+      \uC0AC\uC6A9(S2). \uC7A1\uD78C \uC778\uC6D0 \uC218\uB9CC\uD07C \uAE01\uAE30
+      \uACF5\uACA9\uC774 \uB4E4\uC5B4\uAC00\uBBC0\uB85C \uB204\uAC00 \uC7A1\uD788\uBA74
+      \uB2E4\uAC00\uAC00\uC9C0 \uC54A\uC74C(S11). \uACBD\uB85C \uB3CC\uC9C4(G1-13)\uACFC
+      \uBAA8\uC158\uC774 \uBE44\uC2B7\uD574 \uAD6C\uBD84\uC774 \uC5B4\uB824\uC6C0(S2)."
+  - Index: 115
+    PatternId: G1-15
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uCE7C\uB0A0 \uB0A0\uB9AC\uAE30"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uD074\uB85C\uAC00
+      \uBE5B\uB098\uB294 \uC804\uC870 \uB4A4 \uC804\uBC29\uC73C\uB85C \uCE7C\uB0A0\uC744
+      \uBC1C\uC0AC\uD558\uACE0 \uC774\uD6C4 \uC0AC\uBC29\uC73C\uB85C \uD37C\uC9D0(S2\xB7S3)."
+  - Index: 116
+    PatternId: G1-16
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uD68C\uC804 \uBCA0\uAE30\uC640 \uAE30\uC6B4 \uC0C9 \uC9D5\uC870"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uD070 \uD53C\uD574"
+    DamageText: "\uBD89\uC740 \uAE30\uC6B4\uC740 \uAC15\uB825\uD55C \uB2E8\uD0C0
+      \uD3ED\uBC1C(S2)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uC8FC\uBCC0\uC744
+      \uB109\uBC31\uC2DC\uD0A4\uBA70 \uB358\uC9C0\uB294 \uAE30\uC6B4\uC758 \uC0C9\uC73C\uB85C
+      \uC885\uB958\uB97C \uAD6C\uBD84: \uD478\uB978\uC0C9=\uACB0\uBE59, \uBD89\uC740\uC0C9=\uAC15\uB825\uD55C
+      \uB2E8\uD0C0 \uD3ED\uBC1C, \uB179\uC0C9=\uB2E4\uB2E8\uD788\uD2B8 \uD3ED\uBC1C,
+      \uAE30\uC6B4 \uC5C6\uC74C=\uC678\uACFD \uC5D0\uC5B4\uBCF8 \uCDA9\uACA9\uD30C(S2).
+      \uD68C\uC804\uD558\uBA70 \uB358\uC9C0\uB294 \uAE30\uC6B4\uC740 \uBAA8\uB4E0
+      \uD30C\uD2F0\uC6D0\uC744 \uCD94\uC801(S2). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 117
+    PatternId: G1-17
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uC911\uB825\uC9C0\uB300 (\uB300\uC0C1 \uB514\uBC84\uD504 \uD6C4 \uC5B4\uB460
+      \uC7A5\uD310)"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uD2B9\uC815 \uB300\uC0C1\uC5D0\uAC8C
+      \uB514\uBC84\uD504\uAC00 \uAC78\uB9AC\uACE0 \uC77C\uC815 \uC2DC\uAC04 \uB4A4
+      \uB300\uC0C1 \uC8FC\uBCC0\uC5D0 \uC5B4\uB460 \uC7A5\uD310\uC774 \uC0DD\uAE40.
+      \uB514\uBC84\uD504 \uB300\uC0C1\uC740 \uC7A5\uD310\uC744 \uC678\uACFD\uC73C\uB85C
+      \uBE7C\uC57C \uD568(S2). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 118
+    PatternId: G1-18
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uB3D9\uACB0 \uB36B"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uBB34\uC791\uC704
+      \uBC94\uC704\uC5D0 \uB36B\uC774 \uAE54\uB9AC\uACE0 \uC57D 2\uCD08 \uB4A4 \uD3ED\uBC1C\uD574
+      \uB3D9\uACB0(S1). \uB36B\uC774 \uBC18\uC9DD\uC77C \uB54C \uC774\uB3D9\uAE30\uB97C
+      \uC4F0\uAC70\uB098 \uBC94\uC704 \uBC16\uC73C\uB85C \uC774\uD0C8(S1). \uC2DC\uAC04
+      \uC815\uC9C0 \uBB3C\uC57D \uC0AC\uC6A9 \uAD8C\uC7A5(S3)."
+  - Index: 119
+    PatternId: G1-19
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uD3ED\uBC1C \uB36B"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uD560\uD034\uAE30
+      \uBAA8\uC158 \uC911 \uB36B\uC744 \uC124\uCE58\uD558\uACE0 \uC218 \uCD08 \uB4A4
+      \uB113\uC740 \uBC94\uC704\uAC00 \uD3ED\uBC1C(S1). \uC989\uC2DC \uBC14\uAE65\uC73C\uB85C
+      \uC774\uB3D9\uD558\uACE0 \uC5EC\uC720\uAC00 \uC5C6\uC73C\uBA74 \uC2DC\uAC04
+      \uC815\uC9C0 \uBB3C\uC57D(S1\xB7S3)."
+  - Index: 120
+    PatternId: G1-20
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uAE30\uD3ED \uD22C\uC0AC\uCCB4"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB8E8\uCE74\uC2A4\xB7\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uB179\uC0C9
+      \uD22C\uC0AC\uCCB4\uC5D0 \uB9DE\uC73C\uBA74 \uB9DE\uC740 \uCE90\uB9AD\uD130
+      \uC8FC\uBCC0\uC5D0 3\uD68C \uD3ED\uBC1C. \uC5EC\uB7EC \uBA85\uC774 \uB9DE\uC73C\uBA74
+      \uC7A5\uD310\uC774 \uACB9\uCE58\uBBC0\uB85C \uD769\uC5B4\uC9C0\uAC70\uB098
+      \uD55C\uACF3\uC5D0 \uBAA8\uC784(S1). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 121
+    PatternId: G1-21
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uBB34\uC791\uC704 \uB744\uC6B0\uAE30 \uC7A5\uD310"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uAD6C\uC2AC \uBAA8\uC591 \uC774\uD399\uD2B8 \uB4A4 \uBB34\uC791\uC704
+      \uC9C0\uC810\uC5D0 \uB744\uC6B0\uAE30 \uC7A5\uD310\uC774 \uC0DD\uAE40. \uBAA8\uC158\uC744
+      \uBCF4\uACE0 \uC774\uB3D9(S1). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 122
+    PatternId: G1-22
+    PhaseId: "G1-\uACF5\uD1B5"
+    Name: "\uBB34\uB825\uD654 \uC2E4\uD328 \uC2DC \uC5F0\uC1C4 \uACF5\uACA9"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654\uC5D0 \uC2E4\uD328\uD558\uBA74
+      \uB8E8\uCE74\uC2A4 \uC8FC\uC704\uB85C \uAC80\uD48D \u2192 \uC8FC\uBCC0 \uBC14\uB2E5
+      \uD3ED\uBC1C \u2192 \uC6D0\uD615 \uBC94\uC704 \uACF5\uACA9 \u2192 \uC8FC\uBCC0\uC73C\uB85C
+      \uB808\uC774\uC800\uAC00 \uC774\uC5B4\uC9D0(S2). \uD3ED\uBC1C \uC9C1\uC804
+      \uC2DC\uAC04 \uC815\uC9C0 \uBB3C\uC57D\uC73C\uB85C \uD68C\uD53C \uAC00\uB2A5(S2).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 123
+    PatternId: G1-23
+    PhaseId: G1-P1
+    Name: "\uC548\uAC1C \uD328\uD134\uACFC \uAC10\uAE08 \uC7A1\uAE30"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC7A1\uAE30 \uD53C\uD574\uB294 \uC989\uC0AC\uAE09\uC73C\uB85C \uC544\uD514(S11)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCCB4\uB825 33~30\uC904 \uAD6C\uAC04(S11). \uC554\uD751 \uC911\uCCA9
+      \uB514\uBC84\uD504\uAC00 5\uC2A4\uD0DD\uC774\uBA74 \uAC10\uAE08\uB418\uACE0,
+      \uD480\uC9C0 \uBABB\uD558\uBA74 \uB8E8\uAC00\uB8E8\uAC00 \uC7A1\uAE30\uB97C
+      \uC2DC\uC804(S11). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 211
+    PatternId: G2-11
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "\uB3CC\uC9C4 (\uACBD\uB85C \uD45C\uC2DC)"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uC9C1\uC120(\uC0AC\uAC01\uD615)"
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uACE0\uAC1C\uB97C \uB450 \uBC88 \uC219\uC778 \uB4A4 \uB3CC\uC9C4\uD558\uBA70
+      \uBD89\uC740 \uBC14\uB2E5 \uD45C\uC2DC\uAC00 \uB738(S1). \uC774\uB3D9\uAE30\uB85C
+      \uD68C\uD53C(S1). \uC9C0\uD615 \uAD6C\uC870\uBB3C\uC5D0 \uC720\uB3C4\uD558\uBA74
+      \uBCF4\uC2A4\uAC00 \uADF8\uB85C\uAE30(G2-01 \uCC38\uACE0). \uCE74\uC6B4\uD130
+      \uC694\uAD6C \uC5EC\uBD80\uB294 \uCD9C\uCC98\uB9C8\uB2E4 \uB2EC\uB77C \uBBF8\uAE30\uC7AC(S3\xB7S5)."
+  - Index: 212
+    PatternId: G2-12
+    PhaseId: G2-P1
+    Name: "\uC810\uD504 \uD6C4 T\uC790 \uC410\uAE30\uC640 \uC18C\uC6A9\uB3CC\uC774"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBD80\uC704 \uD30C\uAD34\uB97C 5\uCD08 \uC548\uC5D0 \uC131\uACF5\uD558\uBA74
+      \uB4F1\uC7A5(S1). T \uBAA8\uC591 \uB300\uC9C0 \uC410\uAE30\uB97C \uBC15\uC740
+      \uB4A4 \uC18C\uC6A9\uB3CC\uC774\uAC00 \uCD94\uC801(S1). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 213
+    PatternId: G2-13
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "2\uD68C \uD718\uB450\uB974\uAE30 \uD6C4 \uB0B4\uB824\uCE58\uAE30\xB7\uD3ED\uBC1C"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB3C4\uB07C 2\uD68C \uD718\uB450\uB978 \uB4A4 \uC911\uC559 \uB0B4\uB824\uCE58\uAE30\uB85C
+      \uB744\uC6B0\uACE0 \uAD11\uC5ED \uD3ED\uBC1C, \uC774\uC5B4\uC11C \uCD94\uAC00
+      \uD718\uB450\uB974\uAE30\uC640 \uD3ED\uBC1C 2\uD68C. \uC606\uAD6C\uB9AC\uB294
+      \uC548\uC804\uD558\uACE0 \uC815\uBA74\uC740 \uC5F0\uD0C0 \uC704\uD5D8(S1).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 214
+    PatternId: G2-14
+    PhaseId: G2-P1
+    Name: "\uC810\uD504 \uD6C4 \uB3C4\uB07C \uC5F0\uC18D \uB099\uD558"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uB9E4\uC6B0 \uD070 \uD53C\uD574"
+    DamageText: "\uB9C8\uC9C0\uB9C9 \uD070 \uD3ED\uBC1C(S1), \uB9C8\uC9C0\uB9C9 \uACF5\uACA9\uC740
+      \uC57D\uD55C \uC9C1\uC5C5\uC5D0\uAC8C \uC989\uC0AC\uAE09(S3)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC810\uD504 \uB4A4 \uB3C4\uB07C\uAC00 \uC5EC\uB7EC \uBC88 \uB5A8\uC5B4\uC9C0\uACE0
+      \uB9C8\uC9C0\uB9C9\uC5D0 \uC911\uC559\uC5D0 \uD070 \uD3ED\uBC1C. \uB099\uD558
+      \uD69F\uC218\uB294 \uCD9C\uCC98\uB9C8\uB2E4 \uB2E4\uB984(S1 9\uD68C, S3 8\uD68C).
+      \uD769\uC5B4\uC838\uC11C \uB3D9\uC120\uC744 \uC815\uD574 \uB450\uB294 \uAC83\uC774
+      \uB300\uC751(S1\xB7S3)."
+  - Index: 215
+    PatternId: G2-15
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "\uC548/\uBC16 \uBC94\uC704 \uC120\uD0DD"
+    Category: "\uD544\uB4DC \uC7A5\uD310"
+    Shape: 
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uCE68\uBB35 \uB4A4 \uBCF4\uC2A4 \uBAB8\uC774 \uBE5B\uB098\uBA74 \uC548\uCABD\uC774
+      \uC548\uC804, \uB3C4\uB07C \uB05D\uC774 \uBE5B\uB098\uBA74 \uBC14\uAE65\uC774
+      \uC548\uC804(S3). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 216
+    PatternId: G2-16
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "\uB300\uC0C1 \uCD94\uC801 \uB808\uC774\uC800 (\uBD80\uCC44\uAF34)"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uBD80\uCC44\uAF34"
+    Response: "\uD68C\uD53C"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB300\uC0C1\uC774 \uB418\uBA74 \uC88C\uC6B0\uB85C \uC870\uAE08\uC529
+      \uC6C0\uC9C1\uC774\uACE0, \uBD80\uCC44\uAF34 \uACF5\uACA9 \uC9C0\uC810\uC774
+      \uB530\uB77C\uC624\uC9C0 \uC54A\uACE0 \uBA48\uCD94\uBA74 \uD68C\uD53C\uAE30\uB97C
+      \uC4F4 \uB4A4 \uC774\uB3D9(S5). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 217
+    PatternId: G2-17
+    PhaseId: G2-P2
+    Name: "\uBE54 \uCD94\uC801\uACFC \uB3CC \uC5F0\uC1C4 \uD3ED\uBC1C"
+    Category: "\uAE30\uBBF9"
+    Shape: "\uB300\uC0C1 \uC9C0\uC815"
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC9C0\uD615 \uD30C\uAD34 \uC2DC\uC810\uC5D0 \uD568\uAED8 \uBC1C\uC0DD.
+      \uC911\uC559\uC5D0\uC11C \uB3CC 4\uAC1C\uAC00 \uC19F\uC740 \uB4A4 \uBD89\uC740
+      \uBE54\uC774 1\uBA85\uC744 \uCD94\uC801\uD558\uACE0 \uB9DE\uC740 \uB3CC\uC774
+      \uC21C\uC11C\uB300\uB85C \uD3ED\uBC1C. \uC989\uC0AC\uAE09\uC740 \uC544\uB2D8(S1).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 218
+    PatternId: G2-18
+    PhaseId: G2-P2
+    Name: "\uCD94\uC801 \uC7A5\uD310 \uC774\uD6C4 \uAC15\uB825\uD55C \uC77C\uACA9"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uD070 \uD53C\uD574"
+    DamageText: "\uD070 \uD53C\uD574, \uC989\uC0AC\uAE09\uC740 \uC544\uB2D8(S1)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC989\uC0AC \uCD94\uC801 \uC7A5\uD310(G2-04) \uC774\uD6C4 \uD55C \uBC88
+      \uB354 \uCD94\uC801\uD558\uACE0 \uAC15\uB825\uD55C \uC77C\uACA9\uC774 \uB4E4\uC5B4\uC634(S1).
+      \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 219
+    PatternId: G2-19
+    PhaseId: G2-P2
+    Name: "\uAD6C\uCCB4 \uC0DD\uC131 \uD6C4 \uBB34\uB825\uD654"
+    Category: "\uC2A4\uD0DC\uAC70 \uCCB4\uD06C"
+    Shape: 
+    Response: "\uC2A4\uD0DC\uAC70"
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uB79C\uB364 \uB4F1\uC7A5. \uD314\uC744 \uB3CC\uB9AC\uACE0 \uC804\uBC29\uC5D0
+      \uAC70\uB300\uD55C \uAD6C\uCCB4\uB97C \uB9CC\uB4E4\uBA70 \uBCF4\uC2A4\uC5D0
+      \uBCF4\uD638\uB9C9\uC774 \uC0DD\uAE40. \uAD6C\uCCB4\uAC00 \uD3ED\uBC1C\uD558\uAE30
+      \uC804\uC5D0 \uBB34\uB825\uD654\uD574\uC57C \uD558\uBA70 \uACE0\uD53C\uD574
+      \uC2A4\uD0AC\uC744 \uBA3C\uC800 \uC4F0\uB294 \uAC83\uC774 \uC774\uC0C1\uC801(S1).
+      \uAD6C\uCCB4\uB294 \uADFC\uCC98 \uCE90\uB9AD\uD130\uB97C \uACBD\uC9C1\uC2DC\uD0A4\uBA70
+      \uB04C\uC5B4\uC634(S1). \uB2E8\uC77C \uCD9C\uCC98."
+  - Index: 220
+    PatternId: G2-20
+    PhaseId: G2-P3
+    Name: "\uC720\uB839 \uAD6C\uAC04 \uC7A1\uAE30 \uD328\uD134"
+    Category: "\uAE30\uBBF9"
+    Shape: 
+    Response: 
+    LinkedPatternId: 
+    Confidence: "\uACF5\uAC1C \uACF5\uB7B5 \uCC38\uACE0"
+    DamageTier: "\uC989\uC0AC\uAE09"
+    DamageText: "\uC7A1\uD788\uBA74 \uB05D\uB0AC\uB2E4\uB294 \uAD6C\uC5B4 \uD45C\uD604(S10)"
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC720\uB839 \uAD6C\uAC04\uC5D0\uC11C \uCCB4\uB825 \uC57D 40\uC904, 26~27.5\uC904,
+      13~13.5\uC904 \uBD80\uADFC\uC5D0 \uC0AC\uC6A9(S3\xB7S10\xB7S11). \uD53C\uD574
+      \uD45C\uD604\uC740 S10\uC758 \uAD6C\uC5B4\uBFD0\uC774\uB77C \uB4F1\uAE09\uC740
+      \uAC00\uC815."
+  - Index: 221
+    PatternId: G2-21
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "\uD720\uC708\uB4DC (\uC678\uACFD \uBCBD \uD30C\uAD34)"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uC6D0"
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uC790\uCCB4 \uCD94\uAC00"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBCF4\uC2A4 \uC8FC\uBCC0 \uC6D0\uD615 \uC5F0\uC18D \uD0C0\uACA9 5\uD68C.
+      \uBC94\uC704\uC5D0 \uB2FF\uC740 \uC678\uACFD \uBCBD\uC774 \uBB34\uB108\uC9C4\uB2E4.
+      \uD504\uB85C\uC81D\uD2B8 \uC790\uCCB4 \uCD94\uAC00 \uD328\uD134."
+  - Index: 222
+    PatternId: G2-22
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "3\uC5F0 \uBCA0\uAE30 (\uC678\uACFD \uBCBD \uD30C\uAD34)"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uBD80\uCC44\uAF34"
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uC790\uCCB4 \uCD94\uAC00"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uBD80\uCC44\uAF34 \uBCA0\uAE30 2\uD68C \uD6C4 \uC815\uBA74 \uC9C1\uC120
+      \uB0B4\uB824\uBCA0\uAE30. \uBC94\uC704\uC5D0 \uB2FF\uC740 \uC678\uACFD \uBCBD\uC774
+      \uBB34\uB108\uC9C4\uB2E4. \uD504\uB85C\uC81D\uD2B8 \uC790\uCCB4 \uCD94\uAC00
+      \uD328\uD134."
+  - Index: 223
+    PatternId: G2-23
+    PhaseId: "G2-\uACF5\uD1B5"
+    Name: "\uB3C4\uC57D \uAC15\uD0C0 \u2192 \uCD94\uC801 \uD720\uC708\uB4DC"
+    Category: "\uC77C\uBC18 \uACF5\uACA9"
+    Shape: "\uC6D0"
+    Response: "\uC774\uB3D9"
+    LinkedPatternId: 
+    Confidence: "\uC790\uCCB4 \uCD94\uAC00"
+    DamageTier: 
+    DamageText: 
+    TelegraphTime: -1
+    Recovery: -1
+    AreaScale: -1
+    Measured: 0
+    Notes: "\uC5B4\uADF8\uB85C \uB300\uC0C1 \uC704\uCE58\uB85C \uB6F0\uC5B4\uC62C\uB77C
+      \uC6D0(5m)\uACFC \uC2ED\uC790/X(\uC804\uCCB4 40m) \uBC94\uC704\uB97C \uB0B4\uB824\uCE5C\uB2E4.
+      \uC774\uC5B4\uC11C \uB2E4\uB978 \uB300\uC0C1\uC744 \uC815\uD574 3\uCD08 \uB3D9\uC548
+      \uD720\uC708\uB4DC\uB85C \uB530\uB77C\uAC04\uB2E4. \uC2ED\uC790/X\uC640 \uB9C8\uC9C0\uB9C9
+      \uD720\uC708\uB4DC\uC5D0 \uB9DE\uC73C\uBA74 \uB0A0\uC544\uAC04\uB2E4. \uD504\uB85C\uC81D\uD2B8
+      \uC790\uCCB4 \uCD94\uAC00 \uD328\uD134."

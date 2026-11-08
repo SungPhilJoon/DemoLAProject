@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b06efb8e0716ba4398c135864e7fd06, type: 3}
+  m_Name: BattleItemTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.BattleItemTable
+  Source: {fileID: 4900000, guid: 7d8b83fcfe47526428b2bfc05ceed7b6, type: 3}
+  Rows:
+  - Index: 1
+    Name: "\uD68C\uBCF5 \uBB3C\uC57D"
+    Type: 0
+    Cooldown: 1
+    MaxCount: 5
+    Value: 30
+    Duration: 0
+    Radius: 0
+    Description: "\uCD5C\uB300 \uCCB4\uB825 30% \uD68C\uBCF5"
+  - Index: 2
+    Name: "\uC2DC\uAC04 \uC815\uC9C0 \uBB3C\uC57D"
+    Type: 1
+    Cooldown: 30
+    MaxCount: 3
+    Value: 0
+    Duration: 3
+    Radius: 0
+    Description: "3\uCD08 \uBB34\uC801 \xB7 \uD589\uB3D9 \uBD88\uAC00"
+  - Index: 3
+    Name: "\uC815\uD654\uC81C"
+    Type: 2
+    Cooldown: 15
+    MaxCount: 3
+    Value: 0
+    Duration: 0
+    Radius: 0
+    Description: "\uB514\uBC84\uD504 \uD574\uC81C"
+  - Index: 4
+    Name: "\uD30C\uAD34 \uD3ED\uD0C4"
+    Type: 3
+    Cooldown: 30
+    MaxCount: 3
+    Value: 1
+    Duration: 0
+    Radius: 3
+    Description: "\uBD80\uC704 \uD30C\uAD34 1 + \uBB34\uB825\uD654"
+  - Index: 5
+    Name: "\uC12C\uAD11\uD0C4"
+    Type: 4
+    Cooldown: 30
+    MaxCount: 3
+    Value: 0
+    Duration: 1.5
+    Radius: 4
+    Description: "1.5\uCD08 \uAE30\uC808"

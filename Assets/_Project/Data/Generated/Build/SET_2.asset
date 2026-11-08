@@ -1,0 +1,184 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beee28b6590a0af40a2a448cb3ad5886, type: 3}
+  m_Name: SET_2
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Build.EquipmentSetDefinition
+  SetId: 2
+  DisplayName: "\uD3ED\uD48D \uCD94\uC801\uC790"
+  Description: "\uBE60\uB974\uAC8C \uC6C0\uC9C1\uC774\uBA70 \uB4F1 \uB4A4\uB97C \uB178\uB9B0\uB2E4.
+    \uD68C\uD53C\uAC00 \uACE7 \uACF5\uACA9\uC758 \uC2DC\uC791\uC774\uB2E4."
+  Pieces:
+  - Slot: 0
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uD22C\uAD6C"
+    BaseMainStat: 10000
+    MainStatPerHoning: 600
+    BaseVitality: 2500
+    VitalityPerHoning: 150
+    BaseWeaponPower: 0
+    WeaponPowerPerHoning: 0
+  - Slot: 1
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uACAC\uAC11"
+    BaseMainStat: 10000
+    MainStatPerHoning: 600
+    BaseVitality: 2500
+    VitalityPerHoning: 150
+    BaseWeaponPower: 0
+    WeaponPowerPerHoning: 0
+  - Slot: 2
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uAC11\uC637"
+    BaseMainStat: 10000
+    MainStatPerHoning: 600
+    BaseVitality: 2500
+    VitalityPerHoning: 150
+    BaseWeaponPower: 0
+    WeaponPowerPerHoning: 0
+  - Slot: 3
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uAC01\uBC18"
+    BaseMainStat: 10000
+    MainStatPerHoning: 600
+    BaseVitality: 2500
+    VitalityPerHoning: 150
+    BaseWeaponPower: 0
+    WeaponPowerPerHoning: 0
+  - Slot: 4
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uC7A5\uAC11"
+    BaseMainStat: 10000
+    MainStatPerHoning: 600
+    BaseVitality: 2500
+    VitalityPerHoning: 150
+    BaseWeaponPower: 0
+    WeaponPowerPerHoning: 0
+  - Slot: 5
+    Name: "\uD3ED\uD48D \uCD94\uC801\uC790 \uBB34\uAE30"
+    BaseMainStat: 0
+    MainStatPerHoning: 0
+    BaseVitality: 0
+    VitalityPerHoning: 0
+    BaseWeaponPower: 40000
+    WeaponPowerPerHoning: 1600
+  Bonuses:
+  - RequiredPieces: 2
+    Description: "\uACF5\uACA9 \uC18D\uB3C4 +8%, \uC774\uB3D9 \uC18D\uB3C4 +10%"
+    Modifiers:
+    - IsSkillAttribute: 0
+      Attribute: 15
+      SkillAttribute: 0
+      Op: 0
+      MagnitudeType: 0
+      Key: 0
+      Value: 8
+    - IsSkillAttribute: 0
+      Attribute: 16
+      SkillAttribute: 0
+      Op: 0
+      MagnitudeType: 0
+      Key: 0
+      Value: 10
+    Procs: []
+  - RequiredPieces: 4
+    Description: "\uBC31\uC5B4\uD0DD \uC801\uC911 \uC2DC \uB300\uC0C1\uC5D0\uAC8C
+      \uD3ED\uD48D \uD45C\uC2DD (\uBC1B\uB294 \uD53C\uD574 +2%, \uCD5C\uB300 3\uC911\uCCA9)"
+    Modifiers: []
+    Procs:
+    - Name: "\uD3ED\uD48D \uD45C\uC2DD"
+      Trigger: 2
+      TriggerParam: 0
+      Chance: 1
+      InternalCooldown: 0
+      Action: 2
+      Value: 0
+      Duration: 6
+      MaxStacks: 3
+      Radius: 12
+      Modifiers:
+      - IsSkillAttribute: 0
+        Attribute: 23
+        SkillAttribute: 0
+        Op: 0
+        MagnitudeType: 0
+        Key: 0
+        Value: 2
+      GrantTag: 0
+      BurstAtStacks: 0
+      BurstName: 
+      BurstAction: 3
+      BurstValue: 0
+  - RequiredPieces: 6
+    Description: "\uD68C\uD53C \uC2DC 4\uCD08 \uB3D9\uC548 \uC8FC\uB294 \uD53C\uD574
+      +10% \xB7 \uC774\uB3D9 \uC18D\uB3C4 +15%, \uBAA8\uB4E0 \uC2A4\uD0AC \uC7AC\uC0AC\uC6A9
+      \uB300\uAE30\uC2DC\uAC04 2\uCD08 \uAC10\uC18C \xB7 \uBC31\uC5B4\uD0DD 20% \uD655\uB960\uB85C
+      \uB1CC\uACA9"
+    Modifiers: []
+    Procs:
+    - Name: "\uB3CC\uD48D"
+      Trigger: 9
+      TriggerParam: 0
+      Chance: 1
+      InternalCooldown: 0
+      Action: 0
+      Value: 0
+      Duration: 4
+      MaxStacks: 1
+      Radius: 12
+      Modifiers:
+      - IsSkillAttribute: 0
+        Attribute: 18
+        SkillAttribute: 0
+        Op: 0
+        MagnitudeType: 0
+        Key: 0
+        Value: 10
+      - IsSkillAttribute: 0
+        Attribute: 16
+        SkillAttribute: 0
+        Op: 0
+        MagnitudeType: 0
+        Key: 0
+        Value: 15
+      GrantTag: 0
+      BurstAtStacks: 0
+      BurstName: 
+      BurstAction: 3
+      BurstValue: 0
+    - Name: "\uBC14\uB78C \uD0C0\uAE30"
+      Trigger: 9
+      TriggerParam: 0
+      Chance: 1
+      InternalCooldown: 0
+      Action: 8
+      Value: 2
+      Duration: 5
+      MaxStacks: 1
+      Radius: 12
+      Modifiers: []
+      GrantTag: 0
+      BurstAtStacks: 0
+      BurstName: 
+      BurstAction: 3
+      BurstValue: 0
+    - Name: "\uB1CC\uACA9"
+      Trigger: 2
+      TriggerParam: 0
+      Chance: 0.2
+      InternalCooldown: 3
+      Action: 3
+      Value: 2.5
+      Duration: 5
+      MaxStacks: 1
+      Radius: 12
+      Modifiers: []
+      GrantTag: 0
+      BurstAtStacks: 0
+      BurstName: 
+      BurstAction: 3
+      BurstValue: 0
+  HealthPerVitality: 6

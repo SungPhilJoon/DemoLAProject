@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5292131ef029b41a59bdb6022ea09a, type: 3}
+  m_Name: HoningTable
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.HoningTable
+  Source: {fileID: 4900000, guid: c9caa74ac5ffeb24b93a238d5cf3e189, type: 3}
+  Rows:
+  - Index: 1
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 2
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 3
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 4
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 5
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 6
+    BaseRate: 100
+    FailBonus: 10
+    MaxRate: 100
+    AuxMaxBonus: 0
+    AuxMaxCount: 0
+    ArtisanFactor: 0.465
+  - Index: 7
+    BaseRate: 60
+    FailBonus: 6
+    MaxRate: 100
+    AuxMaxBonus: 60
+    AuxMaxCount: 26
+    ArtisanFactor: 0.465
+  - Index: 8
+    BaseRate: 45
+    FailBonus: 4.5
+    MaxRate: 90
+    AuxMaxBonus: 45
+    AuxMaxCount: 27
+    ArtisanFactor: 0.465
+  - Index: 9
+    BaseRate: 30
+    FailBonus: 3
+    MaxRate: 60
+    AuxMaxBonus: 30
+    AuxMaxCount: 28
+    ArtisanFactor: 0.465
+  - Index: 10
+    BaseRate: 30
+    FailBonus: 3
+    MaxRate: 60
+    AuxMaxBonus: 30
+    AuxMaxCount: 29
+    ArtisanFactor: 0.465
+  - Index: 11
+    BaseRate: 30
+    FailBonus: 3
+    MaxRate: 60
+    AuxMaxBonus: 30
+    AuxMaxCount: 30
+    ArtisanFactor: 0.465
+  - Index: 12
+    BaseRate: 15
+    FailBonus: 1.5
+    MaxRate: 30
+    AuxMaxBonus: 15
+    AuxMaxCount: 31
+    ArtisanFactor: 0.465
+  - Index: 13
+    BaseRate: 15
+    FailBonus: 1.5
+    MaxRate: 30
+    AuxMaxBonus: 15
+    AuxMaxCount: 32
+    ArtisanFactor: 0.465
+  - Index: 14
+    BaseRate: 15
+    FailBonus: 1.5
+    MaxRate: 30
+    AuxMaxBonus: 15
+    AuxMaxCount: 33
+    ArtisanFactor: 0.465
+  - Index: 15
+    BaseRate: 10
+    FailBonus: 1
+    MaxRate: 20
+    AuxMaxBonus: 10
+    AuxMaxCount: 34
+    ArtisanFactor: 0.465
+  - Index: 16
+    BaseRate: 10
+    FailBonus: 1
+    MaxRate: 20
+    AuxMaxBonus: 10
+    AuxMaxCount: 35
+    ArtisanFactor: 0.465
+  - Index: 17
+    BaseRate: 10
+    FailBonus: 1
+    MaxRate: 20
+    AuxMaxBonus: 10
+    AuxMaxCount: 36
+    ArtisanFactor: 0.465
+  - Index: 18
+    BaseRate: 5
+    FailBonus: 0.5
+    MaxRate: 10
+    AuxMaxBonus: 5
+    AuxMaxCount: 37
+    ArtisanFactor: 0.465
+  - Index: 19
+    BaseRate: 5
+    FailBonus: 0.5
+    MaxRate: 10
+    AuxMaxBonus: 5
+    AuxMaxCount: 38
+    ArtisanFactor: 0.465
+  - Index: 20
+    BaseRate: 5
+    FailBonus: 0.5
+    MaxRate: 10
+    AuxMaxBonus: 5
+    AuxMaxCount: 39
+    ArtisanFactor: 0.465
+  - Index: 21
+    BaseRate: 4
+    FailBonus: 0.4
+    MaxRate: 8
+    AuxMaxBonus: 4
+    AuxMaxCount: 40
+    ArtisanFactor: 0.465
+  - Index: 22
+    BaseRate: 3
+    FailBonus: 0.3
+    MaxRate: 6
+    AuxMaxBonus: 3
+    AuxMaxCount: 41
+    ArtisanFactor: 0.465
+  - Index: 23
+    BaseRate: 3
+    FailBonus: 0.3
+    MaxRate: 6
+    AuxMaxBonus: 3
+    AuxMaxCount: 42
+    ArtisanFactor: 0.465
+  - Index: 24
+    BaseRate: 2
+    FailBonus: 0.2
+    MaxRate: 4
+    AuxMaxBonus: 2
+    AuxMaxCount: 43
+    ArtisanFactor: 0.465
+  - Index: 25
+    BaseRate: 1
+    FailBonus: 0.1
+    MaxRate: 2
+    AuxMaxBonus: 1
+    AuxMaxCount: 44
+    ArtisanFactor: 0.465

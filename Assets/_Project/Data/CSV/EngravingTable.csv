@@ -1,0 +1,31 @@
+Index,Name,IsNegative,IsClass,ClassRestriction,IdentityVariant,Mod1Attr,Mod1Op,Mod1Values,Mod2Attr,Mod2Op,Mod2Values,Condition,ConditionParam,ConditionGroup,ConditionValues,Description
+1,정밀 타격,0,0,Summoner,0,CritRate,Add,4|10|15,Health,Add,,Always,0,Independent,,치명타 적중률
+2,약점 공략,0,0,Summoner,0,Health,Add,,Health,Add,,TargetIsBoss,0,Independent,4|10|16,보스에게 주는 피해
+3,그림자 일격,0,0,Summoner,0,Health,Add,,Health,Add,,BackAttack,0,Independent,5|12|20,백어택 피해
+4,치명 강화,0,0,Summoner,0,CritDamage,Add,15|30|50,Health,Add,,Always,0,Independent,,치명타 피해
+5,가속,0,0,Summoner,0,AttackSpeed,Add,4|8|15,MoveSpeed,Add,4|8|15,Always,0,Independent,,공격·이동 속도
+6,강철 피부,0,0,Summoner,0,IncomingDamageReduction,Add,5|10|15,Health,Add,,Always,0,Independent,,받는 피해 감소
+7,흐르는 마나,0,0,Summoner,0,CooldownReduction,Add,3|6|10,Health,Add,,Always,0,Independent,,재사용 대기시간 감소
+8,축복의 손길,0,0,Summoner,0,OutgoingHealing,Add,8|16|25,Health,Add,,Always,0,Independent,,치유량
+9,단단한 의지,0,0,Summoner,0,StaggerPower,Add,10|20|30,Health,Add,,Always,0,Independent,,무력화
+10,부위 파괴 전문가,0,0,Summoner,0,DestructionPower,Add,1|2|3,Health,Add,,Always,0,Independent,,부위 파괴
+11,결의,0,0,Summoner,0,Health,Add,,Health,Add,,SelfHealthAbove,80,Independent,3|9|15,체력 80% 이상일 때 피해
+12,역경,0,0,Summoner,0,Health,Add,,Health,Add,,SelfHealthBelow,50,Independent,5|12|20,체력 50% 이하일 때 피해
+13,방패 연계,0,0,Summoner,0,Health,Add,,Health,Add,,SelfShielded,0,Independent,3|8|12,보호막이 있을 때 피해
+14,질주 본능,0,0,Summoner,0,Health,Add,,Health,Add,,MoveSpeedScaled,0,Independent,0.15|0.3|0.45,이동속도 초과분 × 비율 만큼 피해
+15,근접 집중,0,0,Summoner,0,Health,Add,,Health,Add,,TargetWithin,3,Independent,4|9|16,3m 이내 대상 피해
+16,원거리 집중,0,0,Summoner,0,Health,Add,,Health,Add,,TargetBeyond,5,Independent,4|9|16,5m 밖 대상 피해
+17,일격 집중,0,0,Summoner,0,Health,Add,,Health,Add,,CooldownAtLeast,10,Independent,5|10|16,쿨다운 10초 이상 스킬 피해
+18,무력화 응징,0,0,Summoner,0,Health,Add,,Health,Add,,TargetGroggy,0,Independent,4|10|18,무력화 상태 대상 피해
+19,급소 노출,0,0,Summoner,0,Health,Add,,Health,Add,,Always,0,CritRate,5|10|15,치명타 적중률 (조건 없음 · 실행 경로 확인용)
+90,둔화,1,0,Summoner,0,AttackSpeed,Add,-2|-4|-8,Health,Add,,Always,0,Independent,,공격 속도 감소
+91,연약함,1,0,Summoner,0,IncomingDamageReduction,Add,-5|-10|-15,Health,Add,,Always,0,Independent,,받는 피해 증가
+92,무력함,1,0,Summoner,0,AttackPowerPercent,Add,-2|-4|-6,Health,Add,,Always,0,Independent,,공격력 감소
+101,정령 공명,0,1,Summoner,1,Health,Add,,Health,Add,,Always,0,Independent,3|7|12,직업 각인 — 정령 소환 시 구슬을 하나 더 소모하지 않고 지속시간 증가
+102,정령 집중,0,1,Summoner,2,Health,Add,,Health,Add,,Always,0,Independent,4|9|16,직업 각인 — 정령 대신 즉시 폭발
+111,충격 수련,0,1,Infighter,1,Health,Add,,Health,Add,,Always,0,Independent,3|7|12,직업 각인 — 충격 해방이 범위 대신 단일 강타
+112,투지 해방,0,1,Infighter,2,Health,Add,,Health,Add,,Always,0,Independent,4|9|16,직업 각인 — 기력 소모 대신 상시 피해 증가
+121,광기,0,1,Slayer,1,Health,Add,,Health,Add,,Always,0,Independent,3|7|12,직업 각인 — 폭주 지속 연장 · 치명타 피해 증가
+122,처단,0,1,Slayer,2,Health,Add,,Health,Add,,Always,0,Independent,4|9|16,직업 각인 — 폭주 대신 게이지 소모 강타
+131,만개,0,1,Artist,1,Health,Add,,Health,Add,,Always,0,Independent,3|7|12,직업 각인 — 조화 구슬 효과 강화 (회복량)
+132,여백,0,1,Artist,2,Health,Add,,Health,Add,,Always,0,Independent,4|9|16,직업 각인 — 조화 구슬 대신 아군 피해 증가 장판

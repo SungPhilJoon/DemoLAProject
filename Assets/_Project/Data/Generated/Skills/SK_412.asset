@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8349d3d4f59302e4bb0693c30a9895a7, type: 3}
+  m_Name: SK_412
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Skills.SkillDefinition
+  SkillId: 412
+  DisplayName: "\uBB35\uD5A5\uC758 \uC7A5\uB9C9"
+  Description: 
+  OwnerClass: 3
+  IconColor: {r: 0.46930006, g: 0.95, b: 0.42749998, a: 1}
+  Cooldown: 24
+  ManaCost: 110
+  Recovery: 0.25
+  DashDistance: 0
+  DashDuration: 0.2
+  Hits:
+  - Delay: 0.5
+    Area:
+      Shape: 0
+      Radius: 5
+      InnerRadius: 0
+      Angle: 0
+      Width: 0
+      Length: 0
+      ForwardOffset: 0
+    Coefficient: 4
+    FlatDamage: 0
+    Stagger: 15
+    Destruction: 0
+    MoveForward: 0
+    ApplyStatus: 0
+    StatusDuration: 0
+    TargetEffects: []
+  Positional: 0
+  Element: 5
+  SuperArmor: 0
+  Protection: 2
+  IsCounter: 0
+  IsAwakening: 0
+  LocksMovement: 1
+  AiRange: 0
+  SelfPartyHealCoefficient: 0
+  PartyShieldAmount: 0
+  PartyBuffRadius: 12
+  PartyBuffs: []
+  MaxLevel: 12
+  DamagePerLevel: 8
+  Tiers:
+  - UnlockSkillLevel: 4
+    Options:
+    - Name: "\uBE60\uB978 \uC900\uBE44"
+      Description: "\uC7AC\uC0AC\uC6A9 \uB300\uAE30\uC2DC\uAC04 -10% (\uB808\uBCA8\uB2F9
+        -2%)"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: c5df6d4286382bf40bad93782d68778e, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0.2
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uB113\uC740 \uBC94\uC704"
+      Description: "\uBC94\uC704 +20% (\uB808\uBCA8\uB2F9 +4%)"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: 85c6aa5185f12d347b803cde12fe41a0, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0.2
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uB9C8\uB098 \uC808\uC57D"
+      Description: "\uB9C8\uB098 \uC18C\uBAA8 -30%"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: f5ba3d81566562440a5691ac389a2fbe, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+  - UnlockSkillLevel: 7
+    Options:
+    - Name: "\uC57D\uC810 \uD3EC\uCC29"
+      Description: "\uD53C\uD574 +15% (\uB808\uBCA8\uB2F9 +3%)"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: 3273c99190fa4e74a9ae253f25c1b06c, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0.2
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uC815\uC2E0 \uC9D1\uC911"
+      Description: "\uCE58\uBA85\uD0C0 \uC801\uC911\uB960 +10%"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: d91bc6cb6261a6f4da9541360d680a48, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0.1
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uAC15\uC778\uD568"
+      Description: "\uC2DC\uC804 \uC911 \uC288\uD37C\uC544\uBA38 \xB7 \uBB34\uB825\uD654
+        +20%"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: b76598fa753f67e45814a2f8dea7d97d, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 1
+  - UnlockSkillLevel: 10
+    Options:
+    - Name: "\uC5F0\uC18D \uD0C0\uACA9"
+      Description: "\uB9C8\uC9C0\uB9C9 \uD0C0\uACA9 1\uD68C \uCD94\uAC00"
+      MaxLevel: 5
+      Effects:
+      - Timing: 0
+        Effect: {fileID: 11400000, guid: 21d3e49f73e30fd4491500bbf73eedc0, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uC57D\uD654 \uD45C\uC2DD"
+      Description: "\uC801\uC911 \uB300\uC0C1 \uBC1B\uB294 \uD53C\uD574 +6% (6\uCD08)"
+      MaxLevel: 5
+      Effects:
+      - Timing: 3
+        Effect: {fileID: 11400000, guid: d8ae29b19ff97a64d95ee19aaabe99b8, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uD22C\uC9C0"
+      Description: "\uC2DC\uC804 \uC2DC \uC790\uC2E0 \uD53C\uD574 +8% (5\uCD08)"
+      MaxLevel: 5
+      Effects:
+      - Timing: 2
+        Effect: {fileID: 11400000, guid: e9b3b4b1d0c7f5d418cd94b33ead2c59, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0
+    - Name: "\uC219\uB828"
+      Description: "\uC120\uD0DD \uC2DC \uC0C1\uC2DC \uCE58\uBA85\uD0C0 \uD53C\uD574
+        +10%"
+      MaxLevel: 5
+      Effects:
+      - Timing: 1
+        Effect: {fileID: 11400000, guid: 01ff806146d17ef4187e32fa9acda93c, type: 2}
+        BaseScale: 1
+        PerLevelScale: 0
+      ReplaceHits: []
+      GrantsCounter: 0
+      GrantsSuperArmor: 0

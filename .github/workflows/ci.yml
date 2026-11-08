@@ -1,0 +1,101 @@
+# DemoLA CI/CD — 테스트 → 빌드 → 아티팩트.
+# 필요한 저장소 Secrets (Settings → Secrets and variables → Actions):
+#   UNITY_LICENSE   Personal 라이선스 .ulf 파일 내용 (또는 UNITY_SERIAL 로 Pro 라이선스)
+#   UNITY_EMAIL / UNITY_PASSWORD
+#   (Android 서명, 선택) DEMOLA_KEYSTORE_BASE64 / DEMOLA_KEYSTORE_PASS / DEMOLA_KEY_ALIAS / DEMOLA_KEY_PASS
+# 빌드는 프로젝트의 DemoLA.Editor.Build.BuildCommand.Build 를 그대로 쓴다 (로컬 Tools/ci/ci.sh 와 같은 진입점).
+name: DemoLA CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      development:
+        description: Development build
+        type: boolean
+        default: false
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+jobs:
+  test:
+    name: Tests (${{ matrix.mode }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [editmode, playmode]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-test-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: Library-test-
+      - uses: game-ci/unity-test-runner@v4
+        id: tests
+        with:
+          testMode: ${{ matrix.mode }}
+          artifactsPath: Builds/TestResults
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.mode }} results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.mode }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
+
+  build:
+    name: Build ${{ matrix.target }}
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: Win64
+            unityTarget: StandaloneWindows64
+          - target: Android
+            unityTarget: Android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ matrix.unityTarget }}-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: Library-${{ matrix.unityTarget }}-
+      - name: Android keystore
+        if: matrix.target == 'Android' && env.KEYSTORE_B64 != ''
+        env:
+          KEYSTORE_B64: ${{ secrets.DEMOLA_KEYSTORE_BASE64 }}
+        run: echo "$KEYSTORE_B64" | base64 -d > "$GITHUB_WORKSPACE/demola.keystore"
+      - uses: game-ci/unity-builder@v4
+        env:
+          DEMOLA_KEYSTORE_PATH: ${{ github.workspace }}/demola.keystore
+          DEMOLA_KEYSTORE_PASS: ${{ secrets.DEMOLA_KEYSTORE_PASS }}
+          DEMOLA_KEY_ALIAS: ${{ secrets.DEMOLA_KEY_ALIAS }}
+          DEMOLA_KEY_PASS: ${{ secrets.DEMOLA_KEY_PASS }}
+        with:
+          targetPlatform: ${{ matrix.unityTarget }}
+          buildMethod: DemoLA.Editor.Build.BuildCommand.Build
+          customParameters: >-
+            -demolaTarget ${{ matrix.target }}
+            -outputPath build/${{ matrix.target }}
+            -buildNumber ${{ github.run_number }}
+            ${{ inputs.development && '-development' || '' }}
+          versioning: Semantic
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DemoLA-${{ matrix.target }}-${{ github.run_number }}
+          path: |
+            build/${{ matrix.target }}
+            Builds/build-report.json

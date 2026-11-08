@@ -1,0 +1,19 @@
+{
+    "name": "DemoLA.Testing",
+    "rootNamespace": "DemoLA.Testing",
+    "references": [
+        "DemoLA.Runtime",
+        "Framework.Runtime",
+        "Framework.Testing",
+        "Unity.AI.Navigation"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

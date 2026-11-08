@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G1-08
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G1-08
+  PhaseId: "G1-\uACF5\uD1B5"
+  DisplayName: "\uBD80\uCC44\uAF34 \uB9C8\uAD6C \uD560\uD034\uAE30"
+  Category: 0
+  Response: 6
+  ShapeText: "\uBD80\uCC44\uAF34"
+  LinkedPatternId: 
+  Confidence: 1
+  DamageTier: 3
+  Notes: "[\uD53C\uD574] \uC815\uBA74 \uD53C\uACA9 \uC2DC \uB192\uC740 \uD53C\uD574(S2)\n\uB8E8\uAC00\uB8E8\xB7\uD3EC\uC2DD\uC790\uAC00
+    \uC0AC\uC6A9. \uBCF4\uC2A4 \uC815\uBA74\uC5D0\uC11C \uB9DE\uC73C\uBA74 \uD53C\uD574\uAC00
+    \uD06C\uACE0 \uB4A4\uB97C \uC7A1\uC73C\uBA74 \uD53C\uACA9\uC774 \uC801\uC74C(S2).
+    \uB2E8\uC77C \uCD9C\uCC98."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 10
+  Weight: 1
+  MinRange: 0
+  MaxRange: 7
+  RandomSelectable: 1
+  Steps:
+  - Label: Hit
+    StartDelay: 0
+    Targeting: 5
+    Area:
+      Shape: 1
+      Radius: 6
+      InnerRadius: 0
+      Angle: 100
+      Width: 0
+      Length: 0
+      ForwardOffset: 0
+    TelegraphTime: 1
+    TrackDuringTelegraph: 0
+    TrackLockBefore: 0.5
+    ShowTelegraph: 1
+    DamageTier: 3
+    DamageFractionOverride: -1
+    ApplyStatus: 0
+    StatusDuration: 1
+    ConsumesDeathWard: 0
+    BossMoveDistance: 0
+    BossMoveDuration: 0.3
+    BreaksWalls: 0
+    BreaksAllStructures: 0
+    BossSpinSpeed: 0
+    LeapDuration: 0
+    LeapHeight: 4
+    ArmCount: 0
+    ArmLength: 20
+    ArmWidth: 4
+    ArmAngleOffset: 0
+    RandomCrossOrX: 0
+    KnockbackHeight: 1.5
+    ChaseTarget: 0
+    ChaseSpeed: 5
+    ChargeSweepHit: 1
+    KnockbackDistance: 4
+    KnockbackDuration: 0.25
+    CrashGroggyTime: 4
+    ClipTelegraphToStructure: 1
+    ChargeWindup: 0.25
+  Recovery: 1
+  SuperArmor: 1
+  UntargetableDuring: 0
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  StaggerCheck: 0
+  StaggerGauge: 1000
+  StaggerTime: 10
+  StaggerFailOutcome: 0
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: 
+  GroggyOnStaggerSuccess: 5

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec92fbbbbb9dcc4696bd8b4bf74c826, type: 3}
+  m_Name: GameDatabase
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Data.GameDatabase
+  StatFormula:
+    CritRatePerPoint: 0.0357
+    AttackSpeedPerSwiftness: 0.0171
+    MoveSpeedPerSwiftness: 0.0171
+    CooldownReductionPerSwiftness: 0.0215
+    IdentityGainPerSpecialization: 0.03
+    AttackPowerDivisor: 6
+    DefenseConstant: 6500
+    BaseBackAttackBonus: 5
+    BaseHeadAttackBonus: 5
+    BackAttackCritBonus: 10
+    BackAttackAngle: 120
+    HeadAttackAngle: 60
+    BaseMoveSpeedMeters: 5.5
+    PlayerDamageScale: 0.18
+    SpeedCap: 140
+  EngravingRules:
+    PointsPerLevel: 5
+    MaxLevel: 3
+    BookSlots: 2
+    MaxBookPoints: 12
+    MaxStonePoints: 10
+    AccessoryPointOptions: 0300000005000000
+    MaxActiveEngravings: 0
+  Quality:
+    ArmorVitalityPercentAt100: 10
+    WeaponDamageAt0: 10
+    WeaponDamageAt100: 30
+  MaxSkillPoints: 460
+  TripodLevel: 5
+  Tables: {fileID: 11400000, guid: 04e6ca9b02477b245b247b29b5230a7b, type: 2}
+  Classes:
+  - {fileID: 11400000, guid: e097bb31d2e07634ba8d37777a322fc0, type: 2}
+  - {fileID: 11400000, guid: 55b72579bc2504544bccfd8d40250d49, type: 2}
+  - {fileID: 11400000, guid: a8e09bde25b0fb346bc8c1b6b279558f, type: 2}
+  - {fileID: 11400000, guid: 390122e2bdf4a714ebb70928b9d9d27c, type: 2}
+  EquipmentSets:
+  - {fileID: 11400000, guid: 1a28704375f6a4943a71dd7c8fa1b8bf, type: 2}
+  - {fileID: 11400000, guid: 39e8ea34f176573469abe3f9feb50bac, type: 2}
+  - {fileID: 11400000, guid: c56303436612ba7448e88f9eca458f18, type: 2}
+  Bosses:
+  - {fileID: 11400000, guid: 2317913d1e563344981b05193a18a51e, type: 2}
+  - {fileID: 11400000, guid: 0c1ce81bf1c987349a02a0da19bcf114, type: 2}

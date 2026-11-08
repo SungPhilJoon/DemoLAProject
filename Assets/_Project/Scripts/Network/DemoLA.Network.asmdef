@@ -1,0 +1,26 @@
+{
+    "name": "DemoLA.Network",
+    "rootNamespace": "DemoLA.Network",
+    "references": [
+        "DemoLA.Runtime",
+        "Framework.Runtime",
+        "UniTask",
+        "Unity.Netcode.Runtime",
+        "Unity.Services.Core",
+        "Unity.Services.Authentication",
+        "Unity.Services.Multiplayer",
+        "Unity.Collections",
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.AI.Navigation"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

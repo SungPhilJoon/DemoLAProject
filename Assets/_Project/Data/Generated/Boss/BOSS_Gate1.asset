@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ad71f5400bfb2241be722b783fba561, type: 3}
+  m_Name: BOSS_Gate1
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossDefinition
+  BossId: Gate1
+  DisplayName: "1\uAD00\uBB38 \uC218\uBB38\uC7A5"
+  TotalHpLines: 60
+  HpPerLine: 1500000
+  AttackPower: 50000
+  Defense: 30000
+  Radius: 1.6
+  MoveSpeedPercent: 90
+  BodyColor: {r: 0.45, g: 0.1, b: 0.12, a: 1}
+  DefaultGroggyTime: 3
+  PatternGap: 2.5
+  OpeningDelay: 3
+  Brain: {fileID: 11400000, guid: e9538ec9e15dd0047959b8c469f64c2e, type: 2}
+  Phases:
+  - PhaseId: G1-P0
+    DisplayName: "1\uAD00\uBB38 \u2014 \uC870\uC6B0"
+    EnterConditionText: "1\uAD00\uBB38 \uC870\uC6B0 (\uD3EC\uC2DD\uC790 \uB2E8\uB3C5)
+      / \uC9C4\uC785: \uC804\uD22C \uC2DC\uC791 / \uC885\uB8CC: \uBCF4\uC2A4 \uBD84\uC5F4(\uCCB4\uB825
+      46\uC904 \uBD80\uADFC)"
+    EnterAtHpLine: -1
+    PatternIds:
+    - G1-05
+    ResetHpLines: 0
+    TransitionTime: 0
+    InvulnerableDuringTransition: 0
+  - PhaseId: G1-P1
+    DisplayName: "1\uAD00\uBB38 \u2014 \uBD84\uC5F4 \uAD6C\uAC04"
+    EnterConditionText: "1\uAD00\uBB38 \uB8E8\uAC00\uB8E8 \uAD6C\uAC04 / \uC9C4\uC785:
+      \uBCF4\uC2A4 \uBD84\uC5F4 \uC644\uB8CC / \uC885\uB8CC: \uCCB4\uB825 30\uC904
+      \uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654 \uC131\uACF5"
+    EnterAtHpLine: -1
+    PatternIds:
+    - G1-01
+    - G1-02
+    - G1-03
+    - G1-09
+    - G1-23
+    ResetHpLines: 0
+    TransitionTime: 0
+    InvulnerableDuringTransition: 0
+  - PhaseId: G1-P2
+    DisplayName: "1\uAD00\uBB38 \u2014 \uB450 \uBC88\uC9F8 \uAD6C\uAC04"
+    EnterConditionText: "1\uAD00\uBB38 \uB8E8\uCE74\uC2A4 \uAD6C\uAC04 / \uC9C4\uC785:
+      30\uC904 \uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654 \uC131\uACF5 / \uC885\uB8CC:
+      \uCCB4\uB825 15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9 \uC774\uD6C4
+      \uD569\uCCB4"
+    EnterAtHpLine: -1
+    PatternIds:
+    - G1-01
+    ResetHpLines: 0
+    TransitionTime: 0
+    InvulnerableDuringTransition: 0
+  - PhaseId: G1-P3
+    DisplayName: "1\uAD00\uBB38 \u2014 \uD569\uCCB4 \uAD6C\uAC04"
+    EnterConditionText: "1\uAD00\uBB38 \uD3EC\uC2DD\uC790 \uD569\uCCB4 \uAD6C\uAC04
+      / \uC9C4\uC785: 15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9 \uC774\uD6C4
+      \uD569\uCCB4 / \uC885\uB8CC: \uACA9\uD30C"
+    EnterAtHpLine: -1
+    PatternIds:
+    - G1-04
+    ResetHpLines: 0
+    TransitionTime: 0
+    InvulnerableDuringTransition: 0
+  - PhaseId: "G1-\uACF5\uD1B5"
+    DisplayName: "G1-\uACF5\uD1B5"
+    EnterConditionText: "1\uAD00\uBB38 \uACF5\uD1B5 \uD328\uD134 / \uC9C4\uC785:
+      \uAD6C\uAC04\uC744 \uAC00\uB9AC\uC9C0 \uC54A\uAC70\uB098 \uCD9C\uCC98\uAC00
+      \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134 / \uC885\uB8CC:
+      \uD574\uB2F9 \uC5C6\uC74C"
+    EnterAtHpLine: -1
+    PatternIds:
+    - G1-01
+    - G1-06
+    - G1-07
+    - G1-08
+    - G1-10
+    - G1-11
+    - G1-12
+    - G1-13
+    - G1-14
+    - G1-15
+    - G1-16
+    - G1-17
+    - G1-18
+    - G1-19
+    - G1-20
+    - G1-21
+    - G1-22
+    ResetHpLines: 0
+    TransitionTime: 0
+    InvulnerableDuringTransition: 0
+  Patterns:
+  - {fileID: 11400000, guid: 69d12d24a3bac594e96745b7760312d8, type: 2}
+  - {fileID: 11400000, guid: 5145b2e6d6baf204da6e30168acb2f4e, type: 2}
+  - {fileID: 11400000, guid: a3451631461a49c44bbc68d004b1d7fd, type: 2}
+  - {fileID: 11400000, guid: b78146bce8175ef4fbd5111f0a547742, type: 2}
+  - {fileID: 11400000, guid: 5a844239cbf49ad4b93ef5be185722f9, type: 2}
+  - {fileID: 11400000, guid: 800603171fb4e824f86ea8c7b6087fbf, type: 2}
+  - {fileID: 11400000, guid: 234f58140a4536349b0b82975dff927d, type: 2}
+  - {fileID: 11400000, guid: 1c7e66ad9d469634c88b962c7918a00a, type: 2}
+  - {fileID: 11400000, guid: 88666dcf757ed5e46a0f393c22ca6dbf, type: 2}
+  - {fileID: 11400000, guid: 3b81b5695be7cfa45b378d63af787640, type: 2}
+  - {fileID: 11400000, guid: 18098444b1f1c9d48935db40027462c0, type: 2}
+  - {fileID: 11400000, guid: a6e8b47502382e94ba5aaf2f2f38e517, type: 2}
+  - {fileID: 11400000, guid: 79205754f8832114eb1ed67fdbf7dae5, type: 2}
+  - {fileID: 11400000, guid: e097128ad5059c847b322804d0d5b5e8, type: 2}
+  - {fileID: 11400000, guid: fe500cc8928298a4287defc52a7c8749, type: 2}
+  - {fileID: 11400000, guid: 3b331ca9d1efb1b42b0857e9d49ee64b, type: 2}
+  - {fileID: 11400000, guid: 49350434bbfe3f948aa1027e44971e0e, type: 2}
+  - {fileID: 11400000, guid: 8e18b0311736dfc4f8cd930488e063b0, type: 2}
+  - {fileID: 11400000, guid: 2f5a84d54d89b2e48990faab4c42db78, type: 2}
+  - {fileID: 11400000, guid: 41d64d5e625f8ed4d8896d14f5354b8f, type: 2}
+  - {fileID: 11400000, guid: 806bc4adeb4401241813a413c61b06ef, type: 2}
+  - {fileID: 11400000, guid: 9b99f76c46f68b843b90932008a876f2, type: 2}
+  - {fileID: 11400000, guid: 5be891d9f5b1f0d4ab1047e5f41af726, type: 2}
+  Gimmicks:
+  - GimmickId: G1-01
+    Kind: 0
+  Weaknesses:
+  - Element: 7
+    DamagePercent: 15
+  Aggro:
+    RetargetInterval: 6
+    NearestChance: 0.7
+    ThreatDecayPerSecond: 0.05
+  DesignPartySize: 8

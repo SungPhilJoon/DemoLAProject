@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G1-01
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G1-01
+  PhaseId: "G1-\uACF5\uD1B5"
+  DisplayName: "\uAD6C\uC2AC \uD68D\uB4DD \uD6C4 \uBB34\uB825\uD654"
+  Category: 4
+  Response: 4
+  ShapeText: 
+  LinkedPatternId: 
+  Confidence: 1
+  DamageTier: 5
+  Notes: "[\uD53C\uD574] \uC2E4\uD328 \uC2DC \uC804\uBA78(S1\xB7S2\xB7S11)\n\uCCB4\uB825
+    30\uC904, 15~17\uC904 \uBD80\uADFC\uC5D0\uC11C \uAC01 1\uD68C \uBC1C\uC0DD. \uAD6C\uC2AC\uC744
+    \uC815\uD574 \uB454 \uC21C\uC11C\uB300\uB85C \uD68D\uB4DD\uD55C \uB4A4 \uBB34\uB825\uD654(\uC2A4\uD0DC\uAC70).
+    \uAD6C\uC2AC\uC740 \uBCF4\uC2A4\uB97C \uAE30\uC900\uC73C\uB85C 8\uBC29\uD5A5\uC5D0
+    \uBD89\uC740\uC0C9/\uD478\uB978\uC0C9\uC73C\uB85C \uC0DD\uC131(S1\xB7S4). \uC11C\uB85C
+    \uB2E4\uB978 \uC0C9\uC744 \uBC88\uAC08\uC544 \uD68D\uB4DD\uD574\uC57C \uD558\uBA70
+    \uAC19\uC740 \uC0C9\uC744 \uC5F0\uC18D\uC73C\uB85C \uBA39\uC73C\uBA74 \uC804\uBA78(S1\xB7S2\xB7S11).
+    \uAD6C\uC2AC\uC774 \uBCF4\uC2A4\uC5D0 \uB2FF\uC73C\uBA74 \uC2E4\uD328(S1\xB7S7).
+    \uAD6C\uC2AC \uD68D\uB4DD \uC2DC \uB514\uBC84\uD504\uAC00 \uAC78\uB9AC\uBA70
+    \uB9CC\uB2A5\uC57D\uC774\uB098 \uC815\uD654\uB85C \uD574\uC81C(S7\xB7S11). \uC5D0\uC2A4\uB354
+    '\uC6E8\uC774'\uB85C \uBB34\uB825\uD654\uB97C \uB300\uCCB4\uD558\uB294 \uBC29\uBC95\uC774
+    \uC788\uC74C(S1\xB7S2\xB7S3\xB7S4). \uCC38\uACE0 \uC6A9\uC5B4: \uACB0\uC18D."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 10
+  Weight: 1
+  MinRange: 0
+  MaxRange: 6
+  RandomSelectable: 0
+  Steps: []
+  Recovery: 1
+  SuperArmor: 1
+  UntargetableDuring: 0
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  StaggerCheck: 1
+  StaggerGauge: 1500
+  StaggerTime: 12
+  StaggerFailOutcome: 2
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: G1-22
+  GroggyOnStaggerSuccess: 5

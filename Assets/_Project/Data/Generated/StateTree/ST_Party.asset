@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7c40548c91350469cff2c534dd4b5d, type: 3}
+  m_Name: ST_Party
+  m_EditorClassIdentifier: Framework.Runtime::Framework.StateTree.StateTreeAsset
+  Description: "\uD30C\uD2F0 AI (NetCode \uC774\uC804 \uC544\uAD70)"
+  States:
+  - Id: 1
+    Name: Ally
+    ParentId: 0
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+    EnterConditions: []
+    Tasks: []
+    Transitions: []
+  - Id: 2
+    Name: "\uC7A5\uD310 \uD68C\uD53C"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.6, g: 0.3, b: 0.2, a: 1}
+    EnterConditions:
+    - rid: 7158115530749248117
+    Tasks:
+    - rid: 7158115530749248118
+    Transitions: []
+  - Id: 3
+    Name: "\uCE74\uC6B4\uD130"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+    EnterConditions:
+    - rid: 7158115530749248119
+    Tasks:
+    - rid: 7158115530749248120
+    Transitions: []
+  - Id: 4
+    Name: "\uAD6C\uC2AC \uAE30\uBBF9"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+    EnterConditions:
+    - rid: 7158115530749248121
+    Tasks:
+    - rid: 7158115530749248122
+    Transitions: []
+  - Id: 5
+    Name: "\uC804\uD22C"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+    EnterConditions:
+    - rid: 7158115530749248123
+    Tasks:
+    - rid: 7158115530749248124
+    Transitions: []
+  - Id: 6
+    Name: "\uB300\uAE30"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+    EnterConditions: []
+    Tasks:
+    - rid: 7158115530749248125
+    Transitions: []
+  Evaluators:
+  - rid: 7158115530749248126
+  GlobalTasks: []
+  NextStateId: 7
+  references:
+    version: 2
+    RefIds:
+    - rid: 7158115530749248117
+      type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        Key: 7
+    - rid: 7158115530749248118
+      type: {class: AllyEscapeTelegraphTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        UseDodge: 1
+        MaxTime: 1
+    - rid: 7158115530749248119
+      type: {class: HasTagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        Tag: 71
+        CheckTarget: 1
+    - rid: 7158115530749248120
+      type: {class: AllyCounterTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+    - rid: 7158115530749248121
+      type: {class: GimmickStateCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        GimmickId: G1-01
+        State: 1
+        CheckTarget: 1
+    - rid: 7158115530749248122
+      type: {class: AllyPickOrbTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        GimmickId: G1-01
+        MaxTime: 1.5
+    - rid: 7158115530749248123
+      type: {class: TargetDistanceCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        Op: 1
+        Distance: 60
+    - rid: 7158115530749248124
+      type: {class: AllyFightTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        ReevaluateTime: 0.4
+        UseAwakeningBelowBossHpLine: 1
+    - rid: 7158115530749248125
+      type: {class: WaitTask, ns: Framework.StateTree, asm: Framework.Runtime}
+      data:
+        Enabled: 1
+        Duration: 0.5
+        RandomDeviation: 0
+    - rid: 7158115530749248126
+      type: {class: CombatSenseEvaluator, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        SearchRadius: 60

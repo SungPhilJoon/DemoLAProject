@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4f16e476c8f24e47b42dc7298ad303d, type: 3}
+  m_Name: "GE_\uAC15\uC778\uD568_31"
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Effects.GameplayEffectAsset
+  Id: 0
+  Description: 
+  DurationPolicy: 2
+  Duration: 0
+  Period: 0
+  ExecutePeriodicOnApply: 0
+  Modifiers:
+  - IsSkillAttribute: 1
+    Attribute: 4
+    SkillAttribute: 4
+    Op: 1
+    MagnitudeType: 0
+    Key: 0
+    Value: 20
+  Execution: 0
+  GrantedTags: 
+  ApplicationRequiredTags: 
+  ApplicationBlockedTags: 
+  RemoveEffectsWithTags: 
+  StackPolicy: 0
+  MaxStack: 1
+  Cue: 0

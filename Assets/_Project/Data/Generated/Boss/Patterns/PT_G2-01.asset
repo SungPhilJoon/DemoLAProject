@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G2-01
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G2-01
+  PhaseId: G2-P1
+  DisplayName: "\uAC11\uC637 \uBD80\uC704\uD30C\uAD34 (\uB3CC\uC9C4 \uC720\uB3C4)"
+  Category: 1
+  Response: 4
+  ShapeText: 
+  LinkedPatternId: G2-02
+  Confidence: 1
+  DamageTier: 0
+  Notes: "\uC2DC\uC791 \uC2DC \uD53C\uD574 \uAC10\uC18C(\uAC11\uC637) \uBC84\uD504
+    2\uC911\uCCA9(S1\xB7S3). \uB3CC\uC9C4\uC744 \uC9C0\uD615 \uAD6C\uC870\uBB3C\uC5D0
+    \uC801\uC911\uC2DC\uCF1C \uBCF4\uC2A4\uB97C \uADF8\uB85C\uAE30 \uC0C1\uD0DC\uB85C
+    \uB9CC\uB4E0 \uB4A4 \uBD80\uC704 \uD30C\uAD34\uB85C \uC911\uCCA9\uC744 \uC81C\uAC70(S1\xB7S3\xB7S4).
+    \uBD80\uC704 \uD30C\uAD34\uC6A9 \uD30C\uAD34 \uD3ED\uD0C4\uC774 \uD544\uC218(S6)."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 10
+  Weight: 1
+  MinRange: 0
+  MaxRange: 6
+  RandomSelectable: 0
+  Steps: []
+  Recovery: 1
+  SuperArmor: 1
+  UntargetableDuring: 0
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  StaggerCheck: 0
+  StaggerGauge: 1000
+  StaggerTime: 10
+  StaggerFailOutcome: 0
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: 
+  GroggyOnStaggerSuccess: 5

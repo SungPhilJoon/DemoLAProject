@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f21a7144ca1f9f4eb5cf7c4ccc8e6e9, type: 3}
+  m_Name: CLS_Infighter
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Character.CharacterClassDefinition
+  Class: 1
+  DisplayName: "\uC778\uD30C\uC774\uD130"
+  Role: 0
+  BodyColor: {r: 1, g: 0.65, b: 0.3, a: 1}
+  BaseMaxHealth: 180000
+  BaseMaxMana: 1000
+  BaseDefense: 26000
+  BaseMainStat: 50000
+  BaseWeaponPower: 30000
+  BaseCritDamage: 200
+  Skills:
+  - {fileID: 11400000, guid: 100f0e094d0fb4b4499ad46457d2a0cc, type: 2}
+  - {fileID: 11400000, guid: 163b94edcdc8af04aa81faba2199f9f3, type: 2}
+  - {fileID: 11400000, guid: 6bde906b05bb8d945a21a4d7b9dedc8f, type: 2}
+  - {fileID: 11400000, guid: bfb8051b5909bc74ba8c2019c33930d7, type: 2}
+  - {fileID: 11400000, guid: 15808e8d9d96857479329e1fca69d669, type: 2}
+  - {fileID: 11400000, guid: 645b631e926402d4690c354c04c2cb24, type: 2}
+  - {fileID: 11400000, guid: 335afedb8be6da84e89f54e5fda9231b, type: 2}
+  - {fileID: 11400000, guid: 2aa1601359cc8634ca1a485c47bc006a, type: 2}
+  - {fileID: 11400000, guid: 07e62b53f7367c94d8fa9b49523bf4d8, type: 2}
+  - {fileID: 11400000, guid: 7bf7036a7222d8540bf41fd2f39bc877, type: 2}
+  - {fileID: 11400000, guid: 4e583db345b8535479bb008ad7c5346c, type: 2}
+  - {fileID: 11400000, guid: 88b45d7c938bf0345addc28b0c38f17b, type: 2}
+  Awakenings:
+  - {fileID: 11400000, guid: 8c2a2b8ab62bc3c478b410316ea68e9f, type: 2}
+  - {fileID: 11400000, guid: 9c4f2ddf471e14948a3caaa6ea9bfa3b, type: 2}
+  DodgeCooldown: 7
+  DodgeDistance: 5
+  DodgeInvulnerableTime: 0.3
+  AiPreferredRange: 2.2
+  AiPrefersBack: 0

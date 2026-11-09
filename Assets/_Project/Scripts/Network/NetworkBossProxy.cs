@@ -22,6 +22,7 @@ namespace DemoLA.Network
         private readonly NetworkVariable<float> stagger = new NetworkVariable<float>();
         private readonly NetworkVariable<FixedString32Bytes> phase = new NetworkVariable<FixedString32Bytes>();
         private readonly NetworkVariable<int> tags = new NetworkVariable<int>();
+        private readonly NetworkVariable<float> esther = new NetworkVariable<float>();
 
         private float replicateTimer;
 
@@ -31,6 +32,11 @@ namespace DemoLA.Network
 
         public override void OnNetworkSpawn()
         {
+            if (IsServer == false)
+            {
+                DemoLA.Core.NetAuthority.IsReplica = true;
+            }
+
             BossId.OnValueChanged += (a, b) => build();
             tags.OnValueChanged += handleTags;
             phase.OnValueChanged += (a, b) =>
@@ -78,6 +84,10 @@ namespace DemoLA.Network
                 maxHealth.OnValueChanged += (a, b) => applyVitals();
                 health.OnValueChanged += (a, b) => applyVitals();
                 stagger.OnValueChanged += (a, b) => applyVitals();
+                // 에스더 게이지는 서버가 모은다 → 클라이언트는 받기만 한다.
+                DemoLA.Character.EstherSystem.IsReplica = true;
+                DemoLA.Character.EstherSystem.SetGauge(esther.Value);
+                esther.OnValueChanged += (a, b) => DemoLA.Character.EstherSystem.SetGauge(b);
                 NetReplication.ApplyTags(Boss, 0, tags.Value);
             }
 
@@ -94,7 +104,8 @@ namespace DemoLA.Network
 
         private void applyVitals()
         {
-            if (Boss == null || Boss.Stats == null)
+            // 서버 값이 아직 오지 않았으면(최대 체력 0) 반영하지 않는다 — 초기값 0 으로 클라이언트에서 보스가 "죽는" 문제.
+            if (Boss == null || Boss.Stats == null || maxHealth.Value <= 0.0f)
             {
                 return;
             }
@@ -125,6 +136,7 @@ namespace DemoLA.Network
             stagger.Value = Boss.Stats.Get(EAttr.StaggerGauge);
             phase.Value = Boss.CurrentPhaseId ?? string.Empty;
             tags.Value = NetReplication.CaptureTags(Boss);
+            esther.Value = DemoLA.Character.EstherSystem.Gauge;
         }
     }
 }

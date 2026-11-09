@@ -131,6 +131,16 @@ namespace DemoLA.Core
             }
 
             StatFormula.Settings = session.Database.StatFormula;
+            if (session.Database.Icons != null)
+            {
+                IconFactory.Library = session.Database.Icons;
+            }
+
+            EstherSystem.Configure(session.Database.Esthers, session.Database.EstherHpLinesPerGauge);
+            if (session.Database.CounterGlowMaterial != null)
+            {
+                CounterGlowView.SharedMaterial = session.Database.CounterGlowMaterial;
+            }
 
             await session.LoadAsync();
 

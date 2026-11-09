@@ -44,8 +44,30 @@ namespace DemoLA.AI
 
     public static class AIUtil
     {
+        /// <summary>떠 있는 안전지대(파란 도넛 등 IsSafeZone 장판). 없으면 null.</summary>
+        public static TelegraphView ActiveSafeZone()
+        {
+            var views = TelegraphView.ActiveViews;
+            for (int i = 0; i < views.Count; ++i)
+            {
+                if (views[i] != null && views[i].gameObject.activeSelf == true && views[i].IsSafeZone == true && views[i].Area.Shape == EHitShape.Donut)
+                {
+                    return views[i];
+                }
+            }
+
+            return null;
+        }
+
         public static bool IsInTelegraph(Vector3 InPosition, float InRadius)
         {
+            // 안전지대가 떠 있으면(천상 낙하) 그 밖은 곧 즉사 범위다.
+            var zone = ActiveSafeZone();
+            if (zone != null && zone.Contains(InPosition, 0.0f) == false)
+            {
+                return true;
+            }
+
             var views = TelegraphView.ActiveViews;
             for (int i = 0; i < views.Count; ++i)
             {
@@ -61,6 +83,22 @@ namespace DemoLA.AI
         /// <summary>장판 밖이면서 InPreferred 에 가까운 지점 (8방향 × 3거리 샘플).</summary>
         public static Vector3 FindSafePoint(Vector3 InFrom, float InRadius, Vector3 InPreferred)
         {
+            var zone = ActiveSafeZone();
+            if (zone != null)
+            {
+                // 안전지대 띠 안쪽 (자기 방향 그대로 바깥으로).
+                var center = HitGeometry.Flat(zone.Origin);
+                var direction = HitGeometry.Flat(InFrom) - center;
+                if (direction.sqrMagnitude < 0.01f)
+                {
+                    direction = Vector3.forward;
+                }
+
+                // 띠(약 1.5m)의 가운데 — 벽에 붙지 않게.
+                float ring = zone.Area.InnerRadius + 0.75f;
+                return center + direction.normalized * ring;
+            }
+
             var best = InFrom;
             float bestScore = float.MaxValue;
             for (int ring = 1; ring <= 3; ++ring)
@@ -189,7 +227,7 @@ namespace DemoLA.AI
     [StateTreeNodeInfo("DemoLA", "패턴 쿨다운이 끝났는가")]
     public class PatternReadyCondition : StateTreeCondition
     {
-        public string PatternId = "G1-06";
+        [DemoLA.Boss.PatternId] public string PatternId = "G1-06";
 
         protected override bool Test(StateTreeContext InContext)
         {

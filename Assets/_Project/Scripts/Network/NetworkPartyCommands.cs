@@ -39,6 +39,11 @@ namespace DemoLA.Network
             member.UseBattleItemRpc(InSlot, InAim);
         }
 
+        public void UseEsther(int InIndex)
+        {
+            member.UseEstherRpc(InIndex);
+        }
+
         public void Dodge(Vector3 InAim)
         {
             member.DodgeRpc(InAim);

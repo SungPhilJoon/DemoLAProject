@@ -32,6 +32,8 @@ MonoBehaviour:
   MinRange: 0
   MaxRange: 10
   RandomSelectable: 1
+  TargetSelector:
+    rid: -2
   Steps:
   - Label: Hit
     StartDelay: 0
@@ -44,6 +46,7 @@ MonoBehaviour:
       Width: 0
       Length: 0
       ForwardOffset: 0
+    ForwardOffset: 0
     TelegraphTime: 1
     TrackDuringTelegraph: 1
     TrackLockBefore: 0.4
@@ -60,6 +63,8 @@ MonoBehaviour:
     BossSpinSpeed: 0
     LeapDuration: 0
     LeapHeight: 4
+    StartLeapDuration: 0
+    BigImpact: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -74,6 +79,9 @@ MonoBehaviour:
     CrashGroggyTime: 4
     ClipTelegraphToStructure: 1
     ChargeWindup: 0.25
+    Counterable: 0
+    CounterWindowStart: 0.3
+    CounterWindowEnd: 1
   - Label: Hit
     StartDelay: 0
     Targeting: 5
@@ -85,6 +93,7 @@ MonoBehaviour:
       Width: 0
       Length: 0
       ForwardOffset: 0
+    ForwardOffset: 0
     TelegraphTime: 0.6
     TrackDuringTelegraph: 1
     TrackLockBefore: 0.3
@@ -101,6 +110,8 @@ MonoBehaviour:
     BossSpinSpeed: 0
     LeapDuration: 0
     LeapHeight: 4
+    StartLeapDuration: 0
+    BigImpact: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -115,6 +126,9 @@ MonoBehaviour:
     CrashGroggyTime: 4
     ClipTelegraphToStructure: 1
     ChargeWindup: 0.25
+    Counterable: 0
+    CounterWindowStart: 0.3
+    CounterWindowEnd: 1
   - Label: Hit
     StartDelay: 0
     Targeting: 5
@@ -126,6 +140,7 @@ MonoBehaviour:
       Width: 3
       Length: 10
       ForwardOffset: 0
+    ForwardOffset: 0
     TelegraphTime: 0.8
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -142,6 +157,8 @@ MonoBehaviour:
     BossSpinSpeed: 0
     LeapDuration: 0
     LeapHeight: 4
+    StartLeapDuration: 0
+    BigImpact: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -156,15 +173,25 @@ MonoBehaviour:
     CrashGroggyTime: 4
     ClipTelegraphToStructure: 1
     ChargeWindup: 0.25
+    Counterable: 0
+    CounterWindowStart: 0.3
+    CounterWindowEnd: 1
   Recovery: 1.5
   SuperArmor: 1
   UntargetableDuring: 0
+  ShowSafeZone: 0
+  SafeZoneInner: 24.5
+  SafeZoneOuter: 30
+  CinematicLeap: 0
+  ChargeNextAfter: 0
+  IgnoreInPatternCount: 0
   Counterable: 0
   CounterWindowStart: 0.3
   CounterWindowEnd: 1
   GroggyOnCounter: 3
   CounterRepeat: 1
   FailEscalationFraction: 0.2
+  ToolEdited: 0
   StaggerCheck: 0
   StaggerGauge: 1000
   StaggerTime: 10
@@ -172,3 +199,8 @@ MonoBehaviour:
   StaggerFailDamage: 5
   StaggerFailChainPatternId: 
   GroggyOnStaggerSuccess: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

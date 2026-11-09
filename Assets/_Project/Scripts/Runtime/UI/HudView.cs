@@ -193,7 +193,18 @@ namespace DemoLA.UI
 
             // 오른쪽 아래는 배틀 아이템 칸이 쓰므로 도움말은 그 위에 둔다.
             var helpRect = UIKit.Anchored(root, "Help", new Vector2(1.0f, 0.0f), new Vector2(-20.0f, 150.0f), new Vector2(420.0f, 70.0f));
-            helpText = UIKit.Label(helpRect, "우클릭 이동 · QWERASDF 스킬 · V 각성기 · Z/X 아이덴티티 · Space 회피\nP 장비 · I 인벤토리 · K 스킬 · F5 대기실로", 15, TextAnchor.LowerRight, new Color(1.0f, 1.0f, 1.0f, 0.7f));
+            helpText = UIKit.Label(helpRect, "우클릭 이동 · QWERASDF 스킬 · V 각성기 · Z/X 아이덴티티 · Space 회피\n1~4 배틀 아이템 · 5/6/7 에스더 · P 장비 · K 스킬 · F5 대기실로", 15, TextAnchor.LowerRight, new Color(1.0f, 1.0f, 1.0f, 0.7f));
+
+            // 에스더 (배틀 아이템 칸 · 도움말 위)
+            var esther = EstherHudView.Create(root);
+            esther.OnUse = i =>
+            {
+                var controller = FindAnyObjectByType<DemoLA.Player.PlayerController>();
+                if (controller != null && controller.Commands != null)
+                {
+                    controller.Commands.UseEsther(i);
+                }
+            };
 
             numberRoot = UIKit.Stretch(root, "Numbers");
         }

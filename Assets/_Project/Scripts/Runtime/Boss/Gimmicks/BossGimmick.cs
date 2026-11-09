@@ -81,9 +81,15 @@ namespace DemoLA.Boss
 
         private void Update()
         {
+            Tick(Time.deltaTime);
+        }
+
+        /// <summary>진행 중이면 한 프레임 진행 (Update · 테스트).</summary>
+        public void Tick(float InDeltaTime)
+        {
             if (State == EGimmickState.Running && Boss != null)
             {
-                OnTick(Time.deltaTime);
+                OnTick(InDeltaTime);
             }
         }
 

@@ -21,7 +21,7 @@ namespace DemoLA.Editor
     /// </summary>
     public static class ScenarioAssetFactory
     {
-        private const string Root = "Assets/_Project/Tests//ㅊ";
+        private const string Root = "Assets/_Project/Tests/Scenarios";
 
         [MenuItem("DemoLA/Tests/시나리오 생성 (없는 것만)", priority = 40)]
         public static void CreateMissingMenu()
@@ -60,7 +60,8 @@ namespace DemoLA.Editor
             save(leapCrossChase(), $"{Root}/Mechanics", "TS_G2-23_도약십자추적", InOverwrite, ref created, ref skipped);
             save(chargeIntoPillar(), $"{Root}/Mechanics", "TS_G2-11_돌진기둥충돌", InOverwrite, ref created, ref skipped);
             save(firstWipeBreaksAll(), $"{Root}/Mechanics", "TS_G2-03_구조물전부파괴", InOverwrite, ref created, ref skipped);
-            save(knockbackFall(), $"{Root}/Mechanics", "TS_낙사_넉백", InOverwrite, ref created, ref skipped);
+            save(knockbackFall(), $"{Root}/Mechanics", "TS_낙사_넉백_지형파괴후", InOverwrite, ref created, ref skipped);
+            save(knockbackRescuedBeforeCollapse(), $"{Root}/Mechanics", "TS_낙사_넉백_벽구간구출", InOverwrite, ref created, ref skipped);
             save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_낙사_넉백없으면구출", InOverwrite, ref created, ref skipped);
             save(balanceGate("Gate1"), $"{Root}/Balance", "TS_밸런스_Gate1_60초", InOverwrite, ref created, ref skipped);
             AssetDatabase.SaveAssets();
@@ -107,7 +108,7 @@ namespace DemoLA.Editor
                 steps += step.StartDelay + step.TelegraphTime + step.LeapDuration + step.BossMoveDuration + step.ChargeWindup;
             }
 
-            int repeats = InPattern.Counterable ? Mathf.Max(1, InPattern.CounterRepeat) : 1;
+            int repeats = InPattern.IsCounterable ? Mathf.Max(1, InPattern.CounterRepeat) : 1;
             float total = steps * repeats + InPattern.Recovery;
             if (InPattern.StaggerCheck == true)
             {
@@ -174,15 +175,31 @@ namespace DemoLA.Editor
 
         private static TestScenarioAsset knockbackFall()
         {
-            var s = make("넉백으로 맵 밖 → 낙사", "벽 틈(각도 0°)의 가장자리에서 바깥으로 넉백되면 떨어져 죽는지", "Mechanics");
+            var s = make("지형 파괴 후 넉백으로 맵 밖 → 낙사", "지형 파괴 이후, 외곽 벽 바깥 가장자리에서 바깥으로 넉백되면 떨어져 죽는지", "Mechanics");
+            s.Timeout = 15.0f;
+            s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = Vector3.zero });
+            var party = new SpawnPartyStep();
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(0.0f, 0.0f, 23.0f) });
+            s.Steps.Add(party);
+            s.Steps.Add(new EnableFallDeathStep { Label = "지형 파괴 이후 상태" });
+            s.Steps.Add(new KnockbackMemberStep { Member = 0, Direction = Vector3.forward, Distance = 8.0f });
+            s.Steps.Add(new WaitForEventStep { EventName = "Died.Party", Timeout = 6.0f });
+            s.Expectations.Add(new EventExpectation { Label = "낙사", EventName = "Died.Party", Compare = EScenarioCompare.Equal, Value = 1 });
+            return s;
+        }
+
+        private static TestScenarioAsset knockbackRescuedBeforeCollapse()
+        {
+            var s = make("지형 파괴 전 넉백으로 맵 밖 → 구출", "외곽 Ring 벽이 있는 초반에는 넉백으로 바닥 밖에 떨어져도 죽지 않고 가장 가까운 바닥으로 옮겨지는지", "Mechanics");
             s.Timeout = 15.0f;
             s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = Vector3.zero });
             var party = new SpawnPartyStep();
             party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(0.0f, 0.0f, 23.0f) });
             s.Steps.Add(party);
             s.Steps.Add(new KnockbackMemberStep { Member = 0, Direction = Vector3.forward, Distance = 8.0f });
-            s.Steps.Add(new WaitForEventStep { EventName = "Died.Party", Timeout = 6.0f });
-            s.Expectations.Add(new EventExpectation { Label = "낙사", EventName = "Died.Party", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Steps.Add(new WaitSecondsStep { Seconds = 4.0f });
+            s.Expectations.Add(new EventExpectation { Label = "사망 없음", EventName = "Died.Party", Compare = EScenarioCompare.Equal, Value = 0 });
+            s.Expectations.Add(new ProbeExpectation { Label = "바닥 안으로 돌아옴", Probe = "Party0.DistanceFromCenter", Compare = EScenarioCompare.LessOrEqual, Value = 27 });
             return s;
         }
 

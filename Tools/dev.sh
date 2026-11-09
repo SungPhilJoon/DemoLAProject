@@ -12,6 +12,9 @@
 #   Tools/dev.sh deps                   Addressables 의존성 리포트
 #   Tools/dev.sh build [Win64|Android] [dev]   에디터에서 플레이어 빌드 (BuildCommand)
 #   Tools/dev.sh errors                 콘솔 오류
+#   Tools/dev.sh net [클라이언트 수] [초] [Gate1|Gate2] [rebuild]
+#                                       멀티플레이 테스트: 개발 빌드를 호스트 1 + 클라이언트 N 개(배치 모드, LAN 직접 접속)로 띄워
+#                                       자동 조작 + 동기화 스냅샷 → Tools/data/net_sync_check.py 로 비교 (Builds/NetTest/sync-report.md)
 #
 # 필요: unity CLI (https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh), python3
 set -euo pipefail
@@ -135,6 +138,38 @@ sys.exit(1 if fails or not s else 0)
     uc demola balance --class "${2:-Slayer}" --seconds "${3:-60}" --trials "${4:-5}" --behind "${5:-false}" | result | "$PY" -I -c 'import json,sys; print(json.load(sys.stdin).get("report",""))' ;;
   deps)
     uc demola deps | result ;;
+  net)
+    clients="${2:-1}"; secs="${3:-60}"; gate="${4:-Gate2}"
+    exe="$ROOT/Builds/Win64-Dev/DemoLAProject.exe"
+    if [[ ! -f "$exe" || "${5:-}" == "rebuild" ]]; then
+      echo "개발 빌드 (Builds/Win64-Dev) ..."
+      before="$(stat -c %Y "$ROOT/Builds/build-report.json" 2>/dev/null || echo 0)"
+      uc demola build --target Win64 --development true --confirm true | result
+      # 빌드는 비동기 — 보고서(Builds/build-report.json)가 새로 써질 때까지 기다린다 (최대 30분).
+      for _ in $(seq 1 360); do
+        now="$(stat -c %Y "$ROOT/Builds/build-report.json" 2>/dev/null || echo 0)"
+        [[ "$now" != "$before" ]] && break
+        sleep 5
+      done
+      "$PY" -I -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); print("빌드:", r.get("Result") or r.get("result"), r.get("OutputPath") or r.get("outputPath"))' "$ROOT/Builds/build-report.json" || true
+    fi
+    [[ -f "$exe" ]] || { echo "빌드 없음: $exe"; exit 1; }
+    dir="$ROOT/Builds/NetTest"; rm -rf "$dir"; mkdir -p "$dir"
+    port=$((7700 + RANDOM % 200))
+    # 기본 스크립트: 카운터 패턴 · 구조물 파괴 · 지형 붕괴가 테스트 시간 안에 반드시 일어나게 한다 (NET_SCRIPT 로 바꿀 수 있다).
+    if [[ "$gate" == "Gate2" ]]; then default_script="6:pattern:G2-24;14:pattern:G2-21;22:pattern:G2-07;30:gimmick:G2-05;42:pattern:G2-24;50:pattern:G2-11"; else default_script="8:pattern:G1-06;20:pattern:G1-11"; fi
+    common=(-batchmode -nographics -demolaPort "$port" -demolaAutopilot -demolaProbe "$dir")
+    "$exe" "${common[@]}" -logFile "$dir/host.log" -demolaNet host -demolaGate "$gate" -demolaStartWhen $((clients + 1)) -demolaGodMode -demolaQuitAfter "$secs" -demolaScript "${NET_SCRIPT:-$default_script}" &
+    pids=($!)
+    sleep 3
+    for i in $(seq 1 "$clients"); do
+      "$exe" "${common[@]}" -logFile "$dir/client$i.log" -demolaNet client -demolaAddress 127.0.0.1 -demolaQuitAfter $((secs + 4)) &
+      pids+=($!)
+    done
+    echo "호스트 1 + 클라이언트 $clients · ${secs}초 · $gate · 포트 $port — 진행 중 (로그: Builds/NetTest/*.log)"
+    for p in "${pids[@]}"; do wait "$p" || true; done
+    grep -h "\[NetTest\]\|Exception\|Error" "$dir"/*.log | head -40 || true
+    "$PY" -I "$ROOT/Tools/data/net_sync_check.py" "$dir" ;;
   build)
     target="${2:-Win64}"; dev="$( [[ "${3:-}" == "dev" ]] && echo true || echo false )"
     uc demola build --target "$target" --development "$dev" --confirm true | result ;;

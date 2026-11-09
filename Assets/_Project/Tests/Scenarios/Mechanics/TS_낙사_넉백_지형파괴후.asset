@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5136c00b48ef5e409e8217b2ed0e9af, type: 3}
-  m_Name: "TS_\uB099\uC0AC_\uB109\uBC31"
+  m_Name: "TS_\uB099\uC0AC_\uB109\uBC31_\uC9C0\uD615\uD30C\uAD34\uD6C4"
   m_EditorClassIdentifier: Framework.Testing::Framework.Testing.TestScenarioAsset
-  DisplayName: "\uB109\uBC31\uC73C\uB85C \uB9F5 \uBC16 \u2192 \uB099\uC0AC"
-  Description: "\uBCBD \uD2C8(\uAC01\uB3C4 0\xB0)\uC758 \uAC00\uC7A5\uC790\uB9AC\uC5D0\uC11C
-    \uBC14\uAE65\uC73C\uB85C \uB109\uBC31\uB418\uBA74 \uB5A8\uC5B4\uC838 \uC8FD\uB294\uC9C0"
+  DisplayName: "\uC9C0\uD615 \uD30C\uAD34 \uD6C4 \uB109\uBC31\uC73C\uB85C \uB9F5
+    \uBC16 \u2192 \uB099\uC0AC"
+  Description: "\uC9C0\uD615 \uD30C\uAD34 \uC774\uD6C4, \uC678\uACFD \uBCBD \uBC14\uAE65
+    \uAC00\uC7A5\uC790\uB9AC\uC5D0\uC11C \uBC14\uAE65\uC73C\uB85C \uB109\uBC31\uB418\uBA74
+    \uB5A8\uC5B4\uC838 \uC8FD\uB294\uC9C0"
   Enabled: 1
   Category: Mechanics
   TimeScale: 3
@@ -22,12 +24,13 @@ MonoBehaviour:
   RandomSeed: 7
   HostSettings: []
   Steps:
-  - rid: 7158115530749248508
-  - rid: 7158115530749248509
-  - rid: 7158115530749248510
-  - rid: 7158115530749248511
+  - rid: 7158115549729260154
+  - rid: 7158115549729260155
+  - rid: 7158115549729260156
+  - rid: 7158115549729260157
+  - rid: 7158115549729260158
   Expectations:
-  - rid: 7158115541830074368
+  - rid: 7158115549729260159
   OnStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -40,7 +43,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7158115530749248508
+    - rid: 7158115549729260154
       type: {class: SpawnBossStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
       data:
         Label: 
@@ -49,7 +52,7 @@ MonoBehaviour:
         FaceTowards: {x: 0, y: 0, z: -10}
         EnableAI: 0
         HpLines: -1
-    - rid: 7158115530749248509
+    - rid: 7158115549729260155
       type: {class: SpawnPartyStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
       data:
         Label: 
@@ -57,7 +60,11 @@ MonoBehaviour:
         - Class: 2
           Position: {x: 0, y: 0, z: 23}
           UseAI: 0
-    - rid: 7158115530749248510
+    - rid: 7158115549729260156
+      type: {class: EnableFallDeathStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
+      data:
+        Label: "\uC9C0\uD615 \uD30C\uAD34 \uC774\uD6C4 \uC0C1\uD0DC"
+    - rid: 7158115549729260157
       type: {class: KnockbackMemberStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
       data:
         Label: 
@@ -65,7 +72,7 @@ MonoBehaviour:
         Direction: {x: 0, y: 0, z: 1}
         Distance: 8
         Height: 2
-    - rid: 7158115530749248511
+    - rid: 7158115549729260158
       type: {class: WaitForEventStep, ns: Framework.Testing, asm: Framework.Testing}
       data:
         Label: 
@@ -73,7 +80,7 @@ MonoBehaviour:
         Count: 1
         Timeout: 6
         FailOnTimeout: 1
-    - rid: 7158115541830074368
+    - rid: 7158115549729260159
       type: {class: EventExpectation, ns: Framework.Testing, asm: Framework.Testing}
       data:
         Label: "\uB099\uC0AC"

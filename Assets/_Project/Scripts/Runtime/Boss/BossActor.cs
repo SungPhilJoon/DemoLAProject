@@ -176,10 +176,11 @@ namespace DemoLA.Boss
                 return false;
             }
 
+            // info.Target 에는 "일부러 지정한 대상"만 넣는다 (null = 패턴 규칙 · 어그로에 맡김 → PatternTargeting.Resolve).
             var info = new AbilityActivationInfo();
-            var target = InTarget != null ? InTarget : AggroTarget;
-            info.Target = target != null ? target.Asc : null;
-            info.AimPoint = target != null ? target.Position : Position + Forward;
+            var aim = InTarget != null ? InTarget : AggroTarget;
+            info.Target = InTarget != null ? InTarget.Asc : null;
+            info.AimPoint = aim != null ? aim.Position : Position + Forward;
             if (Asc.TryActivateAbility(ability, info, out OutReason) == false)
             {
                 return false;
@@ -205,11 +206,39 @@ namespace DemoLA.Boss
             return pattern;
         }
 
+        /// <summary>마지막 돌진 뒤 끝난 다른 패턴 수 (2관문 "다른 패턴 3개 뒤 돌진"). 처음엔 크게 — 조우하자마자 돌진.</summary>
+        public int PatternsSinceCharge { get; private set; } = 99;
+
+        /// <summary>마지막으로 끝난 패턴 ID (취소 포함). 없으면 null.</summary>
+        public string LastEndedPatternId { get; private set; }
+
+        /// <summary>다음 패턴 선택 때 돌진이 바로 나오게 한다 (부위파괴 반격 착지 후 등).</summary>
+        public void RequestCharge()
+        {
+            PatternsSinceCharge = 99;
+        }
+
         public void NotifyPatternEnded(BossPatternAbility InAbility, bool InWasCancelled)
         {
             if (ActivePattern == InAbility)
             {
                 ActivePattern = null;
+            }
+
+            var definition = InAbility.Definition;
+            LastEndedPatternId = definition.PatternId;
+            if (definition.IsCharge == true)
+            {
+                PatternsSinceCharge = 0;
+            }
+            else if (definition.IgnoreInPatternCount == false)
+            {
+                PatternsSinceCharge += 1;
+            }
+
+            if (definition.ChargeNextAfter == true)
+            {
+                RequestCharge();
             }
 
             nextPatternTime = Time.time + (Definition != null ? Definition.PatternGap : 0.0f);
@@ -330,6 +359,12 @@ namespace DemoLA.Boss
             }
         }
 
+        /// <summary>도발 중이면 도발한 대상, 아니면 null. 패턴 대상 규칙(PatternTargetSelector)보다 우선한다.</summary>
+        public CombatActor TauntTarget
+        {
+            get { return tauntRemaining > 0.0f && tauntSource != null && tauntSource.IsDead == false ? tauntSource : null; }
+        }
+
         public IReadOnlyDictionary<CombatActor, float> Threat
         {
             get { return threat; }
@@ -347,6 +382,21 @@ namespace DemoLA.Boss
 
             float nearestChance = Definition != null ? Definition.Aggro.NearestChance : 0.7f;
             lockedTarget = GameRandom.Value < nearestChance ? CombatRegistry.FindNearestHostile(this, 999.0f) : players[GameRandom.Range(0, players.Count)];
+        }
+
+        /// <summary>
+        /// 어그로 대상을 InTarget 으로 바꾼다 (StateTree SelectTargetTask). InHoldSeconds 동안 자동 재선정을 하지 않는다
+        /// (0 이하 = BossDefinition.Aggro.RetargetInterval). 도발 중이면 도발이 계속 우선한다.
+        /// </summary>
+        public void ForceAggro(CombatActor InTarget, float InHoldSeconds)
+        {
+            if (InTarget == null || InTarget.IsDead == true)
+            {
+                return;
+            }
+
+            lockedTarget = InTarget;
+            retargetTimer = InHoldSeconds > 0.0f ? InHoldSeconds : (Definition != null ? Definition.Aggro.RetargetInterval : 6.0f);
         }
 
         /// <summary>도발: InDuration 동안 InSource 만 노린다.</summary>
@@ -432,6 +482,7 @@ namespace DemoLA.Boss
 
             // 위협 수치 = 피해량 (임시 규칙). 지속 감쇠 · 도발 스킬은 미정.
             AddThreat(InEvent.Source.OwnerActor as CombatActor, InEvent.HealthLost);
+            DemoLA.Character.EstherSystem.AddBossDamage(this, InEvent.HealthLost);
         }
     }
 }

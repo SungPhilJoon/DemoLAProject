@@ -41,6 +41,11 @@ namespace DemoLA.Network
 
         public override void OnNetworkSpawn()
         {
+            if (IsServer == false)
+            {
+                DemoLA.Core.NetAuthority.IsReplica = true;
+            }
+
             ClassId.OnValueChanged += handleClassChanged;
             tags.OnValueChanged += handleTagsChanged;
             if (ClassId.Value >= 0)
@@ -112,6 +117,12 @@ namespace DemoLA.Network
         public void UseIdentityXRpc(Vector3 InAim)
         {
             Character?.TryUseIdentityX(InAim);
+        }
+
+        [Rpc(SendTo.Server)]
+        public void UseEstherRpc(int InIndex)
+        {
+            Character?.TryUseEsther(InIndex);
         }
 
         [Rpc(SendTo.Server)]
@@ -237,7 +248,8 @@ namespace DemoLA.Network
 
         private void applyVitals()
         {
-            if (Character == null || Character.Stats == null)
+            // 서버 값이 아직 오지 않았으면(최대 체력 0) 반영하지 않는다 — 초기값 0 으로 클라이언트에서 "죽는" 문제.
+            if (Character == null || Character.Stats == null || maxHealth.Value <= 0.0f)
             {
                 return;
             }

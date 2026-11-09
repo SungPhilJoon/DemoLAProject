@@ -88,6 +88,7 @@ MonoBehaviour:
     - G2-21
     - G2-22
     - G2-23
+    - G2-24
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -115,6 +116,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 844b8eb8c7ffd8e4784a43f8a13d0951, type: 2}
   - {fileID: 11400000, guid: 4ffa3723e42c4c649b257fbbad5c856b, type: 2}
   - {fileID: 11400000, guid: 1b12e0bebf31c504ab6908ddae02d003, type: 2}
+  - {fileID: 11400000, guid: dea0844a9493980458f2f068371fcafd, type: 2}
+  - {fileID: 11400000, guid: 6dbff1efa5c25da40b6f76dee4be78ea, type: 2}
+  - {fileID: 11400000, guid: 04831ea890b36224982b7cc4e2f56923, type: 2}
   Gimmicks:
   - GimmickId: G2-01
     Kind: 4

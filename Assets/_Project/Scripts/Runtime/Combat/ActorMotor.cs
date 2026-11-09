@@ -245,6 +245,12 @@ namespace DemoLA.Combat
             return InDistance;
         }
 
+        /// <summary>위치는 그대로 두고 몸(Body · Facing)만 포물선으로 띄운다 — 네트워크 클라이언트가 서버의 도약을 따라 그릴 때.</summary>
+        public void PlayVisualArc(float InDuration, float InHeight)
+        {
+            startArc(InDuration, InHeight);
+        }
+
         private void startArc(float InDuration, float InHeight)
         {
             arcActive = InHeight > 0.0f;

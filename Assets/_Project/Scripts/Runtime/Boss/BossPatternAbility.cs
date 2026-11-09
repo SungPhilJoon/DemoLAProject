@@ -14,7 +14,9 @@ namespace DemoLA.Boss
     /// <summary>
     /// BossPatternDefinition 하나를 실행하는 GameplayAbility.
     /// 흐름: (반복 회차마다) 단계별 [대기 → 전조 장판 → 판정] → 후딜.
-    ///  - Counterable: 회차마다 카운터 구간 동안 Boss_CounterWindow 태그. Event_Countered 를 받으면 패턴 취소 + 무력화.
+    ///  - 카운터: 단계(PatternStep.Counterable)마다 그 타격의 전조 중 구간 동안 Boss_CounterWindow 태그 — 다단 공격에서 일부 타격만 카운터 가능.
+    ///    (이전 방식: 단계 카운터가 없고 Definition.Counterable 이면 회차 시작 기준 패턴 단위 구간.)
+    ///    Event_Countered 를 받으면 패턴 취소 + 무력화. 구간이 닫힐 때까지 카운터하지 못하면 실패 횟수 +1 (이후 타격 피해 증가).
     ///  - StaggerCheck: 시작 시 무력화 게이지를 채우고 StaggerTime 안에 0 이 되면 성공(무력화), 아니면 실패 결과.
     /// </summary>
     public class BossPatternAbility : GameplayAbility
@@ -23,6 +25,17 @@ namespace DemoLA.Boss
 
         /// <summary>(판정, 원점, 정면, 전조 시간) 장판 하나가 시작될 때. 네트워크 서버가 클라이언트에 장판을 복제하는 데 쓴다.</summary>
         public static event System.Action<HitArea, Vector3, Vector3, float> TelegraphStarted;
+
+        /// <summary>(위치, 반지름, 세기) 크게 터지는 착지 연출 — 네트워크 서버가 클라이언트에 복제한다.</summary>
+        public static event System.Action<Vector3, float, float> ImpactPlayed;
+
+        /// <summary>(시간) 보스 도약 시네마틱 카메라 — 네트워크 서버가 클라이언트에 복제한다.</summary>
+        public static event System.Action<float> CinematicPlayed;
+
+        /// <summary>(시간, 높이) 보스 도약 시작 — 클라이언트는 위치(NetworkTransform)만 받으므로 몸의 포물선을 따로 그린다.</summary>
+        public static event System.Action<float, float> LeapStarted;
+
+        private TelegraphView safeZoneView;
 
         private readonly List<TelegraphView> views = new List<TelegraphView>();
         private readonly List<CombatActor> trackedTargets = new List<CombatActor>();
@@ -97,11 +110,8 @@ namespace DemoLA.Boss
                 return;
             }
 
-            primaryTarget = InInfo.Target != null ? InInfo.Target.OwnerActor as CombatActor : null;
-            if (primaryTarget == null || primaryTarget.IsDead == true)
-            {
-                primaryTarget = boss.AggroTarget;
-            }
+            var requested = InInfo.Target != null ? InInfo.Target.OwnerActor as CombatActor : null;
+            primaryTarget = PatternTargeting.Resolve(boss, Definition, requested);
 
             if (boss.Motor != null)
             {
@@ -115,6 +125,14 @@ namespace DemoLA.Boss
 
             repeatIndex = 0;
             failCount = 0;
+            if (Definition.ShowSafeZone == true)
+            {
+                // 안전지대(파란 도넛): 패턴 내내 보인다.
+                var center = ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero;
+                safeZoneView = TelegraphView.Spawn(HitArea.Donut(Definition.SafeZoneInner, Definition.SafeZoneOuter), center, Vector3.forward, true);
+                safeZoneView.SetProgress(1.0f);
+            }
+
             Owner.OnGameplayEvent += handleGameplayEvent;
             boss.Announce(Definition, Definition.Response);
 
@@ -129,6 +147,12 @@ namespace DemoLA.Boss
         protected override void OnEnd(bool InWasCancelled)
         {
             Owner.OnGameplayEvent -= handleGameplayEvent;
+            if (safeZoneView != null)
+            {
+                safeZoneView.Despawn();
+                safeZoneView = null;
+            }
+
             endCharge(true);
             endChase();
             closeCounterWindow();
@@ -152,18 +176,9 @@ namespace DemoLA.Boss
         {
             stepIndex = 0;
             counteredThisRepeat = false;
-            if (Definition.Counterable == true)
+            if (Definition.Counterable == true && Definition.HasStepCounter == false)
             {
-                AddTask(new WaitDelayTask(Definition.CounterWindowStart, openCounterWindow));
-                AddTask(new WaitDelayTask(Definition.CounterWindowEnd, () =>
-                {
-                    if (counterWindowOpen == true && counteredThisRepeat == false)
-                    {
-                        failCount += 1;
-                    }
-
-                    closeCounterWindow();
-                }));
+                scheduleCounterWindow(Definition.CounterWindowStart, Definition.CounterWindowEnd);
             }
 
             runStep();
@@ -209,6 +224,23 @@ namespace DemoLA.Boss
             despawnViews();
             trackedTargets.Clear();
             resolveTargets(InStep, boss);
+            if (InStep.Counterable == true)
+            {
+                // 이 타격만의 카운터 구간 (전조 시작 기준).
+                scheduleCounterWindow(InStep.CounterWindowStart, InStep.CounterWindowEnd);
+            }
+
+            if (InStep.StartLeapDuration > 0.0f && boss.Motor != null && trackedTargets.Count > 0)
+            {
+                // 지금부터 도약 (뒤 단계들은 보스가 공중에 있는 동안 진행된다).
+                Vector3 leapOrigin;
+                Vector3 leapForward;
+                placement(InStep, boss, trackedTargets[0], out leapOrigin, out leapForward);
+                boss.Motor.Leap(leapOrigin, InStep.StartLeapDuration, InStep.LeapHeight);
+                LeapStarted?.Invoke(InStep.StartLeapDuration, InStep.LeapHeight);
+                playCinematic(InStep.StartLeapDuration + 0.8f);
+            }
+
             if (InStep.ChaseTarget == true && chaseTarget == null)
             {
                 beginChase(boss);
@@ -287,6 +319,17 @@ namespace DemoLA.Boss
             viewAngles.Add(InAngle);
         }
 
+        private void playCinematic(float InDuration)
+        {
+            if (Definition.CinematicLeap == false || Boss == null)
+            {
+                return;
+            }
+
+            DemoLA.Player.BossCinematicCamera.Play(Boss.transform, InDuration);
+            CinematicPlayed?.Invoke(InDuration);
+        }
+
         // ------------------------------------------------------------------ chase (추적 휠윈드)
 
         /// <summary>추적할 대상: 이 패턴의 첫 대상(도약 대상)이 아닌 다른 플레이어 중 무작위.</summary>
@@ -346,6 +389,8 @@ namespace DemoLA.Boss
             {
                 // 장판 중심으로 뛰어올라 착지하는 순간 판정한다 (장판은 착지까지 남겨 둔다).
                 boss.Motor.Leap(views[0].Origin, InStep.LeapDuration, InStep.LeapHeight);
+                LeapStarted?.Invoke(InStep.LeapDuration, InStep.LeapHeight);
+                playCinematic(InStep.LeapDuration + 0.8f);
                 AddTask(new WaitDelayTask(InStep.LeapDuration, () =>
                 {
                     DemoLA.Player.QuarterViewCamera.Shake(0.7f, 0.5f);
@@ -365,7 +410,7 @@ namespace DemoLA.Boss
                 return;
             }
 
-            float fraction = InStep.DamageFraction + Definition.FailEscalationFraction * failCount * (Definition.Counterable == true ? 1.0f : 0.0f);
+            float fraction = InStep.DamageFraction + Definition.FailEscalationFraction * failCount * (Definition.IsCounterable == true ? 1.0f : 0.0f);
             if (InStep.BossMoveDistance > 0.0f && boss.Motor != null)
             {
                 if (InStep.ChargeSweepHit == true)
@@ -402,6 +447,14 @@ namespace DemoLA.Boss
                 breakAllStructures();
             }
 
+            if (InStep.BigImpact == true && views.Count > 0)
+            {
+                float radius = InStep.Area.Shape == EHitShape.Rect ? InStep.Area.Length : InStep.Area.Radius;
+                float strength = InStep.DamageTier >= EDamageTier.VeryBig ? 1.0f : 0.5f;
+                BossImpactFx.Play(views[0].Origin, radius, strength);
+                ImpactPlayed?.Invoke(views[0].Origin, radius, strength);
+            }
+
             flashViews();
             stepIndex += 1;
             runStep();
@@ -427,7 +480,7 @@ namespace DemoLA.Boss
             }
         }
 
-        /// <summary>이 단계의 장판(판정 범위)에 닿은 벽을 무너뜨린다.</summary>
+        /// <summary>이 단계의 장판(판정 범위)에 닿은 벽 · 기둥을 무너뜨린다 (기둥은 생명 구슬을 떨어뜨린다).</summary>
         private void breakWalls(PatternStep InStep, BossActor InBoss)
         {
             var structures = ArenaStructure.Structures;
@@ -437,7 +490,7 @@ namespace DemoLA.Boss
                 for (int i = structures.Count - 1; i >= 0; --i)
                 {
                     var structure = structures[i];
-                    if (structure.Kind != EStructureKind.Wall || structure.IsDestroyed == true)
+                    if (structure.IsDestroyed == true)
                     {
                         continue;
                     }
@@ -650,7 +703,7 @@ namespace DemoLA.Boss
         private void onRepeatFinished()
         {
             repeatIndex += 1;
-            if (Definition.Counterable == true && repeatIndex < Mathf.Max(1, Definition.CounterRepeat))
+            if (Definition.IsCounterable == true && repeatIndex < Mathf.Max(1, Definition.CounterRepeat))
             {
                 runRepeat();
                 return;
@@ -666,6 +719,25 @@ namespace DemoLA.Boss
         }
 
         // ------------------------------------------------------------------ counter
+
+        /// <summary>지금부터 InStart 초 뒤 열고 InEnd 초 뒤 닫는다. 닫힐 때까지 카운터하지 못하면 실패 +1.</summary>
+        private void scheduleCounterWindow(float InStart, float InEnd)
+        {
+            AddTask(new WaitDelayTask(Mathf.Max(0.0f, InStart), () =>
+            {
+                counteredThisRepeat = false;
+                openCounterWindow();
+            }));
+            AddTask(new WaitDelayTask(Mathf.Max(InStart, InEnd), () =>
+            {
+                if (counterWindowOpen == true && counteredThisRepeat == false)
+                {
+                    failCount += 1;
+                }
+
+                closeCounterWindow();
+            }));
+        }
 
         private void openCounterWindow()
         {
@@ -819,20 +891,26 @@ namespace DemoLA.Boss
                 case EPatternTargeting.BossForward:
                     OutOrigin = bossPosition;
                     OutForward = InBoss.Forward;
-                    return;
+                    break;
                 case EPatternTargeting.BossTowardAggro:
                     InBoss.FaceTowards(targetPosition);
                     OutOrigin = bossPosition;
                     OutForward = toTarget;
-                    return;
+                    break;
                 case EPatternTargeting.ArenaCenter:
                     OutOrigin = ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero;
                     OutForward = Vector3.forward;
-                    return;
+                    break;
                 default:
                     OutOrigin = targetPosition;
                     OutForward = toTarget;
-                    return;
+                    break;
+            }
+
+            if (InStep.ForwardOffset != 0.0f)
+            {
+                // 찍은 곳에 범위: 원점을 정면(음수면 뒤)으로 옮긴다. 방향은 그대로.
+                OutOrigin += HitGeometry.Flat(OutForward).normalized * InStep.ForwardOffset;
             }
         }
 

@@ -524,15 +524,7 @@ namespace DemoLA.UI
             var rules = database.EngravingRules;
             var points = EngravingCalculator.ComputePoints(build, rules);
 
-            header(InWindow, "활성 각인 (각인서 · 어빌리티 스톤 · 악세사리 합산, 적용 전 미리보기)");
-            var active = UIKit.IconGrid(InWindow.Content, 60.0f, 8.0f, 13);
-            foreach (var pair in points)
-            {
-                int id = pair.Key;
-                int value = pair.Value;
-                int level = EngravingCalculator.LevelOf(value, rules);
-                UIKit.IconCell(active, ItemTooltips.EngravingIcon(database, id, level), 60.0f, $"Lv{level}", () => ItemTooltips.Engraving(database, id, value));
-            }
+            drawEngravingProgress(InWindow, points);
 
             header(InWindow, $"각인서 (최대 활성도 {rules.MaxBookPoints}) · 어빌리티 스톤 (세공 최대 {rules.MaxStonePoints})");
             hint(InWindow, "도감의 각인을 칸에 끌어 놓거나 도감에서 우클릭(빈 각인서 칸에 장착 / 이미 장착이면 해제). 칸 우클릭 · 칸을 밖으로 끌기 = 해제.");
@@ -590,6 +582,141 @@ namespace DemoLA.UI
         }
 
         /// <summary>
+        /// 활성 각인 진행도: 각인마다 한 줄 [아이콘 · 이름 · 레벨 · 칸 막대(레벨 구간) · 현재/최대 · 다음 레벨까지 · 출처].
+        /// 적용 전 미리보기 값이다 (빌드 창에서 바꾼 즉시 다시 그린다).
+        /// </summary>
+        private void drawEngravingProgress(GameWindow InWindow, Dictionary<int, int> InPoints)
+        {
+            var rules = database.EngravingRules;
+            int per = Mathf.Max(1, rules.PointsPerLevel);
+            int maxPoints = per * Mathf.Max(1, rules.MaxLevel);
+            header(InWindow, $"활성 각인 포인트 — {per}포인트마다 Lv+1, 최대 Lv{rules.MaxLevel} ({maxPoints}포인트) · 각인서 · 스톤 · 악세사리 합산");
+
+            var ids = new List<int>(InPoints.Keys);
+            ids.RemoveAll(id => id == 0 || InPoints[id] <= 0 || database.GetEngraving(id) == null);
+            ids.Sort((a, b) =>
+            {
+                bool negA = database.GetEngraving(a).IsNegative;
+                bool negB = database.GetEngraving(b).IsNegative;
+                if (negA != negB)
+                {
+                    return negA ? 1 : -1;
+                }
+
+                return InPoints[b].CompareTo(InPoints[a]);
+            });
+
+            if (ids.Count == 0)
+            {
+                hint(InWindow, "장착된 각인이 없습니다. 아래 도감에서 각인을 각인서 · 스톤 칸에 끌어다 놓으세요.");
+                return;
+            }
+
+            int activeCount = 0;
+            foreach (int id in ids)
+            {
+                var row = database.GetEngraving(id);
+                int value = InPoints[id];
+                int level = EngravingCalculator.LevelOf(value, rules);
+                bool negative = row.IsNegative;
+                if (negative == false && level > 0)
+                {
+                    activeCount += 1;
+                }
+
+                var line = UIKit.HorizontalRow(InWindow.Content, 44, 8).transform;
+                int captured = id;
+                UIKit.IconCell(line, ItemTooltips.EngravingIcon(database, id, level), 40.0f, string.Empty, () => ItemTooltips.Engraving(database, captured, value));
+                var name = UIKit.RowLabel(line, row.Name, 150, 17);
+                name.color = negative ? TooltipContent.Bad : (row.IsClass ? IconFactory.GradeColor(4) : TooltipContent.Body);
+
+                var levelLabel = UIKit.RowLabel(line, level > 0 ? $"Lv{level}" : "Lv0", 46, 18);
+                levelLabel.fontStyle = FontStyle.Bold;
+                levelLabel.alignment = TextAnchor.MiddleCenter;
+                levelLabel.color = negative ? TooltipContent.Bad : (level >= rules.MaxLevel ? IconFactory.GradeColor(4) : (level > 0 ? UIKit.AccentColor : TooltipContent.Dim));
+
+                var fill = negative ? new Color(0.85f, 0.3f, 0.28f) : (level >= rules.MaxLevel ? IconFactory.GradeColor(4) : new Color(0.95f, 0.72f, 0.3f));
+                UIKit.SegmentBar(line, Mathf.Min(value, maxPoints), per, rules.MaxLevel, fill, 0.0f, 16.0f);
+
+                var count = UIKit.RowLabel(line, $"{value} / {maxPoints}", 70, 16);
+                count.alignment = TextAnchor.MiddleRight;
+                count.color = value > maxPoints ? TooltipContent.Bad : TooltipContent.Body;
+
+                string next;
+                if (value > maxPoints)
+                {
+                    next = $"초과 {value - maxPoints}";
+                }
+                else if (level >= rules.MaxLevel)
+                {
+                    next = "최대";
+                }
+                else
+                {
+                    next = $"다음 Lv까지 {per * (level + 1) - value}";
+                }
+
+                var nextLabel = UIKit.RowLabel(line, next, 96, 13);
+                nextLabel.color = level >= rules.MaxLevel && value <= maxPoints ? IconFactory.GradeColor(4) : TooltipContent.Dim;
+                var sources = UIKit.RowLabel(line, engravingSources(id), 250, 12);
+                sources.color = TooltipContent.Dim;
+            }
+
+            if (rules.MaxActiveEngravings > 0)
+            {
+                hint(InWindow, $"활성 각인 {activeCount} / {rules.MaxActiveEngravings}" + (activeCount > rules.MaxActiveEngravings ? " — 상한 초과" : string.Empty));
+            }
+        }
+
+        /// <summary>"각인서1 +9 · 스톤 +4 · 목걸이 +3" — 이 각인 포인트가 어디서 왔는지.</summary>
+        private string engravingSources(int InId)
+        {
+            var rules = database.EngravingRules;
+            var parts = new List<string>();
+            int books = 0;
+            for (int i = 0; i < build.Books.Count && books < rules.BookSlots; ++i)
+            {
+                var book = build.Books[i];
+                if (book == null || book.EngravingId == 0)
+                {
+                    continue;
+                }
+
+                books += 1;
+                if (book.EngravingId == InId && book.Points > 0)
+                {
+                    parts.Add($"각인서{i + 1} +{Mathf.Clamp(book.Points, 0, rules.MaxBookPoints)}");
+                }
+            }
+
+            var stone = build.Stone;
+            if (stone != null)
+            {
+                int fromStone = (stone.EngravingA == InId ? Mathf.Clamp(stone.PointsA, 0, rules.MaxStonePoints) : 0)
+                                + (stone.EngravingB == InId ? Mathf.Clamp(stone.PointsB, 0, rules.MaxStonePoints) : 0)
+                                + (stone.NegativeEngraving == InId ? Mathf.Clamp(stone.NegativePoints, 0, rules.MaxStonePoints) : 0);
+                if (fromStone > 0)
+                {
+                    parts.Add($"스톤 +{fromStone}");
+                }
+            }
+
+            for (int i = 0; i < build.Accessories.Count; ++i)
+            {
+                var accessory = build.Accessories[i];
+                int fromAccessory = (accessory.EngravingA == InId ? accessory.PointsA : 0)
+                                    + (accessory.EngravingB == InId ? accessory.PointsB : 0)
+                                    + (accessory.NegativeEngraving == InId ? accessory.NegativePoints : 0);
+                if (fromAccessory > 0)
+                {
+                    parts.Add($"{ItemTooltips.SlotName(accessory.Slot)} +{fromAccessory}");
+                }
+            }
+
+            return string.Join(" · ", parts);
+        }
+
+        /// <summary>
         /// 각인 도감: 내 직업이 쓸 수 있는 모든 각인 (전투 · 직업 · 감소). 어디든 장착돼 있으면 "장착" 표시.
         /// InRightClick 이 null 이면 우클릭 동작 없음 (끌기만).
         /// </summary>
@@ -623,9 +750,19 @@ namespace DemoLA.UI
                     points.TryGetValue(id, out value);
                     int level = EngravingCalculator.LevelOf(value, database.EngravingRules);
                     var sprite = ItemTooltips.EngravingIcon(database, id, Mathf.Max(1, level));
-                    codexCell(grid, sprite, value > 0 ? $"Lv{level}" : string.Empty, () => ItemTooltips.Engraving(database, id, value), value > 0,
+                    var cell = codexCell(grid, sprite, value > 0 ? $"Lv{level}" : string.Empty, () => ItemTooltips.Engraving(database, id, value), value > 0,
                         () => new DragPayload { Kind = negative ? "engraving-neg" : "engraving", Data = id, Icon = sprite },
                         InRightClick != null ? (Action)(() => InRightClick(id, negative)) : null);
+                    if (value > 0)
+                    {
+                        // 칸 아래쪽에 포인트 막대 (위 '활성 각인 포인트' 줄과 같은 값).
+                        var rules = database.EngravingRules;
+                        int maxPoints = Mathf.Max(1, rules.PointsPerLevel * rules.MaxLevel);
+                        var barRect = UIKit.Rect(cell.transform, "Points", new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(3.0f, -7.0f), new Vector2(-3.0f, -2.0f));
+                        UIKit.Image(barRect, new Color(0.0f, 0.0f, 0.0f, 0.75f));
+                        var fillRect = UIKit.Rect(barRect, "Fill", Vector2.zero, new Vector2(Mathf.Clamp01(value / (float)maxPoints), 1.0f), new Vector2(1.0f, 1.0f), new Vector2(-1.0f, -1.0f));
+                        UIKit.Image(fillRect, negative ? new Color(0.85f, 0.3f, 0.28f) : (level >= rules.MaxLevel ? IconFactory.GradeColor(4) : new Color(0.95f, 0.72f, 0.3f)));
+                    }
                 }
             }
         }

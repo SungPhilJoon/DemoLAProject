@@ -132,8 +132,86 @@ namespace DemoLA.Editor
 
         // ------------------------------------------------------------------ 2. data assets
 
+        /// <summary>카운터 빛 재질 (Generated 밖이라 셋업이 지우지 않는다). 없으면 셰이더로 만든다.</summary>
+        public static Material EnsureCounterGlowMaterial()
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(DemoLA.Boss.CounterGlowView.MaterialPath);
+            if (material != null)
+            {
+                return material;
+            }
+
+            var shader = Shader.Find(DemoLA.Boss.CounterGlowView.ShaderName);
+            if (shader == null)
+            {
+                Debug.LogWarning($"[DemoLA] 셰이더 {DemoLA.Boss.CounterGlowView.ShaderName} 없음 — 카운터 빛 재질을 만들지 못했다.");
+                return null;
+            }
+
+            ensureFolder("Assets/_Project/Art/Materials");
+            material = new Material(shader) { name = "M_CounterGlow" };
+            AssetDatabase.CreateAsset(material, DemoLA.Boss.CounterGlowView.MaterialPath);
+            return material;
+        }
+
+        /// <summary>
+        /// GAS Tool 로 만든 패턴(Data/Authored/Boss/Patterns)은 Generated 밖이라 셋업이 지우지 않는다 →
+        /// 새로 만든 보스의 Patterns 와 자기 PhaseId 페이즈 목록에 다시 넣는다 (ID 접두사 G1 → Gate1, G2 → Gate2).
+        /// </summary>
+        private static void addAuthoredPatterns(GameDatabase InDatabase)
+        {
+            const string folder = "Assets/_Project/Data/Authored/Boss/Patterns";
+            if (AssetDatabase.IsValidFolder(folder) == false)
+            {
+                return;
+            }
+
+            foreach (var guid in AssetDatabase.FindAssets("t:BossPatternDefinition", new[] { folder }))
+            {
+                var pattern = AssetDatabase.LoadAssetAtPath<DemoLA.Boss.BossPatternDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                if (pattern == null || string.IsNullOrEmpty(pattern.PatternId) == true)
+                {
+                    continue;
+                }
+
+                var boss = InDatabase.GetBoss(pattern.PatternId.StartsWith("G1") == true ? "Gate1" : "Gate2");
+                if (boss == null || boss.GetPattern(pattern.PatternId) != null)
+                {
+                    continue;
+                }
+
+                boss.Patterns.Add(pattern);
+                var phase = boss.GetPhase(pattern.PhaseId);
+                if (phase != null && phase.PatternIds.Contains(pattern.PatternId) == false)
+                {
+                    phase.PatternIds.Add(pattern.PatternId);
+                }
+            }
+        }
+
         public static GameDatabase CreateDataAssets(DemoLATables InTables)
         {
+            // 패턴 대상 규칙(툴/인스펙터에서 정한 값)은 CSV 에 없다 → 지우기 전에 PatternId 별로 기억했다가 새 에셋에 다시 넣는다.
+            var keptSelectors = new Dictionary<string, DemoLA.Boss.PatternTargetSelector>();
+            // GAS Tool 에서 편집한 패턴(ToolEdited)은 에셋 전체가 원본 → 복사해 두었다가 새 에셋에 덮고 CSV 메타데이터만 다시 넣는다.
+            var keptEdited = new Dictionary<string, DemoLA.Boss.BossPatternDefinition>();
+            if (AssetDatabase.IsValidFolder(DataRoot) == true)
+            {
+                foreach (var guid in AssetDatabase.FindAssets("t:BossPatternDefinition", new[] { DataRoot }))
+                {
+                    var old = AssetDatabase.LoadAssetAtPath<DemoLA.Boss.BossPatternDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                    if (old != null && old.TargetSelector != null && string.IsNullOrEmpty(old.PatternId) == false)
+                    {
+                        keptSelectors[old.PatternId] = old.TargetSelector;
+                    }
+
+                    if (old != null && old.ToolEdited == true && string.IsNullOrEmpty(old.PatternId) == false)
+                    {
+                        keptEdited[old.PatternId] = UnityEngine.Object.Instantiate(old);
+                    }
+                }
+            }
+
             // 폴더는 남기고 안의 에셋만 지운다 (같은 폴더를 지웠다 바로 만들면 AssetDatabase 가 어긋난다).
             if (AssetDatabase.IsValidFolder(DataRoot) == true)
             {
@@ -153,6 +231,37 @@ namespace DemoLA.Editor
 
             ensureFolder(DataRoot);
             var database = DefaultContent.CreateDatabase(InTables);
+            // 아이콘 라이브러리는 Generated 밖(Art/Icons)에 있어 셋업이 지우지 않는다 → 없으면 매니페스트로 만든다.
+            database.Icons = IconLibraryBuilder.Build(false);
+            database.CounterGlowMaterial = EnsureCounterGlowMaterial();
+            foreach (var created in DefaultContent.CreatedObjects)
+            {
+                var pattern = created as DemoLA.Boss.BossPatternDefinition;
+                DemoLA.Boss.PatternTargetSelector selector;
+                if (pattern != null && keptSelectors.TryGetValue(pattern.PatternId, out selector) == true)
+                {
+                    pattern.TargetSelector = selector;
+                }
+
+                DemoLA.Boss.BossPatternDefinition edited;
+                if (pattern != null && keptEdited.TryGetValue(pattern.PatternId, out edited) == true)
+                {
+                    var csv = UnityEngine.Object.Instantiate(pattern);
+                    string name = pattern.name;
+                    EditorUtility.CopySerialized(edited, pattern);
+                    BossPatternImporter.CopyMetadata(csv, pattern);
+                    pattern.name = name;
+                    UnityEngine.Object.DestroyImmediate(csv);
+                }
+            }
+
+            foreach (var edited in keptEdited.Values)
+            {
+                UnityEngine.Object.DestroyImmediate(edited);
+            }
+
+            addAuthoredPatterns(database);
+
             var used = new HashSet<string>();
             // 참조되는 쪽부터 에셋으로 만든다 (이펙트 → 스킬 · 패턴 · AI · 세트 → 직업 · 보스).
             // 참조하는 에셋을 먼저 저장하면 아직 에셋이 아닌 대상을 가리켜 fileID 0 으로 저장되고,

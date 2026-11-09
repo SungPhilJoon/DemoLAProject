@@ -42,6 +42,40 @@ namespace DemoLA.Boss
         public Func<CombatActor, bool> CanPick;
 
         private static readonly System.Collections.Generic.List<CombatActor> Buffer = new System.Collections.Generic.List<CombatActor>();
+        private static readonly System.Collections.Generic.List<RaidPickup> All = new System.Collections.Generic.List<RaidPickup>();
+        private static int nextNetId;
+
+        /// <summary>떠 있는 구슬 전부 (네트워크 서버가 위치 · 색을 복제한다).</summary>
+        public static System.Collections.Generic.IReadOnlyList<RaidPickup> Active
+        {
+            get { return All; }
+        }
+
+        /// <summary>서버에서 정한 번호 (클라이언트 복제본과 짝을 맞춘다).</summary>
+        public int NetId { get; private set; }
+
+        /// <summary>클라이언트 복제본: 보이기만 한다 (줍기 · 수명 · 이동은 서버가 하고 위치만 받는다).</summary>
+        public bool IsVisualOnly { get; set; }
+
+        public Color Color
+        {
+            get
+            {
+                var renderer = GetComponent<Renderer>();
+                return renderer != null ? renderer.sharedMaterial.color : Color.white;
+            }
+        }
+
+        protected override void OnUnityAwake()
+        {
+            NetId = ++nextNetId;
+            All.Add(this);
+        }
+
+        protected override void OnUnityDestroy()
+        {
+            All.Remove(this);
+        }
 
         public static RaidPickup Create(string InName, Vector3 InPosition, Color InColor, float InScale)
         {
@@ -78,6 +112,16 @@ namespace DemoLA.Boss
 
         private void Update()
         {
+            if (IsVisualOnly == true)
+            {
+                if (SpinSpeed != 0.0f)
+                {
+                    transform.Rotate(0.0f, SpinSpeed * Time.deltaTime, 0.0f, Space.World);
+                }
+
+                return;
+            }
+
             float deltaTime = Time.deltaTime;
             age += deltaTime;
             if (launching == true)

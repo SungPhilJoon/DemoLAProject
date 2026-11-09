@@ -115,6 +115,8 @@ namespace DemoLA.Boss
         public float StartDelay;
         public EPatternTargeting Targeting = EPatternTargeting.BossTowardAggro;
         public HitArea Area = HitArea.Circle(4.0f);
+        [Tooltip("판정 원점을 정면 방향으로 옮긴다 (m). 도끼 찍기처럼 '찍은 곳' 에 범위를 만들 때. 음수 = 뒤쪽")]
+        public float ForwardOffset;
         [Tooltip("전조 시간 (초). xlsx 에서 미측정 — 자리 표시 값")]
         public float TelegraphTime = 1.2f;
         [Tooltip("전조 중 대상을 따라간다 (추적 장판)")]
@@ -133,7 +135,7 @@ namespace DemoLA.Boss
         public float BossMoveDistance;
         public float BossMoveDuration = 0.3f;
 
-        [Tooltip("판정 범위에 닿은 외곽 벽(EStructureKind.Wall)을 무너뜨린다 (휠윈드 · 3연 베기)")]
+        [Tooltip("판정 범위에 닿은 벽과 기둥을 무너뜨린다 (휠윈드 · 3연 베기). 기둥은 생명 구슬을 떨어뜨린다")]
         public bool BreaksWalls;
         [Tooltip("판정 순간 맵의 모든 기둥 · 벽을 무너뜨린다 (첫 즉사 패턴의 첫 타격). 생명 구슬은 나오지 않는다")]
         public bool BreaksAllStructures;
@@ -143,6 +145,10 @@ namespace DemoLA.Boss
         [Header("도약 (LeapDuration > 0): 장판 중심으로 뛰어올라 착지하며 판정")]
         public float LeapDuration;
         public float LeapHeight = 4.0f;
+        [Tooltip("이 단계가 시작되는 순간 장판 중심으로 이 시간(초) 동안 도약을 시작한다 (LeapHeight 높이). 뒤 단계들이 공중에 있는 동안 진행되고, 착지 시각에 맞춰 마지막 단계의 판정을 둔다 (G2-25 천상 낙하)")]
+        public float StartLeapDuration;
+        [Tooltip("판정 순간 크게 터지는 연출 (충격파 · 강한 화면 흔들림)")]
+        public bool BigImpact;
 
         [Header("십자 / X 범위 (ArmCount > 0): 중심에서 뻗는 직선 범위")]
         public int ArmCount;
@@ -174,6 +180,14 @@ namespace DemoLA.Boss
         public bool ClipTelegraphToStructure = true;
         [Tooltip("돌진 직전 보스가 뒤로 움찔하는 시간 (초). 0 이면 없음")]
         public float ChargeWindup = 0.25f;
+
+        [Header("카운터 (이 타격)")]
+        [Tooltip("이 타격의 전조 중 카운터 가능 (보스에 Boss_CounterWindow 태그 · 몸이 파랗게 빛남). 다단 공격에서 일부 타격만 켤 수 있다")]
+        public bool Counterable;
+        [Tooltip("이 타격의 전조 시작 기준 카운터 구간 시작 (초)")]
+        public float CounterWindowStart = 0.3f;
+        [Tooltip("이 타격의 전조 시작 기준 카운터 구간 끝 (초). 보통 전조 시간보다 짧게")]
+        public float CounterWindowEnd = 1.0f;
 
         public float DamageFraction
         {

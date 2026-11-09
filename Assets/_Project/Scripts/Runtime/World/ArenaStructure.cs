@@ -111,7 +111,8 @@ namespace DemoLA.World
             }
 
             DemoLA.Player.QuarterViewCamera.Shake(CrashShakeAmplitude, CrashShakeTime);
-            if (Kind == EStructureKind.LifePillar)
+            // 생명 구슬은 서버만 만든다 (클라이언트는 NetworkRaidDirector 가 복제한 구슬을 본다).
+            if (Kind == EStructureKind.LifePillar && NetAuthority.IsReplica == false)
             {
                 spawnLifeOrbs(position, push);
             }

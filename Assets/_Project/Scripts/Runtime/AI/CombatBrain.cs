@@ -207,5 +207,18 @@ namespace DemoLA.AI
         {
             return InContext.Blackboard.GetObject<CombatActor>((int)EAIBlackboard.Target);
         }
+
+        /// <summary>SelectTargetTask 가 다음 패턴용으로 지정한 대상 (없거나 죽었으면 null).</summary>
+        public static CombatActor PatternTarget(StateTreeContext InContext)
+        {
+            var target = InContext.Blackboard.GetObject<CombatActor>((int)EAIBlackboard.PatternTarget);
+            return target != null && target.IsDead == false ? target : null;
+        }
+
+        /// <summary>패턴을 실제로 시작한 뒤 호출 — 지정 대상은 패턴 1회에만 쓴다.</summary>
+        public static void ClearPatternTarget(StateTreeContext InContext)
+        {
+            InContext.Blackboard.SetObject((int)EAIBlackboard.PatternTarget, null);
+        }
     }
 }

@@ -33,16 +33,25 @@ MonoBehaviour:
   MinRange: 0
   MaxRange: 6
   RandomSelectable: 0
+  TargetSelector:
+    rid: -2
   Steps: []
   Recovery: 1
   SuperArmor: 1
   UntargetableDuring: 0
+  ShowSafeZone: 0
+  SafeZoneInner: 24.5
+  SafeZoneOuter: 30
+  CinematicLeap: 0
+  ChargeNextAfter: 0
+  IgnoreInPatternCount: 0
   Counterable: 0
   CounterWindowStart: 0.3
   CounterWindowEnd: 1
   GroggyOnCounter: 3
   CounterRepeat: 1
   FailEscalationFraction: 0.2
+  ToolEdited: 0
   StaggerCheck: 0
   StaggerGauge: 1000
   StaggerTime: 10
@@ -50,3 +59,8 @@ MonoBehaviour:
   StaggerFailDamage: 5
   StaggerFailChainPatternId: 
   GroggyOnStaggerSuccess: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

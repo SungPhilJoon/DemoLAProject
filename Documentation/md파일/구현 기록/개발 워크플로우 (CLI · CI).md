@@ -30,6 +30,7 @@
 | `balance [직업] [초] [시행] [behind]` | 결정적 DPS 시뮬레이션 (밸런스 툴과 같은 코어) |
 | `deps` | Addressables 의존성 리포트 → `DependencyReports/dependency-report.md` |
 | `build [Win64\|Android] [dev]` | 열린 에디터에서 플레이어 빌드 → `Builds/build-report.json` |
+| `net [클라이언트 수] [초] [관문] [rebuild]` | **멀티플레이 테스트**: 개발 빌드를 호스트 + 클라이언트 N 개로 띄워 자동 조작 · 동기화 비교 → `Builds/NetTest/sync-report.md` (7장) |
 
 프로젝트 전용 Pipeline 명령은 `unity command demola` 로 목록을 볼 수 있다
 (`setup` · `import_tables` · `select_gate` · `ready` · `dps` · `raid_status` · `balance` · `deps` · `build` · `build_status`).
@@ -180,3 +181,65 @@ Tools/dev.sh test playmode                     # 전부 (시나리오 47 + 기�
 2. 패키지로 옮긴 뒤 프로젝트의 `Scripts/FrameworkCandidates/Testing` 폴더를 지우고 패키지 버전을 올린다 (같은 asmdef 이름이 두 곳에 있으면 컴파일 오류).
 3. 프레임워크 `EventBus` 와 연결하는 범용 기록기(`EventBusRecorder<T>` — 구조체 필드를 이름 · 값으로 바꿔 기록)를 추가하면 프로젝트 호스트 코드가 더 줄어든다 (다음 단계 제안).
 4. 시간 기반 실행은 `Time.timeScale` 을 바꾼다 → 여러 시나리오를 병렬로 돌리지 않는다 (Test Runner 는 순차 실행이라 문제 없음).
+
+
+## 7. 멀티플레이 테스트 · 동기화 확인
+
+### 7-1. 방식
+
+이 게임은 전역 싱글턴(`GameBootstrap.Current` · `CombatRegistry` · `ArenaFloor.Current` · `Managers` 등)을 많이 쓴다. 그래서 한 프로세스 안에 호스트와 클라이언트를 같이 띄우는 Netcode 통합 테스트는 쓸 수 없다.
+대신 **실제 개발 빌드를 여러 프로세스로 띄워** 비교한다.
+
+```
+Tools/dev.sh net [클라이언트 수=1] [초=60] [Gate1|Gate2] [rebuild]
+  ① 개발 빌드 (Builds/Win64-Dev — 없거나 rebuild 면 에디터에서 빌드)
+  ② 호스트 1 + 클라이언트 N 을 배치 모드(-batchmode -nographics)로 실행, 127.0.0.1 직접 접속 (Relay 없음)
+  ③ 모든 피어가 서버 시각 기준 스냅샷을 Builds/NetTest/{host|client}-*.jsonl 로 기록
+  ④ python Tools/data/net_sync_check.py Builds/NetTest → Builds/NetTest/sync-report.md (FAIL 이면 종료 코드 1)
+```
+
+| 구성 요소 | 파일 | 하는 일 |
+|---|---|---|
+| 명령줄 실행기 | `Network/Testing/NetTestLauncher.cs` | `-demolaNet host\|client` · `-demolaPort` · `-demolaGate` · `-demolaStartWhen N`(N명 접속 시 레이드 시작) · `-demolaGodMode` · `-demolaQuitAfter` · `-demolaScript` |
+| 자동 조작 | `Network/Testing/NetAutopilot.cs` | 자기 캐릭터를 `PlayerController.Commands` 로 조작한다. 클라이언트는 실제 **서버 RPC 경로**로 이동 · 스킬 · 회피 · 에스더를 쓴다 |
+| 기록기 | `Network/Testing/NetSyncProbe.cs` | 0.2초마다 기록: 보스(체력 · 무력화 · 페이즈 · 태그 · 위치), 파티원(체력 · 태그 · 위치 · 사망), 에스더 게이지, 무너진 구조물, 무너진 바닥, 장판(개수 · 위치), 구슬 수. 장판 생성 · 카운터 구간 시작은 이벤트로 기록 |
+| 분석기 | `Tools/data/net_sync_check.py` | 클라이언트 값이 "같은 시각 −0.4초 ~ +0.15초" 의 호스트 값 중 하나와 맞으면 정상으로 본다 (10Hz 복제 + 전송 지연, 클라이언트 ServerTime 은 추정치라 약간 앞섬) |
+| LAN 수동 테스트 | 로비 창 (F7) **LAN 호스트 / LAN 참가** | Relay 없이 같은 PC 의 창 두 개 · 같은 네트워크의 PC 끼리 테스트 |
+
+기본 스크립트(`NET_SCRIPT` 환경 변수로 바꿀 수 있다)는 테스트 시간 안에 다음이 반드시 일어나게 한다.
+
+| 시각 | 실행 | 확인하려는 것 |
+|---|---|---|
+| 6초 · 42초 | G2-24 | 타격별 카운터 |
+| 14초 | G2-21 | 벽 · 기둥 파괴 |
+| 22초 | G2-07 | 카운터 |
+| 30초 | G2-05 | 지형 붕괴 · 낙사 |
+| 50초 | G2-11 | 추적 돌진 장판 |
+
+```
+NET_SCRIPT="5:pattern:G2-16;20:gimmick:G2-06" Tools/dev.sh net 2 45 Gate2
+```
+
+### 7-2. 보고서 읽기
+
+| 결과 | 기준 |
+|---|---|
+| PASS | 어긋난 순간 없음 |
+| WARN | 어긋난 순간이 5% 이하. 빠른 이동(돌진 · 넉백) 중 위치 보간 지연, 0.1초보다 짧은 태그 등 |
+| FAIL | 어긋난 순간이 5% 초과. 복제가 빠졌거나 클라이언트가 혼자 다른 결과를 냈다는 뜻 |
+
+### 7-3. 이 장치로 찾아서 고친 문제 (2026-11-09)
+
+| 문제 | 원인 | 수정 |
+|---|---|---|
+| 보스 · AI 파티원이 클라이언트에서만 계속 사망 상태 | 생성 직후 체력이 복제되기 전 초기값 0 을 반영 → 클라이언트가 혼자 사망 처리. `State_Dead` 태그가 다시 지워지지 않음 | 최대 체력이 오기 전에는 반영하지 않는다. 클라이언트는 사망을 판정하지 않고 서버의 `State_Dead` 만 따른다 (`NetAuthority.IsReplica`) |
+| 벽 · 기둥 파괴가 클라이언트에 안 보임 | 파괴는 서버에서만 일어나고 복제가 없었다 | `StructureBrokenRpc` |
+| 생명 구슬 · 기믹 구슬이 클라이언트에 안 보임 | 구슬은 서버에서만 생겼다 | 서버 구슬 목록을 10Hz 로 보내고, 클라이언트는 보이기만 하는 복제본을 둔다. 줍기는 서버만 판정 |
+| 지형 붕괴가 클라이언트에 반영 안 됨, 클라이언트도 낙사 · 구출을 판정 | 붕괴 기믹이 서버에서만 실행된다 | `FloorCollapsedRpc` 류로 붕괴를 복제한다. 낙사 · 구출 판정은 서버만 한다 |
+| 추적 장판이 클라이언트에서 멈춰 있음 (최대 15m 어긋남), 추적 표시(파란 원) 없음 | 장판을 생성할 때 한 번만 보냈다 | 서버 장판 전체(위치 · 방향 · 진행도 · 길이 비율)를 20Hz 스냅샷으로 보낸다. 서버 목록에서 빠지면(판정 순간) 클라이언트도 번쩍이고 사라진다 |
+
+### 7-4. 아직 복제하지 않는 것 (클라이언트 화면 차이)
+
+- 피해 숫자 · 딜 미터: 피해 이벤트가 서버에서만 생긴다
+- 보스 기믹 안내 문구(HUD): 클라이언트 보스에는 진행 중인 기믹 정보가 없다
+- 레이드 결과(클리어 · 전멸) 이벤트

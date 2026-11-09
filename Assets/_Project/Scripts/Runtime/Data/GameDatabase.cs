@@ -30,6 +30,14 @@ namespace DemoLA.Data
         public List<CharacterClassDefinition> Classes = new List<CharacterClassDefinition>();
         public List<EquipmentSetDefinition> EquipmentSets = new List<EquipmentSetDefinition>();
         public List<BossDefinition> Bosses = new List<BossDefinition>();
+        [Tooltip("UI 아이콘 글리프 (Assets/_Project/Art/Icons/IconLibrary.asset). 비어 있으면 절차적 아이콘")]
+        public DemoLA.UI.IconLibrary Icons;
+        [Tooltip("카운터 가능 구간 보스 빛 재질 (Art/Materials/M_CounterGlow.mat) — 셰이더를 빌드에 포함시키는 참조이기도 하다")]
+        public Material CounterGlowMaterial;
+        [Tooltip("에스더 (파티 공용 게이지가 차면 단축키 5 · 6 · 7). 비어 있으면 기본 3명")]
+        public List<DemoLA.Character.EstherDefinition> Esthers = new List<DemoLA.Character.EstherDefinition>();
+        [Tooltip("보스 체력 몇 줄을 깎으면 에스더 게이지가 가득 차는가")]
+        public float EstherHpLinesPerGauge = 12.0f;
 
         public HoningTable Honing
         {

@@ -55,3 +55,63 @@ MonoBehaviour:
   Bosses:
   - {fileID: 11400000, guid: 2317913d1e563344981b05193a18a51e, type: 2}
   - {fileID: 11400000, guid: 0c1ce81bf1c987349a02a0da19bcf114, type: 2}
+  Icons: {fileID: 11400000, guid: 2491b19d8b57a4b4098a8b1e30898066, type: 2}
+  CounterGlowMaterial: {fileID: 2100000, guid: 55703db26e835cf4ab8ee68fc1fa2aab, type: 2}
+  Esthers:
+  - Id: sword
+    DisplayName: "\uAC80\uC758 \uC131\uAE30\uC0AC"
+    Description: "\uD558\uB298\uC5D0\uC11C \uAC70\uB300\uD55C \uAC80\uC744 \uB0B4\uB9AC\uAF42\uC544
+      \uBCF4\uC2A4\uC5D0\uAC8C \uD070 \uD53C\uD574\uB97C \uC8FC\uACE0, \uD30C\uD2F0\uC758
+      \uD53C\uD574\uB97C 15\uCD08 \uB3D9\uC548 20% \uB192\uC778\uB2E4."
+    Kind: 0
+    Gates:
+    - Gate1
+    - Gate2
+    IconKey: "\uAC80\uC758 \uC131\uAE30\uC0AC"
+    Color: {r: 1, g: 0.82, b: 0.35, a: 1}
+    DamageHpLines: 3
+    Stagger: 300
+    BuffDamagePercent: 20
+    BuffDuration: 15
+    GroggySeconds: 0
+    InvulnerableSeconds: 0
+    HealPercent: 0
+  - Id: storm
+    DisplayName: "\uD3ED\uD48D\uC758 \uCC3D\uAE30\uC0AC"
+    Description: "\uCC3D\uC744 \uB358\uC838 \uBCF4\uC2A4\uC758 \uD328\uD134\uC744
+      \uB04A\uB294\uB2E4. \uCE74\uC6B4\uD130 \uAD6C\uAC04\uC774\uBA74 \uCE74\uC6B4\uD130
+      \uC131\uACF5, \uBB34\uB825\uD654 \uCCB4\uD06C \uC911\uC774\uBA74 \uBB34\uB825\uD654
+      \uAC8C\uC774\uC9C0\uB97C \uD06C\uAC8C \uAE4E\uACE0, \uADF8 \uBC16\uC5D0\uB294
+      \uBCF4\uC2A4\uB97C 3\uCD08 \uB3D9\uC548 \uBB34\uB825\uD654\uD55C\uB2E4."
+    Kind: 1
+    Gates:
+    - Gate1
+    - Gate2
+    IconKey: "\uD3ED\uD48D\uC758 \uCC3D\uAE30\uC0AC"
+    Color: {r: 0.45, g: 0.75, b: 1, a: 1}
+    DamageHpLines: 1
+    Stagger: 1200
+    BuffDamagePercent: 0
+    BuffDuration: 0
+    GroggySeconds: 3
+    InvulnerableSeconds: 0
+    HealPercent: 0
+  - Id: earth
+    DisplayName: "\uB300\uC9C0\uC758 \uC218\uD638\uC790"
+    Description: "\uB300\uC9C0\uC758 \uBC29\uBCBD\uC744 \uC138\uC6CC \uD30C\uD2F0
+      \uC804\uC6D0\uC744 6\uCD08 \uB3D9\uC548 \uBB34\uC801\uC73C\uB85C \uB9CC\uB4E4\uACE0
+      \uCD5C\uB300 \uCCB4\uB825\uC758 40%\uB97C \uD68C\uBCF5\uD55C\uB2E4."
+    Kind: 2
+    Gates:
+    - Gate1
+    - Gate2
+    IconKey: "\uB300\uC9C0\uC758 \uC218\uD638\uC790"
+    Color: {r: 0.55, g: 0.9, b: 0.5, a: 1}
+    DamageHpLines: 0
+    Stagger: 0
+    BuffDamagePercent: 0
+    BuffDuration: 0
+    GroggySeconds: 0
+    InvulnerableSeconds: 6
+    HealPercent: 40
+  EstherHpLinesPerGauge: 12

@@ -109,7 +109,7 @@ namespace DemoLA.Tests
         [UnityTest]
         /// <summary>
         /// 지형 파괴: 넉백 없이 발밑이 무너지면 죽지 않고 남은 바닥으로 옮겨진다 (낙사는 몬스터 공격에 날아갔을 때만).
-        /// 넉백 낙사는 시나리오 TS_낙사_넉백 이 확인한다.
+        /// 넉백 낙사는 시나리오 TS_낙사_넉백_지형파괴후 (지형 파괴 이후에만) / TS_낙사_넉백_벽구간구출 (그 전에는 구출) 이 확인한다.
         /// </summary>
         public IEnumerator TerrainCollapse_RescuesPlayerWithoutKnockback()
         {

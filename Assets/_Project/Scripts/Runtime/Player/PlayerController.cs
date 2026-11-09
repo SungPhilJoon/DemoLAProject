@@ -35,6 +35,7 @@ namespace DemoLA.Player
         private InputAction zoom;
         private readonly InputAction[] skills = new InputAction[PartyCharacter.SkillSlotCount];
         private readonly InputAction[] items = new InputAction[PartyCharacter.BattleItemSlotCount];
+        private readonly InputAction[] esthers = new InputAction[3];
         private float repathTimer;
 
         public static PlayerController Current { get; private set; }
@@ -85,6 +86,11 @@ namespace DemoLA.Player
             for (int i = 0; i < items.Length; ++i)
             {
                 items[i] = bindings[$"Item{i + 1}"];
+            }
+
+            for (int i = 0; i < esthers.Length; ++i)
+            {
+                esthers[i] = bindings[$"Esther{i + 1}"];
             }
 
             if (isActiveAndEnabled == true)
@@ -215,6 +221,15 @@ namespace DemoLA.Player
                 if (items[i].WasPressedThisFrame() == true)
                 {
                     Commands.UseBattleItem(i, aim);
+                    return;
+                }
+            }
+
+            for (int i = 0; i < esthers.Length; ++i)
+            {
+                if (esthers[i] != null && esthers[i].WasPressedThisFrame() == true)
+                {
+                    Commands.UseEsther(i);
                     return;
                 }
             }

@@ -14,6 +14,7 @@ namespace DemoLA.Player
         void UseIdentity(Vector3 InAim);
         void UseIdentityX(Vector3 InAim);
         void UseBattleItem(int InSlot, Vector3 InAim);
+        void UseEsther(int InIndex);
         void Dodge(Vector3 InAim);
         void MoveTo(Vector3 InDestination);
     }
@@ -54,6 +55,11 @@ namespace DemoLA.Player
         public void UseBattleItem(int InSlot, Vector3 InAim)
         {
             character.TryUseBattleItem(InSlot, InAim);
+        }
+
+        public void UseEsther(int InIndex)
+        {
+            character.TryUseEsther(InIndex);
         }
 
         public void Dodge(Vector3 InAim)

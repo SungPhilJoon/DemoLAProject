@@ -6,6 +6,7 @@
         "Framework.Runtime",
         "UniTask",
         "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport",
         "Unity.Services.Core",
         "Unity.Services.Authentication",
         "Unity.Services.Multiplayer",

@@ -31,6 +31,7 @@ namespace DemoLA.Editor
             int created = 0;
             int updated = 0;
             int kept = 0;
+            int toolEdited = 0;
             string folder = $"{DemoLAProjectSetup.DataRoot}/Boss/Patterns";
             DemoLAProjectSetup.ensureFolder(folder);
 
@@ -55,16 +56,29 @@ namespace DemoLA.Editor
                     continue;
                 }
 
-                if (existing.TimingsMeasured == true && row.Measured == false)
+                if (existing.ToolEdited == true)
                 {
-                    copyMetadata(fresh, existing);
+                    // GAS Tool 에서 편집한 패턴: 실행 데이터는 에셋이 원본 → CSV 메타데이터만 갱신.
+                    CopyMetadata(fresh, existing);
+                    toolEdited += 1;
+                }
+                else if (existing.TimingsMeasured == true && row.Measured == false)
+                {
+                    CopyMetadata(fresh, existing);
                     kept += 1;
                 }
                 else
                 {
+                    // 대상 선택 규칙은 CSV 에 없고 툴/인스펙터에서 정한다 → 갱신해도 지키고, 프리셋이 정한 경우만 기본값으로 쓴다.
                     string name = existing.name;
+                    var selector = existing.TargetSelector;
                     EditorUtility.CopySerialized(fresh, existing);
                     existing.name = name;
+                    if (selector != null)
+                    {
+                        existing.TargetSelector = selector;
+                    }
+
                     updated += 1;
                 }
 
@@ -73,10 +87,11 @@ namespace DemoLA.Editor
             }
 
             AssetDatabase.SaveAssets();
-            return $"[DemoLA] 패턴 갱신: 새로 {created} · 갱신 {updated} · 에셋 측정값 보존 {kept}";
+            return $"[DemoLA] 패턴 갱신: 새로 {created} · 갱신 {updated} · 에셋 측정값 보존 {kept} · GAS Tool 편집 보존 {toolEdited}";
         }
 
-        private static void copyMetadata(BossPatternDefinition InFrom, BossPatternDefinition InTo)
+        /// <summary>CSV 가 원본인 값만 복사 (이름 · 분류 · 대응 · 메모 등). 실행 데이터는 건드리지 않는다.</summary>
+        public static void CopyMetadata(BossPatternDefinition InFrom, BossPatternDefinition InTo)
         {
             InTo.PhaseId = InFrom.PhaseId;
             InTo.DisplayName = InFrom.DisplayName;

@@ -40,8 +40,8 @@ namespace DemoLA.Tests
             string errors;
             var tables = DemoLATables.FromCsv(TablePaths.ReadCsv, out errors);
             Assert.IsEmpty(errors);
-            // xlsx 43개 + 자체 추가 3개 (BossPatternTable.csv 의 '자체 추가' 행).
-            Assert.AreEqual(43 + 3, tables.BossPattern.Count);
+            // xlsx 43개 + 자체 추가 6개 (BossPatternTable.csv 의 '자체 추가' 행).
+            Assert.AreEqual(43 + 6, tables.BossPattern.Count);
             Assert.AreEqual(9, tables.BossPhase.Count);
             Assert.Greater(tables.Engraving.Count, 20);
             Assert.AreEqual(10, tables.Gem.Count);

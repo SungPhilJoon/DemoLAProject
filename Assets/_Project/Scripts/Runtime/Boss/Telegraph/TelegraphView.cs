@@ -24,7 +24,27 @@ namespace DemoLA.Boss.Telegraph
         private HitArea area;
         private bool safeZone;
         private float flashRemaining;
+        private float progress;
         private MaterialPropertyBlock block;
+        private static int nextNetId;
+
+        /// <summary>Setup 마다 새 번호 (풀에서 다시 쓰여도 다른 장판으로 본다) — 네트워크 복제 짝 맞추기.</summary>
+        public int NetId { get; private set; }
+
+        public bool IsSafeZone
+        {
+            get { return safeZone; }
+        }
+
+        public float Progress
+        {
+            get { return progress; }
+        }
+
+        public float LengthScale
+        {
+            get { return transform.localScale.z; }
+        }
 
         private static readonly int ColorId = Shader.PropertyToID("_Color");
         private static readonly Color OutlineColor = new Color(1.0f, 0.15f, 0.1f, 0.22f);
@@ -65,6 +85,8 @@ namespace DemoLA.Boss.Telegraph
 
         public void Setup(in HitArea InArea, Vector3 InOrigin, Vector3 InForward, bool InSafeZone)
         {
+            NetId = ++nextNetId;
+            progress = 0.0f;
             area = InArea;
             safeZone = InSafeZone;
             flashRemaining = 0.0f;
@@ -155,6 +177,7 @@ namespace DemoLA.Boss.Telegraph
         public void SetProgress(float InRatio)
         {
             float ratio = Mathf.Clamp01(InRatio);
+            progress = ratio;
             if (flashRemaining > 0.0f)
             {
                 return;

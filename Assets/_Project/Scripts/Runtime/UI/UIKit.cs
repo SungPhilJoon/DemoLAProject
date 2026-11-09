@@ -302,6 +302,56 @@ namespace DemoLA.UI
             return image;
         }
 
+        /// <summary>
+        /// 칸 단위 포인트 막대 (각인 활성도 등). InPerSegment 칸마다 구간 사이 간격을 넓혀 레벨 경계를 보여 준다.
+        /// 채운 칸 = InFill, 이미 완성된 구간 = 더 밝게, 빈 칸 = 어둡게. InWidth 0 이면 남는 폭을 채운다.
+        /// </summary>
+        public static RectTransform SegmentBar(Transform InParent, int InValue, int InPerSegment, int InSegments, Color InFill, float InWidth, float InHeight)
+        {
+            var rect = (RectTransform)new GameObject("SegmentBar", typeof(RectTransform)).transform;
+            rect.SetParent(InParent, false);
+            var element = rect.gameObject.AddComponent<LayoutElement>();
+            element.preferredWidth = InWidth;
+            element.flexibleWidth = InWidth <= 0.0f ? 1.0f : 0.0f;
+            element.minHeight = InHeight;
+
+            // 세로 가운데에 InHeight 높이로 놓는다 (부모 줄 높이와 무관하게).
+            var inner = Rect(rect, "Cells", new Vector2(0.0f, 0.5f), new Vector2(1.0f, 0.5f), new Vector2(0.0f, -InHeight * 0.5f), new Vector2(0.0f, InHeight * 0.5f));
+            int per = Mathf.Max(1, InPerSegment);
+            int segments = Mathf.Max(1, InSegments);
+            int total = per * segments;
+            const float cellGap = 0.004f;
+            const float segmentGap = 0.018f;
+            float cellWidth = (1.0f - segmentGap * (segments - 1) - cellGap * (total - segments)) / total;
+            int completed = Mathf.Min(InValue / per, segments);
+            var dim = new Color(1.0f, 1.0f, 1.0f, 0.08f);
+            float x = 0.0f;
+            for (int i = 0; i < total; ++i)
+            {
+                if (i > 0)
+                {
+                    x += i % per == 0 ? segmentGap : cellGap;
+                }
+
+                var cell = Rect(inner, "Cell", new Vector2(x, 0.0f), new Vector2(x + cellWidth, 1.0f), Vector2.zero, Vector2.zero);
+                Color color;
+                if (i < InValue)
+                {
+                    color = i / per < completed ? Color.Lerp(InFill, Color.white, 0.25f) : InFill * 0.85f;
+                    color.a = 1.0f;
+                }
+                else
+                {
+                    color = dim;
+                }
+
+                Image(cell, color);
+                x += cellWidth;
+            }
+
+            return rect;
+        }
+
         /// <summary>아이콘을 격자로 늘어놓는 줄 (자동 줄바꿈).</summary>
         public static RectTransform IconGrid(Transform InParent, float InCellSize, float InSpacing, int InColumns)
         {

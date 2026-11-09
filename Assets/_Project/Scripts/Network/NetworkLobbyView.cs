@@ -20,6 +20,7 @@ namespace DemoLA.Network
         private Canvas canvas;
         private Text status;
         private InputField codeInput;
+        private InputField addressInput;
         private bool busy;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -45,7 +46,7 @@ namespace DemoLA.Network
             layout.childControlWidth = true;
             layout.childForceExpandHeight = false;
 
-            var title = UIKit.RowLabel(list, "멀티플레이 (Relay) — F7 닫기", 0, 22);
+            var title = UIKit.RowLabel(list, "멀티플레이 (Relay · LAN) — F7 닫기", 0, 22);
             title.color = UIKit.AccentColor;
             title.gameObject.AddComponent<LayoutElement>().preferredHeight = 36.0f;
 
@@ -57,6 +58,14 @@ namespace DemoLA.Network
             codeInput = createInput(joinRow, 200);
             UIKit.RowButton(joinRow, "코드로 참가", 150, () => run(join));
             UIKit.RowButton(joinRow, "나가기", 100, () => run(leave));
+
+            // LAN 직접 접속 (Relay 없이 같은 PC / 같은 네트워크 — 테스트 · 개발용, NetDirectConnect). 시작은 위 "레이드 시작".
+            var lanRow = UIKit.HorizontalRow(list, 44, 8).transform;
+            UIKit.RowButton(lanRow, "LAN 호스트 (7777)", 180, () => status.text = Testing.NetDirectConnect.StartHost(7777) ? "LAN 호스트 시작 — 다른 창에서 LAN 참가 후 '레이드 시작'" : "LAN 호스트 실패");
+            addressInput = createInput(lanRow, 160);
+            addressInput.characterValidation = InputField.CharacterValidation.None;
+            addressInput.text = "127.0.0.1";
+            UIKit.RowButton(lanRow, "LAN 참가", 110, () => status.text = Testing.NetDirectConnect.StartClient(addressInput.text, 7777) ? $"LAN 참가 중 ({addressInput.text}) — 호스트가 레이드를 시작하면 합류" : "LAN 참가 실패");
 
             status = UIKit.RowLabel(list, "오프라인 — 호스트하거나 코드로 참가하세요. (UGS 프로젝트 연결 필요)", 0, 17);
             status.gameObject.AddComponent<LayoutElement>().preferredHeight = 120.0f;

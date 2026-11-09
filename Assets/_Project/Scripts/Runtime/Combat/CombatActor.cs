@@ -189,7 +189,9 @@ namespace DemoLA.Combat
 
         private void handleDied()
         {
-            if (HasTag((int)ETag.State_Dead) == true)
+            // 네트워크 클라이언트: 사망은 서버가 판정하고 State_Dead 태그로 복제한다.
+            // (복제 전 초기 체력 0 · 일시적인 값 때문에 클라이언트가 혼자 죽는 것을 막는다.)
+            if (HasTag((int)ETag.State_Dead) == true || NetAuthority.IsReplica == true)
             {
                 return;
             }

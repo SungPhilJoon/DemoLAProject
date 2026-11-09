@@ -15,10 +15,13 @@ namespace DemoLA.World
         public const float TileSize = 4.0f;
         public const float CenterRadius = 8.0f;
         public const float StructureRadius = 14.0f;
-        /// <summary>외곽 벽이 늘어선 원의 반지름 · 개수 · 벽 한 개 크기.</summary>
+        /// <summary>외곽 기둥 원 (안쪽 생명 구슬 기둥 4개와 외곽 벽 사이). 반 칸 비켜 8개.</summary>
+        public const float OuterPillarRadius = 18.0f;
+        public const int OuterPillarCount = 8;
+        /// <summary>외곽 벽이 늘어선 원의 반지름 · 개수 · 벽 한 개 크기. 벽 사이 틈은 약 1.2m.</summary>
         public const float WallRingRadius = 21.0f;
-        public const int WallCount = 10;
-        public const float WallLength = 7.0f;
+        public const int WallCount = 20;
+        public const float WallLength = 5.4f;
         public const float WallThickness = 1.2f;
         public const float WallHeight = 3.5f;
 
@@ -46,9 +49,46 @@ namespace DemoLA.World
             }
         }
 
+        /// <summary>원기둥 하나 (InAngle 도, 중심에서 InRadius). 보스 돌진 · 벽 파괴 공격에 부서지고 InOrbs 개의 생명 구슬을 떨어뜨린다.</summary>
+        private static void buildPillar(Transform InRoot, string InName, float InAngle, float InRadius, int InOrbs)
+        {
+            float angle = InAngle * Mathf.Deg2Rad;
+            GameObject pillar;
+            if (PillarFactory != null)
+            {
+                pillar = PillarFactory(1.2f, 4.0f);
+            }
+            else
+            {
+                pillar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                pillar.transform.localScale = new Vector3(2.4f, 2.0f, 2.4f);
+            }
+
+            pillar.name = InName;
+            pillar.transform.SetParent(InRoot, false);
+            pillar.transform.localPosition = new Vector3(Mathf.Sin(angle), 0.0f, Mathf.Cos(angle)) * InRadius + Vector3.up * 2.0f;
+            if (PillarMaterial != null)
+            {
+                pillar.GetComponent<Renderer>().sharedMaterial = PillarMaterial;
+            }
+            else
+            {
+                paint(pillar, new Color(0.5f, 0.45f, 0.55f));
+            }
+
+            var structure = pillar.AddComponent<ArenaStructure>();
+            structure.Radius = 1.2f;
+            structure.LifeOrbCount = InOrbs;
+            // 카메라와 캐릭터 사이를 가리면 반투명 페이드 (프레임워크 CameraOcclusionSystem).
+            pillar.AddComponent<Framework.CameraOccluder>();
+            var obstacle = pillar.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Capsule;
+            obstacle.carving = true;
+        }
+
         /// <summary>
-        /// 외곽 벽: 기둥보다 넓은 원(WallRingRadius)에 접선 방향으로 늘어선 직육면체. 사이사이 틈이 있다.
-        /// 보스의 휠윈드 · 3연 베기(BreaksWalls) 범위에 닿으면 무너진다.
+        /// 외곽 벽: 기둥보다 넓은 원(WallRingRadius)에 접선 방향으로 늘어선 직육면체 20개. 사이사이 좁은 틈이 있다.
+        /// 보스의 휠윈드 · 3연 베기(BreaksWalls) 범위에 닿으면 무너진다 (같은 범위의 기둥도).
         /// </summary>
         private static void buildWalls(Transform InRoot)
         {
@@ -152,38 +192,15 @@ namespace DemoLA.World
                 }
             }
 
+            // 안쪽 생명 구슬 기둥 4개 (보스 돌진 기믹) + 외곽 기둥 8개 (외곽을 빼곡하게, 구슬 1개).
             for (int i = 0; i < 4; ++i)
             {
-                float angle = (45.0f + 90.0f * i) * Mathf.Deg2Rad;
-                GameObject pillar;
-                if (PillarFactory != null)
-                {
-                    pillar = PillarFactory(1.2f, 4.0f);
-                }
-                else
-                {
-                    pillar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    pillar.transform.localScale = new Vector3(2.4f, 2.0f, 2.4f);
-                }
+                buildPillar(root.transform, $"Structure_{i}", 45.0f + 90.0f * i, StructureRadius, 2);
+            }
 
-                pillar.name = $"Structure_{i}";
-                pillar.transform.SetParent(root.transform, false);
-                pillar.transform.localPosition = new Vector3(Mathf.Sin(angle), 0.0f, Mathf.Cos(angle)) * StructureRadius + Vector3.up * 2.0f;
-                if (PillarMaterial != null)
-                {
-                    pillar.GetComponent<Renderer>().sharedMaterial = PillarMaterial;
-                }
-                else
-                {
-                    paint(pillar, new Color(0.5f, 0.45f, 0.55f));
-                }
-                var structure = pillar.AddComponent<ArenaStructure>();
-                structure.Radius = 1.2f;
-                // 카메라와 캐릭터 사이를 가리면 반투명 페이드 (프레임워크 CameraOcclusionSystem).
-                pillar.AddComponent<Framework.CameraOccluder>();
-                var obstacle = pillar.AddComponent<NavMeshObstacle>();
-                obstacle.shape = NavMeshObstacleShape.Capsule;
-                obstacle.carving = true;
+            for (int i = 0; i < OuterPillarCount; ++i)
+            {
+                buildPillar(root.transform, $"OuterPillar_{i}", 22.5f + 360.0f / OuterPillarCount * i, OuterPillarRadius, 1);
             }
 
             buildWalls(root.transform);

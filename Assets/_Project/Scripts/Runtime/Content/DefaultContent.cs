@@ -33,6 +33,7 @@ namespace DemoLA.Content
             var db = ScriptableObject.CreateInstance<GameDatabase>();
             db.name = "GameDatabase";
             db.Tables = InTables;
+            db.Esthers = DemoLA.Character.EstherSystem.CreateDefaults();
             db.EquipmentSets.AddRange(createEquipmentSets());
             db.Classes.Add(createSummoner());
             db.Classes.Add(createInfighter());

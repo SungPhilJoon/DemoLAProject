@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b2e32ffec07bf46941f56859adbb33, type: 3}
+  m_Name: PT_G2-26
+  m_EditorClassIdentifier: DemoLA.Runtime::DemoLA.Boss.BossPatternDefinition
+  PatternId: G2-26
+  PhaseId: "G2-\uACF5\uD1B5"
+  DisplayName: "\uC7AC\uB3C4\uC57D (135\uC904 \uC774\uD6C4)"
+  Category: 0
+  Response: 6
+  ShapeText: "\uC6D0"
+  LinkedPatternId: 
+  Confidence: 1
+  DamageTier: 1
+  Notes: "135\uC904 \uC774\uD6C4 \uD328\uD134\uC774 \uB05D\uB0A0 \uB54C\uB9C8\uB2E4
+    \uBCF4\uC2A4\uAC00 \uC5B4\uADF8\uB85C \uB300\uC0C1 \uC704\uCE58\uB85C \uD06C\uAC8C
+    \uB3C4\uC57D\uD574 \uCC29\uC9C0 \uCDA9\uACA9\uD30C\uB97C \uC77C\uC73C\uD0A8\uB2E4
+    (Cinemachine \uC2DC\uB124\uB9C8\uD2F1). \uD504\uB85C\uC81D\uD2B8 \uC790\uCCB4
+    \uCD94\uAC00 \uD328\uD134."
+  TimingsMeasured: 0
+  Implemented: 1
+  Cooldown: 0.1
+  Weight: 1
+  MinRange: 0
+  MaxRange: 99
+  RandomSelectable: 0
+  TargetSelector:
+    rid: -2
+  Steps:
+  - Label: "\uC7AC\uB3C4\uC57D"
+    StartDelay: 0
+    Targeting: 1
+    Area:
+      Shape: 0
+      Radius: 4
+      InnerRadius: 0
+      Angle: 0
+      Width: 0
+      Length: 0
+      ForwardOffset: 0
+    ForwardOffset: 0
+    TelegraphTime: 0.7
+    TrackDuringTelegraph: 1
+    TrackLockBefore: 0.3
+    ShowTelegraph: 1
+    DamageTier: 1
+    DamageFractionOverride: -1
+    ApplyStatus: 0
+    StatusDuration: 1
+    ConsumesDeathWard: 0
+    BossMoveDistance: 0
+    BossMoveDuration: 0.3
+    BreaksWalls: 0
+    BreaksAllStructures: 0
+    BossSpinSpeed: 0
+    LeapDuration: 1.4
+    LeapHeight: 12
+    StartLeapDuration: 0
+    BigImpact: 1
+    ArmCount: 0
+    ArmLength: 20
+    ArmWidth: 4
+    ArmAngleOffset: 0
+    RandomCrossOrX: 0
+    KnockbackHeight: 1.5
+    ChaseTarget: 0
+    ChaseSpeed: 5
+    ChargeSweepHit: 1
+    KnockbackDistance: 3
+    KnockbackDuration: 0.25
+    CrashGroggyTime: 4
+    ClipTelegraphToStructure: 1
+    ChargeWindup: 0.25
+    Counterable: 0
+    CounterWindowStart: 0.3
+    CounterWindowEnd: 1
+  Recovery: 0.5
+  SuperArmor: 1
+  UntargetableDuring: 0
+  ShowSafeZone: 0
+  SafeZoneInner: 24.5
+  SafeZoneOuter: 30
+  CinematicLeap: 1
+  ChargeNextAfter: 0
+  IgnoreInPatternCount: 1
+  Counterable: 0
+  CounterWindowStart: 0.3
+  CounterWindowEnd: 1
+  GroggyOnCounter: 3
+  CounterRepeat: 1
+  FailEscalationFraction: 0.2
+  ToolEdited: 0
+  StaggerCheck: 0
+  StaggerGauge: 1000
+  StaggerTime: 10
+  StaggerFailOutcome: 0
+  StaggerFailDamage: 5
+  StaggerFailChainPatternId: 
+  GroggyOnStaggerSuccess: 5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

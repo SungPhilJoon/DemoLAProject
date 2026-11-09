@@ -13,18 +13,19 @@ namespace DemoLA.AI
     [StateTreeNodeInfo("DemoLA/Boss", "PatternId 패턴 사용. 끝나면 Succeeded, 쓸 수 없으면 Failed")]
     public class UsePatternTask : StateTreeTask
     {
-        public string PatternId = "G1-06";
+        [DemoLA.Boss.PatternId] public string PatternId = "G1-06";
         public bool WaitForEnd = true;
         [NonSerialized] private BossPatternAbility ability;
 
         public override ETaskStatus EnterState(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            if (boss == null || boss.TryActivatePattern(PatternId, AIContext.Target(InContext)) == false)
+            if (boss == null || boss.TryActivatePattern(PatternId, AIContext.PatternTarget(InContext)) == false)
             {
                 return ETaskStatus.Failed;
             }
 
+            AIContext.ClearPatternTarget(InContext);
             ability = boss.GetPattern(PatternId);
             return WaitForEnd == true ? ETaskStatus.Running : ETaskStatus.Succeeded;
         }
@@ -52,6 +53,8 @@ namespace DemoLA.AI
         public List<string> PatternIds = new List<string>();
         [Tooltip("현재 페이즈 이외에 함께 쓰는 공통 페이즈 (예: G1-공통)")]
         public string CommonPhaseId;
+        [Tooltip("돌진 패턴은 랜덤으로 고르지 않는다 (2관문: 돌진은 ChargeDueCondition 상태가 정해진 순서로만 쓴다)")]
+        public bool ExcludeCharges;
         [NonSerialized] private BossPatternAbility ability;
         [NonSerialized] private List<BossPatternAbility> candidates;
 
@@ -64,10 +67,12 @@ namespace DemoLA.AI
                 return ETaskStatus.Failed;
             }
 
-            var target = AIContext.Target(InContext);
+            // 지정 대상(SelectTargetTask)이 있으면 그 대상 기준으로 사거리를 본다. 없으면 null 로 넘겨 패턴 규칙 · 어그로에 맡긴다.
+            var target = AIContext.PatternTarget(InContext);
             string queued = boss.ConsumeQueuedPattern();
             if (string.IsNullOrEmpty(queued) == false && boss.TryActivatePattern(queued, target) == true)
             {
+                AIContext.ClearPatternTarget(InContext);
                 ability = boss.GetPattern(queued);
                 return ETaskStatus.Running;
             }
@@ -77,7 +82,10 @@ namespace DemoLA.AI
                 candidates = new List<BossPatternAbility>();
             }
 
-            collect(boss, InContext.Blackboard.GetFloat((int)EAIBlackboard.TargetDistance, 9999.0f));
+            float distance = target != null
+                ? Vector3.Distance(HitGeometry.Flat(target.Position), HitGeometry.Flat(boss.Position)) - target.Radius
+                : InContext.Blackboard.GetFloat((int)EAIBlackboard.TargetDistance, 9999.0f);
+            collect(boss, distance);
             float total = 0.0f;
             for (int i = 0; i < candidates.Count; ++i)
             {
@@ -95,6 +103,7 @@ namespace DemoLA.AI
 
                 if (boss.TryActivatePattern(candidates[i].Definition.PatternId, target) == true)
                 {
+                    AIContext.ClearPatternTarget(InContext);
                     ability = candidates[i];
                     return ETaskStatus.Running;
                 }
@@ -132,6 +141,11 @@ namespace DemoLA.AI
             {
                 var pattern = InBoss.GetPattern(ids[i]);
                 if (pattern == null || pattern.Definition.RandomSelectable == false || candidates.Contains(pattern) == true)
+                {
+                    continue;
+                }
+
+                if (ExcludeCharges == true && pattern.Definition.IsCharge == true)
                 {
                     continue;
                 }

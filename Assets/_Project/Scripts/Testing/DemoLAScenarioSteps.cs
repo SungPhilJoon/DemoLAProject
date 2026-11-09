@@ -226,6 +226,23 @@ namespace DemoLA.Testing
         }
     }
 
+    /// <summary>지형 파괴 이후 상태로 만든다 (낙사 가능). 바닥은 무너뜨리지 않는다.</summary>
+    [Serializable]
+    public class EnableFallDeathStep : DemoLAStep
+    {
+        public override IEnumerator Execute(ScenarioContext InContext)
+        {
+            if (DemoLA.World.ArenaFloor.Current == null)
+            {
+                Fail(InContext, "경기장 없음");
+                yield break;
+            }
+
+            DemoLA.World.ArenaFloor.Current.EnableFallDeath();
+            yield return null;
+        }
+    }
+
     /// <summary>보스 AI 를 켜거나 끈다.</summary>
     [Serializable]
     public class SetBossAIStep : DemoLAStep

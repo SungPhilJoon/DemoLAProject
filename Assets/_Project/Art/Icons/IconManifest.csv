@@ -1,0 +1,137 @@
+Kind,Key,Icon
+Engraving,정밀 타격,lorc/on-target
+Engraving,약점 공략,lorc/archery-target
+Engraving,그림자 일격,lorc/backstab
+Engraving,치명 강화,lorc/bleeding-wound
+Engraving,가속,lorc/sprint
+Engraving,강철 피부,lorc/edged-shield
+Engraving,흐르는 마나,lorc/drop
+Engraving,축복의 손길,lorc/holy-symbol
+Engraving,단단한 의지,lorc/muscle-up
+Engraving,부위 파괴 전문가,lorc/broken-bone
+Engraving,결의,lorc/fist
+Engraving,역경,lorc/broken-heart
+Engraving,방패 연계,delapouite/shield-bash
+Engraving,질주 본능,lorc/run
+Engraving,근접 집중,lorc/crossed-swords
+Engraving,원거리 집중,lorc/high-shot
+Engraving,일격 집중,lorc/sword-wound
+Engraving,무력화 응징,lorc/hammer-drop
+Engraving,급소 노출,delapouite/eye-target
+Engraving,둔화,lorc/snail
+Engraving,연약함,lorc/broken-shield
+Engraving,무력함,lorc/broken-skull
+Engraving,정령 공명,lorc/fairy
+Engraving,정령 집중,lorc/fairy-wand
+Engraving,충격 수련,lorc/punch-blast
+Engraving,투지 해방,lorc/aura
+Engraving,광기,delapouite/enrage
+Engraving,처단,lorc/decapitation
+Engraving,만개,lorc/lotus-flower
+Engraving,여백,lorc/ink-swirl
+Skill,정령 화살,lorc/arrow-flights
+Skill,번개 구체,lorc/lightning-electron
+Skill,대지의 정령,delapouite/rock-golem
+Skill,얼음 장막,lorc/ice-shield
+Skill,소환수 돌격,lorc/wolf-howl
+Skill,별빛 낙하,delapouite/falling-star
+Skill,정령 폭발,lorc/bright-explosion
+Skill,바람의 정령,lorc/whirlwind
+Skill,독안개,lorc/poison-gas
+Skill,정령의 사슬,lorc/crossed-chains
+Skill,수호 정령,lorc/spark-spirit
+Skill,고대 의식,skoll/pentacle
+Skill,정령왕 강림,lorc/crowned-explosion
+Skill,대정령 폭풍,lorc/tornado
+Skill,연환 주먹,lorc/punch
+Skill,반격의 일격,lorc/fist
+Skill,어깨 돌진,delapouite/shoulder-armor
+Skill,회오리 차기,lorc/boot-kick
+Skill,대지 강타,lorc/ground-sprout
+Skill,충격파 장권,lorc/magic-palm
+Skill,백열권,lorc/fire-punch
+Skill,기공 연타,lorc/fulguro-punch
+Skill,하단 발차기,delapouite/high-kick
+Skill,용권 상승,lorc/dragon-spiral
+Skill,천둥 손바닥,lorc/thunder-struck
+Skill,필살 정권,lorc/thor-fist
+Skill,천지 붕괴권,delapouite/armor-punch
+Skill,일점 관통권,lorc/mailed-fist
+Skill,대검 베기,lorc/broadsword
+Skill,분쇄 일격,delapouite/hammer-break
+Skill,돌진 참격,lorc/quick-slash
+Skill,회전 베기,lorc/spinning-sword
+Skill,피의 폭풍,lorc/bloody-sword
+Skill,처형,lorc/guillotine
+Skill,검은 소용돌이,lorc/vortex
+Skill,핏빛 일섬,lorc/serrated-slash
+Skill,분노의 내려찍기,lorc/sword-smithing
+Skill,칼날 폭풍,lorc/dervish-swords
+Skill,참수,lorc/headshot
+Skill,광폭 질주,delapouite/charging-bull
+Skill,멸절의 대검,delapouite/two-handed-sword
+Skill,파멸의 일섬,lorc/crossed-slashes
+Skill,붓 휘두르기,delapouite/paint-brush
+Skill,먹물 낙인,lorc/quill-ink
+Skill,치유의 화폭,delapouite/healing
+Skill,수호의 문양,lorc/rune-stone
+Skill,영감의 붓질,delapouite/large-paint-brush
+Skill,산수화 펼치기,lorc/mountains
+Skill,학 날리기,caro-asercion/paper-crane
+Skill,먹물 튀기기,lorc/droplet-splash
+Skill,달빛 붓질,lorc/moon
+Skill,나비 떼,lorc/butterfly
+Skill,묵향의 장막,lorc/dust-cloud
+Skill,천지 수묵,lorc/scroll-unfurled
+Skill,만물 소생도,lorc/flowers
+Skill,천지 수호진,lorc/magic-shield
+Skill,?,lorc/spark-spirit
+Skill,?,delapouite/bolt-spell-cast
+Skill,?,lorc/fire-ray
+Skill,?,delapouite/ice-spell-cast
+Skill,?,lorc/sword-spin
+Skill,?,lorc/energy-arrow
+Skill,?,lorc/magic-swirl
+Skill,?,lorc/beams-aura
+Card,새벽의 기사,delapouite/black-knight-helm
+Card,빛의 무녀,delapouite/sun-priest
+Card,황금 수호자,delapouite/griffin-shield
+Card,여명의 사제,lorc/holy-grail
+Card,성광 궁수,delapouite/archer
+Card,눈부신 현자,lorc/wizard-staff
+Card,황혼의 군주,delapouite/overlord-helm
+Card,그늘 검사,lorc/shadow-follower
+Card,밤의 마녀,cathelineau/witch-face
+Card,검은 사도,darkzaitzev/hooded-figure
+Card,어둠 사냥꾼,delapouite/hunter-eyes
+Card,잿빛 현자,lorc/evil-book
+Card,바람 기수,skoll/mounted-knight
+Card,협곡 정찰병,delapouite/walking-scout
+Card,폭풍 매,lorc/hawk-emblem
+Card,구름 술사,lorc/fluffy-cloud
+Card,돌개 바람,lorc/half-tornado
+Card,산들 무희,lorc/leaf-swirl
+Card,*,faithtoken/card-draw
+GemDamage,*,delapouite/fire-gem
+GemCooldown,*,lorc/crystal-growth
+BattleItem,회복 물약,delapouite/health-potion
+BattleItem,시간 정지 물약,lorc/hourglass
+BattleItem,정화제,lorc/standing-potion
+BattleItem,파괴 폭탄,lorc/unlit-bomb
+BattleItem,섬광탄,lorc/flash-grenade
+BattleItem,*,delapouite/magic-potion
+Weapon,*,lorc/broadsword
+Armor,*,delapouite/chest-armor
+Necklace,*,lorc/gem-necklace
+Earring,*,delapouite/drop-earrings
+Ring,*,delapouite/diamond-ring
+Stone,*,lorc/rune-stone
+Engraving,*,lorc/book-cover
+Stats,*,delapouite/histogram
+Keys,*,delapouite/keyboard
+Buff,*,sbed/health-increase
+Debuff,*,sbed/health-decrease
+Esther,검의 성기사,delapouite/sword-altar
+Esther,폭풍의 창기사,delapouite/sun-spear
+Esther,대지의 수호자,lorc/earth-spit
+Esther,*,lorc/spiked-halo

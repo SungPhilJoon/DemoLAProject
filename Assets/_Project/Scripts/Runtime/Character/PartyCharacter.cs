@@ -209,6 +209,12 @@ namespace DemoLA.Character
             return InSlot >= 0 && InSlot < battleItems.Count && tryActivate(battleItems[InSlot], InAimPoint, out reason);
         }
 
+        /// <summary>에스더 (파티 공용 게이지가 가득일 때). InIndex = 현재 관문에서 쓸 수 있는 에스더 순서.</summary>
+        public bool TryUseEsther(int InIndex)
+        {
+            return IsDead == false && HasTag((int)ETag.State_Stunned) == false && EstherSystem.TryUse(this, InIndex);
+        }
+
         public bool IsSkillReady(SkillAbility InSkill)
         {
             EActivateFailReason reason;

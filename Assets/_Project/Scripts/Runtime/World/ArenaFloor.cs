@@ -15,6 +15,23 @@ namespace DemoLA.World
     {
         public static ArenaFloor Current { get; private set; }
 
+        /// <summary>바닥이 무너질 때 (무너진 그룹, 생존 타일 유지 여부) — 네트워크 서버가 클라이언트에 복제한다.</summary>
+        public static event System.Action<ETileGroup, bool> OnCollapsed;
+        public static event System.Action OnCollapsedAllExceptCenter;
+        public static event System.Action OnRestored;
+
+        /// <summary>
+        /// 낙사 가능 여부. 처음(외곽 Ring 벽이 서 있는 동안)은 false — 넉백으로 바닥 밖에 떨어져도 가장 가까운 바닥으로 구출한다.
+        /// 지형 파괴(Collapse · CollapseAllExceptCenter)가 일어난 뒤부터 true. RestoreAll(레이드 재시작)이면 다시 false.
+        /// </summary>
+        public bool FallDeathEnabled { get; private set; }
+
+        /// <summary>테스트 · 시나리오: 지형 파괴 이후 상태로 만든다 (바닥은 그대로).</summary>
+        public void EnableFallDeath()
+        {
+            FallDeathEnabled = true;
+        }
+
         [SerializeField] private float tileSize = 4.0f;
         [SerializeField] private float fallDelay = 0.6f;
         [SerializeField] private NavMeshSurface navMeshSurface;
@@ -97,9 +114,11 @@ namespace DemoLA.World
                 tile.Collapse();
             }
 
+            FallDeathEnabled = true;
             navMeshDirty = true;
             dropUnsupportedStructures();
             checkFalling(0.0f);
+            OnCollapsed?.Invoke(InGroup, InKeepSurvivors);
         }
 
         /// <summary>2차 파괴: 중앙(및 SurvivesRingCollapse)을 뺀 전부.</summary>
@@ -116,9 +135,11 @@ namespace DemoLA.World
                 tile.Collapse();
             }
 
+            FallDeathEnabled = true;
             navMeshDirty = true;
             dropUnsupportedStructures();
             checkFalling(0.0f);
+            OnCollapsedAllExceptCenter?.Invoke();
         }
 
         /// <summary>바닥이 무너진 자리에 서 있던 기둥 · 벽은 함께 무너진다 (구슬 없음).</summary>
@@ -142,7 +163,9 @@ namespace DemoLA.World
                 tiles[i].Restore();
             }
 
+            FallDeathEnabled = false;
             navMeshDirty = true;
+            OnRestored?.Invoke();
         }
 
         private void Update()
@@ -161,6 +184,12 @@ namespace DemoLA.World
 
         private void checkFalling(float InDeltaTime)
         {
+            // 낙사 · 구출은 서버만 판정한다 (클라이언트 위치는 NetworkTransform 이 맞춘다).
+            if (NetAuthority.IsReplica == true)
+            {
+                return;
+            }
+
             CombatRegistry.FindTeam(ETeam.Player, buffer);
             for (int i = 0; i < buffer.Count; ++i)
             {
@@ -179,9 +208,9 @@ namespace DemoLA.World
                     continue;
                 }
 
-                // 낙사는 "몬스터 공격에 맞아 위치가 바뀌어 맵 밖으로 날아간" 경우에만.
+                // 낙사는 "지형 파괴 이후 + 몬스터 공격에 맞아 위치가 바뀌어 맵 밖으로 날아간" 경우에만.
                 //  - 날아가는 중(공중)이면 아직 판정하지 않는다.
-                //  - 넉백 없이 발밑이 무너졌거나 바닥 밖에 있으면 가장 가까운 바닥으로 옮긴다.
+                //  - 지형 파괴 전(외곽 Ring 벽 구간)이거나 넉백 없이 발밑이 무너졌거나 바닥 밖에 있으면 가장 가까운 바닥으로 옮긴다.
                 if (falling.ContainsKey(actor) == false)
                 {
                     var motor = actor.Motor;
@@ -190,7 +219,7 @@ namespace DemoLA.World
                         continue;
                     }
 
-                    bool knockedOff = motor != null && Time.time - motor.LastKnockbackEndTime < 0.5f;
+                    bool knockedOff = FallDeathEnabled == true && motor != null && Time.time - motor.LastKnockbackEndTime < 0.5f;
                     if (knockedOff == false)
                     {
                         rescue(actor);

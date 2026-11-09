@@ -211,7 +211,7 @@ namespace DemoLA.Tests
             var gate1 = db.GetBoss("Gate1");
             var gate2 = db.GetBoss("Gate2");
             // xlsx 패턴목록 43개 + 프로젝트 자체 추가 3개 (G2-21 휠윈드 · G2-22 3연 베기 · G2-23 도약 강타 → 추적 휠윈드).
-            Assert.AreEqual(43 + 3, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 3개");
+            Assert.AreEqual(43 + 6, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 6개");
             Assert.AreEqual(5, gate1.Phases.Count);
             Assert.AreEqual(4, gate2.Phases.Count);
             Assert.AreEqual(EPatternCategory.PartyGimmick, gate1.GetPattern("G1-01").Category);

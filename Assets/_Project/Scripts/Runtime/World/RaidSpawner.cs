@@ -62,6 +62,8 @@ namespace DemoLA.World
             addNose(go.transform, new Vector3(0.0f, scale * 2.2f, scale * 0.55f), new Vector3(scale * 0.8f, scale * 0.6f, scale * 0.8f), InDefinition.BodyColor * 1.4f);
             addNose(go.transform, new Vector3(-scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
             addNose(go.transform, new Vector3(scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
+            // 카운터 가능 구간에 몸이 파랗게 빛난다 (발밑 표시보다 먼저 모아 몸 렌더러만 넘긴다).
+            go.AddComponent<CounterGlowView>().Bind(go.GetComponentsInChildren<Renderer>());
             addAgent(go, InDefinition.Radius * 0.8f, scale * 2.4f, true);
             go.AddComponent<ActorMotor>();
             // 발밑 백어택 / 헤드어택 범위 표시.
@@ -74,6 +76,8 @@ namespace DemoLA.World
 
             var boss = go.AddComponent<BossActor>();
             boss.Initialize(InDefinition, InPartySize > 0 ? InPartySize : InDefinition.DesignPartySize);
+            // 관문마다 에스더 게이지를 새로 모은다 (그 관문에서 쓸 수 있는 에스더만).
+            DemoLA.Character.EstherSystem.Reset(InDefinition.BossId);
             if (InDefinition.Brain != null && InWithBrain == true)
             {
                 var brain = go.AddComponent<CombatBrain>();

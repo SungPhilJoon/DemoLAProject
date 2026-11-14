@@ -10,7 +10,7 @@ namespace DemoLA.Editor
     ///      _Normal → Normal Map, _MetallicSmoothness → Linear(sRGB 끔), _BaseColor/_Emission → sRGB.
     ///  - 머티리얼: FBX 안의 M_&lt;Part&gt;_Baked 마다 Assets/Models/Materials/M_&lt;Part&gt;_Baked.mat (URP Lit) 를 만들고
     ///      BaseMap / BumpMap / MetallicGlossMap(알파 = Smoothness) / EmissionMap 을 연결한 뒤 FBX 머티리얼을 리맵한다.
-    ///  - 리그는 Generic (DEF-spine 루트 스켈레톤 그대로) 로 둔다.
+    ///  - 리그: Blender Rigify(DEF-*) 스켈레톤은 Generic, Meshy 자동 리깅(Mixamo 식 Hips 본)은 Humanoid.
     /// </summary>
     public static class CharacterModelSetup
     {
@@ -59,9 +59,31 @@ namespace DemoLA.Editor
                 importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), src.name), mat);
                 n++;
             }
-            importer.animationType = ModelImporterAnimationType.Generic;
+            if (IsMixamoStyleRig(fbxPath))
+            {
+                // Meshy 자동 리깅 (Hips/Spine/LeftUpLeg...) → Humanoid. 이미 Humanoid 면 사용자가 손본 아바타 매핑을 유지.
+                if (importer.animationType != ModelImporterAnimationType.Human)
+                {
+                    importer.animationType = ModelImporterAnimationType.Human;
+                    importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
+                }
+            }
+            else
+            {
+                importer.animationType = ModelImporterAnimationType.Generic; // Blender Rigify DEF-* 스켈레톤
+            }
             importer.SaveAndReimport();
             return n;
+        }
+
+        /// <summary>Mixamo 식 본 이름(Meshy 리그)이면 true.</summary>
+        private static bool IsMixamoStyleRig(string fbxPath)
+        {
+            var go = AssetDatabase.LoadAssetAtPath<GameObject>(fbxPath);
+            if (go == null) return false;
+            foreach (var t in go.GetComponentsInChildren<Transform>(true))
+                if (t.name == "Hips" || t.name.EndsWith(":Hips")) return true;
+            return false;
         }
 
         /// <summary>"M_SorceressBody_Baked" → "SorceressBody"</summary>

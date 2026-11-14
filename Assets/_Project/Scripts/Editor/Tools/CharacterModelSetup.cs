@@ -87,7 +87,7 @@ namespace DemoLA.Editor
         }
 
         /// <summary>"M_SorceressBody_Baked" → "SorceressBody"</summary>
-        private static string PartName(string matName)
+        internal static string PartName(string matName)
         {
             string s = matName;
             if (s.StartsWith("M_")) s = s.Substring(2);
@@ -174,6 +174,57 @@ namespace DemoLA.Editor
                 ti.textureType = TextureImporterType.Default;
                 ti.sRGBTexture = true;
             }
+        }
+    }
+
+    /// <summary>
+    /// Assets/Models/*.fbx 가 임포트되면 머티리얼 생성/리맵을 자동 실행 (메뉴를 누르지 않아도 됨).
+    /// 이미 모든 머티리얼이 리맵된 FBX 는 건너뛰므로 재임포트 루프가 생기지 않는다.
+    /// </summary>
+    public class CharacterModelAutoSetup : AssetPostprocessor
+    {
+        private static readonly System.Collections.Generic.HashSet<string> Pending = new();
+
+        private static void OnPostprocessAllAssets(string[] imported, string[] deleted, string[] moved, string[] movedFrom)
+        {
+            foreach (string path in imported)
+            {
+                if (!path.StartsWith(CharacterModelSetup.ModelRoot + "/")) continue;
+                if (path.StartsWith(CharacterModelSetup.ModelRoot + "/Animations/")) continue;
+                if (!path.EndsWith(".fbx", System.StringComparison.OrdinalIgnoreCase)) continue;
+                if (!NeedsSetup(path)) continue;
+                if (Pending.Count == 0) EditorApplication.delayCall += RunPending;
+                Pending.Add(path);
+            }
+        }
+
+        private static bool NeedsSetup(string fbxPath)
+        {
+            if (AssetImporter.GetAtPath(fbxPath) is not ModelImporter importer) return false;
+            var map = importer.GetExternalObjectMap();
+            foreach (var obj in AssetDatabase.LoadAllAssetsAtPath(fbxPath))
+            {
+                if (obj is not Material m) continue;
+                // 텍스처가 없는 머티리얼은 SetupModel 이 건너뛰므로 대상에서 제외 (재임포트 무한루프 방지)
+                string part = CharacterModelSetup.PartName(m.name);
+                if (part == null || !File.Exists($"{CharacterModelSetup.TextureRoot}/T_{part}_BaseColor.png")) continue;
+                if (!map.ContainsKey(new AssetImporter.SourceAssetIdentifier(typeof(Material), m.name))) return true;
+            }
+            return false;
+        }
+
+        private static void RunPending()
+        {
+            var paths = new System.Collections.Generic.List<string>(Pending);
+            Pending.Clear();
+            if (!AssetDatabase.IsValidFolder(CharacterModelSetup.MaterialRoot))
+                AssetDatabase.CreateFolder(CharacterModelSetup.ModelRoot, "Materials");
+            foreach (string p in paths)
+            {
+                int n = CharacterModelSetup.SetupModel(p);
+                Debug.Log($"[DemoLA] {p}: 머티리얼 {n}개 자동 설정");
+            }
+            AssetDatabase.SaveAssets();
         }
     }
 }

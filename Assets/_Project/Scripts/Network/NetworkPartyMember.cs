@@ -14,15 +14,13 @@ using UnityEngine.AI;
 namespace DemoLA.Network
 {
     /// <summary>
-    /// 네트워크 파티원 (PlayerPrefab · AI 아군 공용 프리팹 NetPartyMember).
+    /// 네트워크 파티원 (PlayerPrefab NetPartyMember). 파티는 접속한 플레이어만 (아군 AI 없음).
     ///  - 플레이어 접속 시 NGO 가 스폰 → 소유 클라이언트가 직업과 빌드(JSON)를 서버로 보낸다 → 서버가 캐릭터를 만든다.
-    ///  - AI 아군: 플레이어가 고르지 않은 직업을 서버가 같은 프리팹으로 스폰하고 StateTree 를 붙인다.
-    ///  - 모든 피어가 같은 PartyCharacter 를 만들되, 서버만 GAS/AI 를 진행하고 클라이언트는 복제 값만 반영한다.
+    ///  - 모든 피어가 같은 PartyCharacter 를 만들되, 서버만 GAS 를 진행하고 클라이언트는 복제 값만 반영한다.
     /// </summary>
     public class NetworkPartyMember : NetworkBehaviour
     {
         public readonly NetworkVariable<int> ClassId = new NetworkVariable<int>(-1);
-        public readonly NetworkVariable<bool> IsAI = new NetworkVariable<bool>(false);
         public readonly NetworkVariable<FixedString64Bytes> DisplayName = new NetworkVariable<FixedString64Bytes>();
         private readonly NetworkVariable<float> maxHealth = new NetworkVariable<float>();
         private readonly NetworkVariable<float> health = new NetworkVariable<float>();
@@ -53,7 +51,7 @@ namespace DemoLA.Network
                 build();
             }
 
-            if (IsOwner == true && IsAI.Value == false)
+            if (IsOwner == true)
             {
                 // 소유자: 저장된 직업 · 빌드를 서버에 알린다.
                 var session = NetSession.Get();
@@ -67,14 +65,6 @@ namespace DemoLA.Network
         {
             ClassId.OnValueChanged -= handleClassChanged;
             tags.OnValueChanged -= handleTagsChanged;
-        }
-
-        /// <summary>서버: AI 아군으로 초기화 (스폰 직후 호출).</summary>
-        public void ServerInitAI(ECharacterClass InClass)
-        {
-            IsAI.Value = true;
-            DisplayName.Value = $"AI {InClass}";
-            ClassId.Value = (int)InClass;
         }
 
         [Rpc(SendTo.Server)]
@@ -193,7 +183,6 @@ namespace DemoLA.Network
         private void build()
         {
             var session = NetSession.Get();
-            var bootstrap = GameBootstrap.Current;
             if (session == null || Character != null)
             {
                 return;
@@ -212,10 +201,8 @@ namespace DemoLA.Network
                 buildData = session.GetBuild(cls.Class).Clone();
             }
 
-            // AI 의 StateTree 는 서버에만.
-            var tree = IsServer == true && IsAI.Value == true && bootstrap != null ? bootstrap.PartyTree : null;
             gameObject.name = DisplayName.Value.ToString();
-            Character = RaidSpawner.AttachCharacter(gameObject, cls, buildData, db, tree);
+            Character = RaidSpawner.AttachCharacter(gameObject, cls, buildData, db);
             Character.SetName(DisplayName.Value.ToString());
             if (IsServer == false)
             {

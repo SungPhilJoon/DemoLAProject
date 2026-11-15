@@ -184,7 +184,14 @@ namespace DemoLA.UI
 
             // 파티
             var partyRect = UIKit.Anchored(root, "Party", new Vector2(0.0f, 0.5f), new Vector2(20.0f, 0.0f), new Vector2(300.0f, 220.0f));
-            partyRect.gameObject.AddComponent<VerticalLayoutGroup>().spacing = 6.0f;
+            // 인원(1 ~ 4명)이 적어도 칸이 늘어나지 않게 높이를 고정한다 (위에서부터 쌓기).
+            var partyLayout = partyRect.gameObject.AddComponent<VerticalLayoutGroup>();
+            partyLayout.spacing = 6.0f;
+            partyLayout.childAlignment = TextAnchor.UpperLeft;
+            partyLayout.childControlHeight = true;
+            partyLayout.childControlWidth = true;
+            partyLayout.childForceExpandHeight = false;
+            partyLayout.childForceExpandWidth = true;
 
             // 딜 미터
             var meterRect = UIKit.Anchored(root, "Meter", new Vector2(1.0f, 0.5f), new Vector2(-20.0f, 60.0f), new Vector2(340.0f, 140.0f));

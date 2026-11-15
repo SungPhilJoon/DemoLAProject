@@ -206,6 +206,8 @@ namespace DemoLA.Content
                     steps(InPattern, bossCharge);
                     InPattern.MaxRange = 16.0f;
                     InPattern.Weight = 2.0f;
+                    // 돌진 뒤에는 (그로기로 끝나도) 도약 십자 + 추적 휠윈드. (외곽 이탈 도약 G2-28 은 삭제 — 보스가 구석에 머물러 공격이 끊겼다)
+                    InPattern.FollowUpPatternIds = new List<string> { "G2-23" };
                     break;
                 case "G2-24":
                     // 도끼 찍기 3연: 앞(찍은 곳 원형) → 뒤(같은 공격) → 앞 강타. 마지막 타격만 카운터 가능.
@@ -282,6 +284,36 @@ namespace DemoLA.Content
                     InPattern.Recovery = 0.5f;
                     InPattern.MaxRange = 99.0f;
                     break;
+                case "G2-27":
+                    // 135줄 이후: 7초 도약 + 12 · 3 · 6 · 9시 엄폐 기둥 → 착지 충격파(기둥 뒤가 아니면 즉사)
+                    // → 무작위 대상을 5초 따라가는 25° 부채꼴 → 정지 0.5초 → 폭발. 부채꼴에 맞은 기둥은 크게 폭발(주변 즉사).
+                    var coverLeap = step(EPatternTargeting.ArenaCenter, HitArea.Circle(1.0f), 0.05f, EDamageTier.None, show: false);
+                    coverLeap.Label = "도약 (7초) + 엄폐 기둥";
+                    coverLeap.StartLeapDuration = 7.0f;
+                    coverLeap.LeapHeight = 18.0f;
+                    coverLeap.SpawnCoverPillars = true;
+                    coverLeap.CoverPillarDistance = 10.0f;
+                    coverLeap.KnockbackDistance = 0.0f;
+                    var coverBlast = step(EPatternTargeting.ArenaCenter, HitArea.Circle(40.0f), 6.95f, EDamageTier.Lethal);
+                    coverBlast.Label = "착지 충격파 (기둥 뒤 안전)";
+                    coverBlast.BlockedByCover = true;
+                    coverBlast.BigImpact = true;
+                    coverBlast.KnockbackDistance = 0.0f;
+                    var chaseFan = step(EPatternTargeting.BossTowardAggro, HitArea.Fan(32.0f, 25.0f), 5.5f, EDamageTier.Big, track: true, lockBefore: 0.5f);
+                    chaseFan.Label = "추적 부채꼴 (기둥에 맞으면 폭발)";
+                    chaseFan.ExplodesCover = true;
+                    chaseFan.CoverExplosionRadius = 5.0f;
+                    chaseFan.AnnounceTarget = true;
+                    chaseFan.KnockbackDistance = 0.0f;
+                    steps(InPattern, coverLeap, coverBlast, chaseFan);
+                    InPattern.TargetSelector = new RandomSelector();
+                    InPattern.UntargetableDuring = false;
+                    InPattern.SuperArmor = true;
+                    InPattern.RandomSelectable = false;
+                    InPattern.Cooldown = 40.0f;
+                    InPattern.Recovery = 1.0f;
+                    InPattern.MaxRange = 99.0f;
+                    break;
                 case "G2-21":
                     // 휠윈드: 장판은 처음 1.2초 예고 한 번만 보여 준다. 이후 보스가 계속 돌면서 0.45초마다 4회 더 판정(장판 없음).
                     // 범위에 닿은 외곽 벽이 무너진다.
@@ -325,7 +357,8 @@ namespace DemoLA.Content
                     leap.ArmCount = 4;
                     leap.ArmLength = 20.0f;
                     leap.ArmWidth = 4.0f;
-                    leap.RandomCrossOrX = true;
+                    leap.RandomCrossOrX = false;
+                    leap.ArmAngleOffset = 0.0f;
                     leap.KnockbackDistance = 7.0f;
                     leap.KnockbackHeight = 2.5f;
                     leap.BreaksWalls = true;

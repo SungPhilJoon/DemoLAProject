@@ -64,7 +64,9 @@ namespace DemoLA.Boss
                 boss = GetComponent<BossActor>();
             }
 
-            bool visible = boss != null && boss.IsInitialized == true && boss.IsDead == false && StatFormula.Settings != null;
+            // 도약 중(공중)에는 헤드 · 백어택 표시를 숨긴다 — 착지한 뒤에 다시 보인다.
+            bool airborne = boss != null && boss.Motor != null && boss.Motor.IsAirborne == true;
+            bool visible = boss != null && boss.IsInitialized == true && boss.IsDead == false && StatFormula.Settings != null && airborne == false;
             backRenderer.enabled = visible;
             headRenderer.enabled = visible;
             if (visible == false)

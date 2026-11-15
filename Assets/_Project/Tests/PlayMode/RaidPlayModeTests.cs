@@ -18,7 +18,6 @@ namespace DemoLA.Tests
 {
     /// <summary>
     /// 실제 Update 루프로 도는 시나리오 (UnityTest). 시간 배율을 올려 빠르게 돌린다.
-    ///  - 파티 AI(StateTree) 가 보스에게 피해를 주는가
     ///  - 보스 AI(StateTree) 가 패턴을 쓰는가
     /// </summary>
     public class RaidPlayModeTests
@@ -62,41 +61,13 @@ namespace DemoLA.Tests
             yield return null;
         }
 
-        private PartyCharacter spawnAlly(ECharacterClass InClass, Vector3 InPosition)
-        {
-            var cls = database.GetClass(InClass);
-            var ally = RaidSpawner.SpawnCharacter(cls, DefaultContent.CreateDefaultBuild(database, InClass), database, InPosition, DefaultTrees.CreatePartyAI(), $"AI {InClass}");
-            spawned.Add(ally.gameObject);
-            return ally;
-        }
-
-        [UnityTest]
-        public IEnumerator PartyAI_DamagesBoss()
-        {
-            var bossDef = database.GetBoss("Gate1");
-            var boss = RaidSpawner.SpawnBoss(bossDef, new Vector3(0.0f, 0.0f, 6.0f), Quaternion.identity);
-            spawned.Add(boss.gameObject);
-            // 보스 AI 는 끄고 아군만 본다.
-            boss.GetComponent<CombatBrain>().Stop();
-
-            spawnAlly(ECharacterClass.Slayer, new Vector3(-2.0f, 0.0f, -6.0f));
-            spawnAlly(ECharacterClass.Infighter, new Vector3(0.0f, 0.0f, -6.0f));
-            spawnAlly(ECharacterClass.Artist, new Vector3(2.0f, 0.0f, -6.0f));
-
-            float start = boss.Stats.Get(EAttr.Health);
-            yield return new WaitForSeconds(10.0f);
-            float dealt = start - boss.Stats.Get(EAttr.Health);
-            Debug.Log($"[PlayMode] 파티 AI 10초(게임 시간) 피해: {dealt:N0}");
-            Assert.Greater(dealt, 0.0f, "아군 AI 가 보스에게 다가가 스킬을 써야 한다");
-        }
-
         [UnityTest]
         public IEnumerator BossAI_UsesPatterns()
         {
             var bossDef = database.GetBoss("Gate1");
             var boss = RaidSpawner.SpawnBoss(bossDef, new Vector3(0.0f, 0.0f, 4.0f), Quaternion.identity);
             spawned.Add(boss.gameObject);
-            var player = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Infighter), DefaultContent.CreateDefaultBuild(database, ECharacterClass.Infighter), database, Vector3.zero, null, "Dummy Player");
+            var player = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Infighter), DefaultContent.CreateDefaultBuild(database, ECharacterClass.Infighter), database, Vector3.zero, "Dummy Player");
             spawned.Add(player.gameObject);
 
             int patterns = 0;
@@ -117,8 +88,8 @@ namespace DemoLA.Tests
             var boss = RaidSpawner.SpawnBoss(bossDef, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
             spawned.Add(boss.gameObject);
             boss.GetComponent<CombatBrain>().Stop();
-            var victim = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Slayer), new DemoLA.Build.CharacterBuildData(), database, new Vector3(-16.0f, 0.0f, 0.0f), null, "Left");
-            var survivor = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Slayer), new DemoLA.Build.CharacterBuildData(), database, new Vector3(0.0f, 0.0f, -3.0f), null, "Center");
+            var victim = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Slayer), new DemoLA.Build.CharacterBuildData(), database, new Vector3(-16.0f, 0.0f, 0.0f), "Left");
+            var survivor = RaidSpawner.SpawnCharacter(database.GetClass(ECharacterClass.Slayer), new DemoLA.Build.CharacterBuildData(), database, new Vector3(0.0f, 0.0f, -3.0f), "Center");
             spawned.Add(victim.gameObject);
             spawned.Add(survivor.gameObject);
 

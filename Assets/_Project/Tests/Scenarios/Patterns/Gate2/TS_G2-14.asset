@@ -60,16 +60,16 @@ MonoBehaviour:
         Members:
         - Class: 2
           Position: {x: 0, y: 0, z: 1.5}
-          UseAI: 0
+          AutoAttack: 0
         - Class: 1
           Position: {x: -3, y: 0, z: 3}
-          UseAI: 0
+          AutoAttack: 0
         - Class: 0
           Position: {x: 3, y: 0, z: 3}
-          UseAI: 0
+          AutoAttack: 0
         - Class: 3
           Position: {x: 0, y: 0, z: -2}
-          UseAI: 0
+          AutoAttack: 0
     - rid: 7158115530749248411
       type: {class: ActivatePatternStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
       data:

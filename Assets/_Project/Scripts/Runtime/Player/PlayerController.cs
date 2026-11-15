@@ -134,7 +134,8 @@ namespace DemoLA.Player
 
         private void Update()
         {
-            if (bindings == null)
+            // 시네마틱(진입 연출 등) 동안 입력 무시.
+            if (bindings == null || DemoLA.Core.CinematicHold.Active == true)
             {
                 return;
             }

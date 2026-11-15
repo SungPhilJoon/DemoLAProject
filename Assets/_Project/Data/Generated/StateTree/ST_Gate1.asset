@@ -116,7 +116,8 @@ MonoBehaviour:
     Enabled: 1
     Selection: 0
     Color: {r: 0.55, g: 0.2, b: 0.2, a: 1}
-    EnterConditions: []
+    EnterConditions:
+    - rid: 7158115700374503504
     Tasks:
     - rid: 7158115530749248071
     Transitions: []
@@ -319,6 +320,7 @@ MonoBehaviour:
         Enabled: 1
         PatternIds: []
         CommonPhaseId: "G1-\uACF5\uD1B5"
+        ExcludeCharges: 0
     - rid: 7158115530749248072
       type: {class: ChaseTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
@@ -336,3 +338,12 @@ MonoBehaviour:
       data:
         Enabled: 1
         SearchRadius: 60
+    - rid: 7158115700374503504
+      type: {class: HasRandomPatternCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        PatternIds: []
+        CommonPhaseId: "G1-\uACF5\uD1B5"
+        ExcludeCharges: 0

@@ -59,7 +59,7 @@ MonoBehaviour:
         Members:
         - Class: 2
           Position: {x: 14.5, y: 0, z: 14.5}
-          UseAI: 0
+          AutoAttack: 0
     - rid: 7158115530749248498
       type: {class: ActivatePatternStep, ns: DemoLA.Testing, asm: DemoLA.Testing}
       data:

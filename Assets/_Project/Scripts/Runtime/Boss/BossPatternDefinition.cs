@@ -20,6 +20,10 @@ namespace DemoLA.Boss
         public EPatternResponse Response;
         public string ShapeText;
         public string LinkedPatternId;
+        [Tooltip("이 패턴이 끝나면(그로기 · 취소로 끝나도) 이 순서로 이어서 쓴다. StateTree 의 '연결 패턴' 상태가 다른 상태보다 먼저 처리한다")]
+        public List<string> FollowUpPatternIds = new List<string>();
+        [Tooltip("전투에서 이 패턴이 처음 끝났을 때만 FollowUpPatternIds 뒤에 이어서 쓴다 (도입 연출)")]
+        public List<string> FirstTimeFollowUpPatternIds = new List<string>();
         public EEvidenceConfidence Confidence = EEvidenceConfidence.PublicGuide;
         public EDamageTier DamageTier;
         [TextArea(2, 6)] public string Notes;

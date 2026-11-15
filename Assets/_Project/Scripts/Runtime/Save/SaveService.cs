@@ -17,7 +17,6 @@ namespace DemoLA.Save
         public List<CharacterBuildData> Builds = new List<CharacterBuildData>();
         public ECharacterClass PlayerClass = ECharacterClass.Slayer;
         public string SelectedBoss = "Gate1";
-        public bool SpawnPartyAI = true;
 
         public CharacterBuildData GetBuild(ECharacterClass InClass)
         {

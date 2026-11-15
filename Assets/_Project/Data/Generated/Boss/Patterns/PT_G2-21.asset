@@ -19,6 +19,8 @@ MonoBehaviour:
   Response: 6
   ShapeText: "\uC6D0"
   LinkedPatternId: 
+  FollowUpPatternIds: []
+  FirstTimeFollowUpPatternIds: []
   Confidence: 1
   DamageTier: 0
   Notes: "\uBCF4\uC2A4 \uC8FC\uBCC0 \uC6D0\uD615 \uC5F0\uC18D \uD0C0\uACA9 5\uD68C.
@@ -46,6 +48,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 1.2
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -64,6 +67,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -93,6 +102,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.45
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -111,6 +121,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -140,6 +156,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.45
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -158,6 +175,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -187,6 +210,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.45
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -205,6 +229,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -234,6 +264,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.45
     TrackDuringTelegraph: 0
     TrackLockBefore: 0.5
@@ -252,6 +283,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4

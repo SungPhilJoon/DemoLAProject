@@ -91,7 +91,8 @@ namespace DemoLA.Tests
             Assert.IsTrue(boss.TryActivatePattern("G1-11", player));
             world.Simulate(3.0f);
             float lost = max - player.Stats.Get(EAttr.Health);
-            Assert.AreEqual(max * DamageTierUtil.Fraction(EDamageTier.Normal), lost, max * 0.01f);
+            // 등급 비율 × 인원 피해 배율 (PartyBalance — 즉사급이 아니면 적용).
+            Assert.AreEqual(max * DamageTierUtil.Fraction(EDamageTier.Normal) * boss.DamageScale, lost, max * 0.01f);
             Assert.IsTrue(player.HasTag((int)ETag.State_Airborne) == false, "에어본은 1초 뒤 풀린다");
         }
 
@@ -211,7 +212,7 @@ namespace DemoLA.Tests
             var gate1 = db.GetBoss("Gate1");
             var gate2 = db.GetBoss("Gate2");
             // xlsx 패턴목록 43개 + 프로젝트 자체 추가 3개 (G2-21 휠윈드 · G2-22 3연 베기 · G2-23 도약 강타 → 추적 휠윈드).
-            Assert.AreEqual(43 + 6, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 6개");
+            Assert.AreEqual(43 + 8, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 8개");
             Assert.AreEqual(5, gate1.Phases.Count);
             Assert.AreEqual(4, gate2.Phases.Count);
             Assert.AreEqual(EPatternCategory.PartyGimmick, gate1.GetPattern("G1-01").Category);
@@ -225,7 +226,7 @@ namespace DemoLA.Tests
         [Test]
         public void DefaultTrees_Validate()
         {
-            foreach (var tree in new[] { DefaultTrees.CreateGate1Boss(), DefaultTrees.CreateGate2Boss(), DefaultTrees.CreatePartyAI() })
+            foreach (var tree in new[] { DefaultTrees.CreateGate1Boss(), DefaultTrees.CreateGate2Boss() })
             {
                 var errors = tree.Validate();
                 Assert.IsEmpty(errors, string.Join("\n", errors));

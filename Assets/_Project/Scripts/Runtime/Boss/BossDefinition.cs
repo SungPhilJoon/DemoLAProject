@@ -63,6 +63,16 @@ namespace DemoLA.Boss
     /// 체력 줄 수 · 줄당 체력은 문서에 없어서 자리 표시 값이다.
     /// </summary>
     [CreateAssetMenu(menuName = "DemoLA/Boss/Boss Definition", fileName = "BOSS_New")]
+    /// <summary>진입 시네마틱 대사 한 줄 (Start 초에 Duration 동안 자막).</summary>
+    [System.Serializable]
+    public class BossIntroLine
+    {
+        public float Start;
+        public float Duration = 2.2f;
+        public string Speaker;
+        [TextArea] public string Text;
+    }
+
     public class BossDefinition : ScriptableObject
     {
         public string BossId = "Gate1";
@@ -82,6 +92,14 @@ namespace DemoLA.Boss
         public StateTreeAsset Brain;
         public List<BossPhaseDefinition> Phases = new List<BossPhaseDefinition>();
         public List<BossPatternDefinition> Patterns = new List<BossPatternDefinition>();
+
+        [Header("진입 시네마틱 (BossIntroCinematic)")]
+        [Tooltip("레이드에 들어올 때 보스 등장 연출 (Cinemachine 샷 3개 + 대사 자막). 연출 동안 보스 · 파티 AI 와 입력이 멈춘다")]
+        public bool PlayIntro = true;
+        [Tooltip("연출 길이 (초). 전경 → 보스 클로즈업 → 플레이어 뒤에서 보스")]
+        public float IntroDuration = 9.5f;
+        public string IntroSubtitle;
+        public List<BossIntroLine> IntroLines = new List<BossIntroLine>();
         public List<GimmickSpec> Gimmicks = new List<GimmickSpec>();
         public List<ElementWeakness> Weaknesses = new List<ElementWeakness>();
         public AggroSettings Aggro = new AggroSettings();

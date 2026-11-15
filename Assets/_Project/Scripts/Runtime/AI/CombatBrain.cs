@@ -104,7 +104,7 @@ namespace DemoLA.AI
                 return;
             }
 
-            if (actor == null || actor.IsDead == true)
+            if (actor == null || actor.IsDead == true || CinematicHold.Active == true)
             {
                 return;
             }

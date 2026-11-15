@@ -25,7 +25,7 @@ namespace DemoLA.Boss
         public static void Play(Vector3 InPosition, float InRadius, float InStrength)
         {
             DemoLA.Player.QuarterViewCamera.Shake(1.4f * InStrength, 0.6f + 0.6f * InStrength);
-            if (Application.isBatchMode == true)
+            if (Application.isBatchMode == true || Application.isPlaying == false)
             {
                 return;
             }

@@ -69,12 +69,18 @@ namespace DemoLA.AI
 
             // 지정 대상(SelectTargetTask)이 있으면 그 대상 기준으로 사거리를 본다. 없으면 null 로 넘겨 패턴 규칙 · 어그로에 맡긴다.
             var target = AIContext.PatternTarget(InContext);
-            string queued = boss.ConsumeQueuedPattern();
-            if (string.IsNullOrEmpty(queued) == false && boss.TryActivatePattern(queued, target) == true)
+            string queued;
+            if (boss.TryActivateQueuedPattern(target, out queued) == true)
             {
                 AIContext.ClearPatternTarget(InContext);
                 ability = boss.GetPattern(queued);
                 return ETaskStatus.Running;
+            }
+
+            if (queued != null)
+            {
+                // 이어질 패턴이 있는데 지금 못 쓴다 → 다른 패턴으로 새치기하지 않고 다음 판단을 기다린다.
+                return ETaskStatus.Failed;
             }
 
             if (candidates == null)
@@ -82,10 +88,8 @@ namespace DemoLA.AI
                 candidates = new List<BossPatternAbility>();
             }
 
-            float distance = target != null
-                ? Vector3.Distance(HitGeometry.Flat(target.Position), HitGeometry.Flat(boss.Position)) - target.Radius
-                : InContext.Blackboard.GetFloat((int)EAIBlackboard.TargetDistance, 9999.0f);
-            collect(boss, distance);
+            float distance = RandomPatternCandidates.Distance(InContext, boss, target);
+            RandomPatternCandidates.Collect(boss, PatternIds, CommonPhaseId, ExcludeCharges, distance, candidates);
             float total = 0.0f;
             for (int i = 0; i < candidates.Count; ++i)
             {
@@ -117,10 +121,27 @@ namespace DemoLA.AI
             return ability == null || ability.IsActive == false ? ETaskStatus.Succeeded : ETaskStatus.Running;
         }
 
-        private void collect(BossActor InBoss, float InDistance)
+        public override string Describe()
         {
-            candidates.Clear();
-            List<string> ids = PatternIds;
+            return PatternIds != null && PatternIds.Count > 0 ? $"Random of {PatternIds.Count}" : $"Random (phase + {CommonPhaseId})";
+        }
+    }
+
+    /// <summary>UseRandomPatternTask 와 HasRandomPatternCondition 이 같은 규칙으로 후보를 고른다.</summary>
+    public static class RandomPatternCandidates
+    {
+        public static float Distance(StateTreeContext InContext, BossActor InBoss, CombatActor InTarget)
+        {
+            return InTarget != null
+                ? Vector3.Distance(HitGeometry.Flat(InTarget.Position), HitGeometry.Flat(InBoss.Position)) - InTarget.Radius
+                : InContext.Blackboard.GetFloat((int)EAIBlackboard.TargetDistance, 9999.0f);
+        }
+
+        /// <summary>쿨다운이 끝났고 사거리(MinRange~MaxRange) 안인 랜덤 선택 가능 패턴.</summary>
+        public static void Collect(BossActor InBoss, List<string> InPatternIds, string InCommonPhaseId, bool InExcludeCharges, float InDistance, List<BossPatternAbility> OutCandidates)
+        {
+            OutCandidates.Clear();
+            List<string> ids = InPatternIds;
             if (ids == null || ids.Count == 0)
             {
                 ids = new List<string>();
@@ -130,7 +151,7 @@ namespace DemoLA.AI
                     ids.AddRange(phase.PatternIds);
                 }
 
-                var common = InBoss.Definition.GetPhase(CommonPhaseId);
+                var common = InBoss.Definition.GetPhase(InCommonPhaseId);
                 if (common != null)
                 {
                     ids.AddRange(common.PatternIds);
@@ -140,12 +161,12 @@ namespace DemoLA.AI
             for (int i = 0; i < ids.Count; ++i)
             {
                 var pattern = InBoss.GetPattern(ids[i]);
-                if (pattern == null || pattern.Definition.RandomSelectable == false || candidates.Contains(pattern) == true)
+                if (pattern == null || pattern.Definition.RandomSelectable == false || OutCandidates.Contains(pattern) == true)
                 {
                     continue;
                 }
 
-                if (ExcludeCharges == true && pattern.Definition.IsCharge == true)
+                if (InExcludeCharges == true && pattern.Definition.IsCharge == true)
                 {
                     continue;
                 }
@@ -160,13 +181,43 @@ namespace DemoLA.AI
                     continue;
                 }
 
-                candidates.Add(pattern);
+                OutCandidates.Add(pattern);
             }
+        }
+    }
+
+    /// <summary>
+    /// 지금 위치에서 쓸 수 있는 랜덤 패턴이 있는가 (UseRandomPatternTask 와 같은 규칙).
+    /// "패턴 공격" 상태에 붙여, 사거리 안 패턴이 없으면 다음 상태("추적")로 넘어가 대상에게 다가가게 한다.
+    /// (조건이 없으면 실패한 패턴 공격 상태만 매 프레임 다시 골라 추적 상태에 영영 닿지 않는다.)
+    /// </summary>
+    [Serializable]
+    [StateTreeNodeInfo("DemoLA/Boss", "쓸 수 있는(쿨다운 · 사거리) 랜덤 패턴이 있는가")]
+    public class HasRandomPatternCondition : StateTreeCondition
+    {
+        [Tooltip("비우면 현재 페이즈 + CommonPhaseId 페이즈의 패턴")]
+        public List<string> PatternIds = new List<string>();
+        public string CommonPhaseId;
+        public bool ExcludeCharges;
+        [NonSerialized] private List<BossPatternAbility> buffer;
+
+        protected override bool Test(StateTreeContext InContext)
+        {
+            var boss = AIContext.Boss(InContext);
+            if (boss == null)
+            {
+                return false;
+            }
+
+            buffer ??= new List<BossPatternAbility>();
+            float distance = RandomPatternCandidates.Distance(InContext, boss, AIContext.PatternTarget(InContext));
+            RandomPatternCandidates.Collect(boss, PatternIds, CommonPhaseId, ExcludeCharges, distance, buffer);
+            return buffer.Count > 0;
         }
 
         public override string Describe()
         {
-            return PatternIds != null && PatternIds.Count > 0 ? $"Random of {PatternIds.Count}" : $"Random (phase + {CommonPhaseId})";
+            return PatternIds != null && PatternIds.Count > 0 ? $"Has random of {PatternIds.Count}" : $"Has random (phase + {CommonPhaseId})";
         }
     }
 
@@ -264,6 +315,60 @@ namespace DemoLA.AI
         public override string Describe()
         {
             return "Wait Groggy";
+        }
+    }
+
+    /// <summary>
+    /// 이어질 패턴이 대기 중이고 지금 쓸 수 있는가 (FollowUpPatternIds · LinkedPatternId).
+    /// 패턴 간격(PatternGap)이 지났고 그로기가 아닐 때만 참 — 그로기가 풀린 뒤 이어서 쓴다.
+    /// </summary>
+    [Serializable]
+    [StateTreeNodeInfo("DemoLA/Boss", "이어질 패턴(연결 · 후속)이 대기 중이고 지금 쓸 수 있는가")]
+    public class HasQueuedPatternCondition : StateTreeCondition
+    {
+        protected override bool Test(StateTreeContext InContext)
+        {
+            var boss = AIContext.Boss(InContext);
+            string next = boss != null ? boss.PeekQueuedPattern() : null;
+            return next != null && boss.IsPatternGapElapsed == true && boss.HasTag((int)ETag.State_Groggy) == false;
+        }
+
+        public override string Describe()
+        {
+            return "Has queued pattern";
+        }
+    }
+
+    /// <summary>대기 중인 다음 패턴을 쓰고 끝날 때까지 기다린다. 못 쓰면 Failed (대기열은 그대로 — 다음에 다시 시도).</summary>
+    [Serializable]
+    [StateTreeNodeInfo("DemoLA/Boss", "대기 중인 다음 패턴(연결 · 후속) 사용")]
+    public class UseQueuedPatternTask : StateTreeTask
+    {
+        [NonSerialized] private BossPatternAbility ability;
+
+        public override ETaskStatus EnterState(StateTreeContext InContext)
+        {
+            ability = null;
+            var boss = AIContext.Boss(InContext);
+            string next;
+            if (boss == null || boss.TryActivateQueuedPattern(AIContext.PatternTarget(InContext), out next) == false)
+            {
+                return ETaskStatus.Failed;
+            }
+
+            AIContext.ClearPatternTarget(InContext);
+            ability = boss.GetPattern(next);
+            return ETaskStatus.Running;
+        }
+
+        public override ETaskStatus Tick(StateTreeContext InContext)
+        {
+            return ability == null || ability.IsActive == false ? ETaskStatus.Succeeded : ETaskStatus.Running;
+        }
+
+        public override string Describe()
+        {
+            return "Use queued pattern";
         }
     }
 }

@@ -44,7 +44,7 @@ MonoBehaviour:
   Element: 5
   SuperArmor: 0
   Protection: 0
-  IsCounter: 0
+  IsCounter: 1
   IsAwakening: 0
   LocksMovement: 1
   AiRange: 0

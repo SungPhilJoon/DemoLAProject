@@ -20,6 +20,8 @@ MonoBehaviour:
   Response: 6
   ShapeText: 
   LinkedPatternId: 
+  FollowUpPatternIds: []
+  FirstTimeFollowUpPatternIds: []
   Confidence: 1
   DamageTier: 0
   Notes: "\uD3EC\uC2DD\uC790\uAC00 \uC0AC\uC6A9. \uD2B9\uC815 \uB300\uC0C1\uC5D0\uAC8C
@@ -49,6 +51,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 3
     TrackDuringTelegraph: 1
     TrackLockBefore: 0.4
@@ -67,6 +70,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4

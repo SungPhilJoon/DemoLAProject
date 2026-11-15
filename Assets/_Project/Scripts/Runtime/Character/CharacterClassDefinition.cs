@@ -30,6 +30,8 @@ namespace DemoLA.Character
         public string DisplayName = "Class";
         public ECombatRole Role;
         public Color BodyColor = Color.white;
+        [Tooltip("캐릭터 모델 프리팹 (Animator 포함). 비어 있으면 BodyColor 캡슐로 만든다.")]
+        public GameObject ModelPrefab;
 
         [Header("Base Stats (장비 이전)")]
         public float BaseMaxHealth = 150000.0f;
@@ -60,10 +62,12 @@ namespace DemoLA.Character
             return Awakenings[Mathf.Clamp(InIndex, 0, Awakenings.Count - 1)];
         }
 
-        [Header("AI")]
-        [Tooltip("파티 AI 가 유지하려는 보스와의 거리")]
-        public float AiPreferredRange = 3.0f;
-        [Tooltip("파티 AI 가 백어택 위치를 노리는가")]
-        public bool AiPrefersBack;
+        [Header("전투 위치 (권장 · 테스트 딜 측정기)")]
+        [Tooltip("이 직업이 보스와 유지하기 좋은 거리")]
+        [UnityEngine.Serialization.FormerlySerializedAs("AiPreferredRange")]
+        public float PreferredRange = 3.0f;
+        [Tooltip("백어택 위치를 노리는 직업인가")]
+        [UnityEngine.Serialization.FormerlySerializedAs("AiPrefersBack")]
+        public bool PrefersBack;
     }
 }

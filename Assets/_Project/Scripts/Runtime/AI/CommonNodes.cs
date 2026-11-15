@@ -61,6 +61,13 @@ namespace DemoLA.AI
 
         public static bool IsInTelegraph(Vector3 InPosition, float InRadius)
         {
+            // 엄폐 충격파가 곧 터지면(기둥 엄폐 낙하) 기둥 뒤가 아닌 곳은 전부 위험.
+            var blast = DemoLA.World.CoverPillars.PendingBlastOrigin;
+            if (blast.HasValue == true && DemoLA.World.CoverPillars.IsCovered(blast.Value, InPosition) == false)
+            {
+                return true;
+            }
+
             // 안전지대가 떠 있으면(천상 낙하) 그 밖은 곧 즉사 범위다.
             var zone = ActiveSafeZone();
             if (zone != null && zone.Contains(InPosition, 0.0f) == false)
@@ -78,55 +85,6 @@ namespace DemoLA.AI
             }
 
             return false;
-        }
-
-        /// <summary>장판 밖이면서 InPreferred 에 가까운 지점 (8방향 × 3거리 샘플).</summary>
-        public static Vector3 FindSafePoint(Vector3 InFrom, float InRadius, Vector3 InPreferred)
-        {
-            var zone = ActiveSafeZone();
-            if (zone != null)
-            {
-                // 안전지대 띠 안쪽 (자기 방향 그대로 바깥으로).
-                var center = HitGeometry.Flat(zone.Origin);
-                var direction = HitGeometry.Flat(InFrom) - center;
-                if (direction.sqrMagnitude < 0.01f)
-                {
-                    direction = Vector3.forward;
-                }
-
-                // 띠(약 1.5m)의 가운데 — 벽에 붙지 않게.
-                float ring = zone.Area.InnerRadius + 0.75f;
-                return center + direction.normalized * ring;
-            }
-
-            var best = InFrom;
-            float bestScore = float.MaxValue;
-            for (int ring = 1; ring <= 3; ++ring)
-            {
-                for (int i = 0; i < 8; ++i)
-                {
-                    float angle = i * 45.0f * Mathf.Deg2Rad;
-                    var point = InFrom + new Vector3(Mathf.Sin(angle), 0.0f, Mathf.Cos(angle)) * (ring * 3.5f);
-                    if (IsInTelegraph(point, InRadius) == true)
-                    {
-                        continue;
-                    }
-
-                    if (DemoLA.World.ArenaFloor.Current != null && DemoLA.World.ArenaFloor.Current.IsSolid(point) == false)
-                    {
-                        continue;
-                    }
-
-                    float score = (point - InFrom).sqrMagnitude + (point - InPreferred).sqrMagnitude * 0.2f;
-                    if (score < bestScore)
-                    {
-                        bestScore = score;
-                        best = point;
-                    }
-                }
-            }
-
-            return best;
         }
     }
 
@@ -247,7 +205,7 @@ namespace DemoLA.AI
     {
         public string GimmickId = "G1-01";
         public EGimmickState State = EGimmickState.Running;
-        [Tooltip("아군 AI 용: 자신 대신 대상(보스)의 기믹을 본다")]
+        [Tooltip("자신 대신 대상의 기믹을 본다")]
         public bool CheckTarget;
 
         protected override bool Test(StateTreeContext InContext)
@@ -358,10 +316,24 @@ namespace DemoLA.AI
         public float StopDistance = 3.0f;
         public float Timeout = 4.0f;
         [NonSerialized] private float elapsed;
+        [NonSerialized] private float lastLogTime = -100.0f;
 
         public override ETaskStatus EnterState(StateTreeContext InContext)
         {
             elapsed = 0.0f;
+            var boss = AIContext.Boss(InContext);
+            var chaseTarget = AIContext.Target(InContext);
+            if (boss != null && chaseTarget != null)
+            {
+                // 실제로 다가갈 때만 · 1초에 한 번 (근접 + 모든 패턴 쿨다운이면 매 프레임 들어오므로).
+                float d = InContext.Blackboard.GetFloat((int)EAIBlackboard.TargetDistance, 9999.0f);
+                if (d > StopDistance && Time.time - lastLogTime >= 1.0f)
+                {
+                    lastLogTime = Time.time;
+                    DemoLA.Boss.BossPatternLog.Message($"  … 사거리 안 패턴 없음 → 추적 {chaseTarget.GetName()} (거리 {d:0.0}m)");
+                }
+            }
+
             return Tick(InContext);
         }
 

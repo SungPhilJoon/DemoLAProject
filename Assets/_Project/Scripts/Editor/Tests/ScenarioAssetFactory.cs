@@ -16,7 +16,7 @@ namespace DemoLA.Editor
     ///  - 보스 패턴: 구현된 모든 패턴마다 "보스(AI 끔) + 더미 파티 4명 → 패턴 발동 → 끝날 때까지" 시나리오 1개.
     ///    기본 검증 = 시작 1회 · 끝남 1회 · (장판이 있으면) 장판 1개 이상. 받은 피해 · 넉백 수는 측정(ReportOnly).
     ///  - 기믹: 도약 십자/X 추적, 돌진 → 기둥 충돌, 첫 즉사기 구조물 전부 파괴, 넉백 낙사 / 넉백 없는 구출.
-    ///  - 밸런스: AI 파티 60초 → 보스 체력 줄 · 피해 · 치명타 비율 (범위 검증 + 측정).
+    ///  - 밸런스: 4인 파티(테스트 딜 측정기) 60초 → 보스 체력 줄 · 피해 · 치명타 비율 (범위 검증 + 측정).
     /// 이미 있는 에셋은 건너뛴다 (직접 고친 값을 지키기 위해). 덮어쓰려면 "다시 생성" 메뉴.
     /// </summary>
     public static class ScenarioAssetFactory
@@ -63,7 +63,8 @@ namespace DemoLA.Editor
             save(knockbackFall(), $"{Root}/Mechanics", "TS_낙사_넉백_지형파괴후", InOverwrite, ref created, ref skipped);
             save(knockbackRescuedBeforeCollapse(), $"{Root}/Mechanics", "TS_낙사_넉백_벽구간구출", InOverwrite, ref created, ref skipped);
             save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_낙사_넉백없으면구출", InOverwrite, ref created, ref skipped);
-            save(balanceGate("Gate1"), $"{Root}/Balance", "TS_밸런스_Gate1_60초", InOverwrite, ref created, ref skipped);
+            save(edgeExitOnlyOnce(), $"{Root}/Mechanics", "TS_G2-28_외곽이탈_없음", InOverwrite, ref created, ref skipped);
+            save(balanceGate("Gate1", 15.0f), $"{Root}/Balance", "TS_밸런스_Gate1_15초", InOverwrite, ref created, ref skipped);
             AssetDatabase.SaveAssets();
             return $"시나리오 생성 {created}개, 건너뜀 {skipped}개 → {Root}";
         }
@@ -203,6 +204,24 @@ namespace DemoLA.Editor
             return s;
         }
 
+        /// <summary>2관문 보스 AI 를 2분 돌린다: 돌진은 여러 번, 외곽 이탈 도약(G2-28, 삭제)은 한 번도 없다.</summary>
+        private static TestScenarioAsset edgeExitOnlyOnce()
+        {
+            var s = make("G2-28 외곽 이탈 없음", "보스 AI 로 2분: 돌진(G2-11)이 여러 번 나와도 외곽 이탈 도약(G2-28)은 나오지 않는다 (삭제 — 보스가 외곽 구석에 머물러 공격이 끊겼다)", "Mechanics");
+            s.Timeout = 140.0f;
+            s.TimeScale = 3.0f;
+            s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = new Vector3(0.0f, 0.0f, 6.0f), FaceTowards = new Vector3(0.0f, 0.0f, -6.0f), EnableAI = true });
+            var party = new SpawnPartyStep { Label = "무적 더미 2명" };
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(-2.0f, 0.0f, -4.0f), Invulnerable = true });
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Artist, Position = new Vector3(2.0f, 0.0f, -6.0f), Invulnerable = true });
+            s.Steps.Add(party);
+            s.Steps.Add(new WaitSecondsStep { Seconds = 120.0f });
+            s.Expectations.Add(new EventExpectation { Label = "돌진 여러 번", EventName = "Pattern.Started.G2-11", Compare = EScenarioCompare.GreaterOrEqual, Value = 2 });
+            s.Expectations.Add(new EventExpectation { Label = "외곽 이탈 도약 없음", EventName = "Pattern.Started.G2-28", Compare = EScenarioCompare.Equal, Value = 0 });
+            s.Expectations.Add(new EventExpectation { Label = "패턴 수", EventName = "Pattern.Started", ReportOnly = true });
+            return s;
+        }
+
         private static TestScenarioAsset rescueWithoutKnockback()
         {
             var s = make("넉백 없이 바닥 밖 → 구출", "넉백 없이 바닥 밖에 놓이면 죽지 않고 가장 가까운 바닥으로 옮겨지는지", "Mechanics");
@@ -220,21 +239,22 @@ namespace DemoLA.Editor
 
         // ------------------------------------------------------------------ 밸런스
 
-        private static TestScenarioAsset balanceGate(string InBossId)
+        /// <summary>4인 파티가 InSeconds 동안 깎는 체력 줄. 1관문(60줄)은 딜 측정기 4명이 약 30초에 잡으므로 15초 구간으로 잰다 (실제 플레이는 이동 · 회피로 약 1분).</summary>
+        private static TestScenarioAsset balanceGate(string InBossId, float InSeconds)
         {
-            var s = make($"밸런스 {InBossId} 60초", "보스 AI 를 끄고 AI 파티 4명이 60초 동안 때린다. 체력 줄 · 피해 · 치명타 비율을 측정하고 범위를 벗어나면 실패", "Balance");
-            s.Timeout = 80.0f;
+            var s = make($"밸런스 {InBossId} {InSeconds:0}초", $"보스 AI 를 끄고 4인 파티(테스트 딜 측정기)가 {InSeconds:0}초 동안 때린다. 체력 줄 · 피해 · 치명타 비율을 측정하고 범위를 벗어나면 실패", "Balance");
+            s.Timeout = InSeconds + 20.0f;
             s.TimeScale = 3.0f;
             s.Steps.Add(new SpawnBossStep { BossId = InBossId, Position = new Vector3(0.0f, 0.0f, 6.0f), FaceTowards = new Vector3(0.0f, 0.0f, -6.0f) });
-            var party = new SpawnPartyStep { Label = "AI 파티 4명" };
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(-2.0f, 0.0f, -4.0f), UseAI = true });
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Infighter, Position = new Vector3(0.0f, 0.0f, -4.0f), UseAI = true });
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Summoner, Position = new Vector3(2.0f, 0.0f, -4.0f), UseAI = true });
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Artist, Position = new Vector3(0.0f, 0.0f, -6.0f), UseAI = true });
+            var party = new SpawnPartyStep { Label = "4인 파티 (딜 측정기)" };
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(-2.0f, 0.0f, -4.0f), AutoAttack = true });
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Infighter, Position = new Vector3(0.0f, 0.0f, -4.0f), AutoAttack = true });
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Summoner, Position = new Vector3(2.0f, 0.0f, -4.0f), AutoAttack = true });
+            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Artist, Position = new Vector3(0.0f, 0.0f, -6.0f), AutoAttack = true });
             s.Steps.Add(party);
-            s.Steps.Add(new WaitSecondsStep { Seconds = 60.0f });
-            // 범위는 현재 밸런스(PlayerDamageScale 0.18, 치명타 조정 후) 측정값 기준. 밸런스를 바꾸면 이 값도 갱신한다.
-            s.Expectations.Add(new ProbeExpectation { Label = "60초 동안 깎은 체력 줄 (줄어든 양, 음수)", Probe = "Boss.HpLines", Moment = EProbeMoment.Delta, Compare = EScenarioCompare.Between, Value = -45, Value2 = -10 });
+            s.Steps.Add(new WaitSecondsStep { Seconds = InSeconds });
+            // 범위는 현재 밸런스(PlayerDamageScale 0.25, 4인 보스 체력 0.35 — PartyBalance) 측정값(15초 −48줄) 기준. 밸런스를 바꾸면 이 값도 갱신한다.
+            s.Expectations.Add(new ProbeExpectation { Label = $"{InSeconds:0}초 동안 깎은 체력 줄 (줄어든 양, 음수)", Probe = "Boss.HpLines", Moment = EProbeMoment.Delta, Compare = EScenarioCompare.Between, Value = -58, Value2 = -25 });
             s.Expectations.Add(new ProbeExpectation { Label = "파티 치명타 비율 %", Probe = "Party.CritRate", Compare = EScenarioCompare.Between, Value = 20, Value2 = 70 });
             s.Expectations.Add(new EventExpectation { Label = "보스에게 준 피해 합", EventName = "Damage.ToBoss", Aggregate = EScenarioAggregate.Sum, ReportOnly = true });
             s.Expectations.Add(new EventExpectation { Label = "타격 수", EventName = "Hit.Party", ReportOnly = true });

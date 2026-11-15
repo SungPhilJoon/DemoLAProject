@@ -47,9 +47,9 @@ namespace DemoLA.Tests
         public void Gauge_FillsFromBossDamage_AndCannotUseUntilFull()
         {
             Assert.IsFalse(player.Asc != null && EstherSystem.TryUse(player, 0), "게이지 0 이면 못 씀");
-            EstherSystem.AddBossDamage(boss, boss.Definition.HpPerLine * 6.0f);
+            EstherSystem.AddBossDamage(boss, boss.HpPerLine * 6.0f);
             Assert.AreEqual(50.0f, EstherSystem.Gauge, 0.01f, "12줄 중 6줄 = 50%");
-            EstherSystem.AddBossDamage(boss, boss.Definition.HpPerLine * 100.0f);
+            EstherSystem.AddBossDamage(boss, boss.HpPerLine * 100.0f);
             Assert.IsTrue(EstherSystem.IsFull);
         }
 
@@ -60,7 +60,7 @@ namespace DemoLA.Tests
             float before = boss.Stats.Get(EAttr.Health);
             float allyIncrease = ally.Stats.Get(EAttr.DamageIncrease);
             Assert.IsTrue(EstherSystem.TryUse(player, 0));
-            float lines = (before - boss.Stats.Get(EAttr.Health)) / boss.Definition.HpPerLine;
+            float lines = (before - boss.Stats.Get(EAttr.Health)) / boss.HpPerLine;
             Assert.AreEqual(EstherSystem.Available[0].DamageHpLines, lines, 0.05f, "고정 피해 = 설정한 체력 줄 수 (방어 · 배율 무시)");
             Assert.Greater(ally.Stats.Get(EAttr.DamageIncrease), allyIncrease, "파티 피해 증가 버프");
             Assert.AreEqual(0.0f, EstherSystem.Gauge, "쓰면 게이지 0");

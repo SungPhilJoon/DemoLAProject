@@ -25,18 +25,17 @@ namespace DemoLA.Core
     /// <summary>
     /// 씬 진입점. 데이터 로드(직접 참조 → Addressables → 코드 기본값) → 저장 로드 → 경기장 · 대기실 생성 → HUD/빌드 창.
     /// 흐름: 레이드 입장 대기실(관문 선택 · 설정 · 전원 준비) → 카운트다운 → 레이드. F5 = 대기실로 돌아가기.
-    /// 파티는 플레이어 1 + 아군 AI 3 (최대 4인, NetCode 전).
+    /// 파티는 실제 플레이어만 (아군 AI 없음). 오프라인은 혼자(1인 파티), 함께 하려면 멀티플레이(F7)로 최대 4인.
+    /// 보스 체력 · 무력화 · 피해는 들어온 인원에 맞춘다 (PartyBalance).
     /// </summary>
     public class GameBootstrap : BaseBehaviour
     {
         [SerializeField] private GameDatabase database;
         [SerializeField] private bool loadFromAddressables = true;
-        [SerializeField] private StateTreeAsset partyTree;
         [SerializeField] private UnityEngine.InputSystem.InputActionAsset controls;
         [SerializeField] private ArenaFloor arena;
         [SerializeField] private Vector3 playerSpawn = new Vector3(0.0f, 0.0f, -10.0f);
         [SerializeField] private Vector3 bossSpawn = new Vector3(0.0f, 0.0f, 6.0f);
-        [SerializeField] private int partySize = 4;
 
         private GameSession session;
         private PartyCharacter player;
@@ -67,11 +66,6 @@ namespace DemoLA.Core
         public GameSession Session
         {
             get { return session; }
-        }
-
-        public StateTreeAsset PartyTree
-        {
-            get { return partyTree; }
         }
 
         public Vector3 PlayerSpawn
@@ -131,6 +125,10 @@ namespace DemoLA.Core
             }
 
             StatFormula.Settings = session.Database.StatFormula;
+            if (session.Database.PartyBalance != null)
+            {
+                PartyBalance.Settings = session.Database.PartyBalance;
+            }
             if (session.Database.Icons != null)
             {
                 IconFactory.Library = session.Database.Icons;
@@ -157,11 +155,6 @@ namespace DemoLA.Core
             if (arena.Surface != null && arena.Surface.navMeshData == null)
             {
                 arena.Surface.BuildNavMesh();
-            }
-
-            if (partyTree == null)
-            {
-                partyTree = DefaultTrees.CreatePartyAI();
             }
 
             ensureLight();
@@ -270,54 +263,22 @@ namespace DemoLA.Core
             SpawnRaid();
         }
 
-        /// <summary>대기실 · 레이드 공통: 플레이어 + AI 파티를 만든다. 대기실에서는 AI 두뇌 없이 입구를 보고 선다.</summary>
+        /// <summary>대기실 · 레이드 공통: 로컬 플레이어를 만든다 (아군 AI 없음 — 다른 파티원은 멀티플레이로 들어온다).</summary>
         private void spawnParty(bool InLobby)
         {
             var db = session.Database;
             var save = session.Save;
-            var playerClass = db.GetClass(save.PlayerClass) ?? db.Classes[0];
-            var classes = new List<CharacterClassDefinition> { playerClass };
-            if (save.SpawnPartyAI == true)
+            var cls = db.GetClass(save.PlayerClass) ?? db.Classes[0];
+            var position = InLobby == true ? LobbyArea.SpawnPoint(0, 1) : playerSpawn;
+            var character = RaidSpawner.SpawnCharacter(cls, session.GetBuild(cls.Class), db, position, $"플레이어 ({cls.DisplayName})");
+            if (InLobby == true)
             {
-                var order = allyOrder(playerClass.Class);
-                for (int i = 0; i < order.Count && classes.Count < partySize; ++i)
-                {
-                    var cls = db.GetClass(order[i]);
-                    if (cls != null)
-                    {
-                        classes.Add(cls);
-                    }
-                }
+                character.transform.rotation = Quaternion.LookRotation(LobbyArea.GateDirection, Vector3.up);
             }
 
-            for (int i = 0; i < classes.Count; ++i)
-            {
-                var cls = classes[i];
-                Vector3 position;
-                if (InLobby == true)
-                {
-                    position = LobbyArea.SpawnPoint(i, classes.Count);
-                }
-                else
-                {
-                    position = i == 0 ? playerSpawn : playerSpawn + new Vector3((i - 2) * 2.5f, 0.0f, -1.5f);
-                }
-
-                bool isPlayer = i == 0;
-                var character = RaidSpawner.SpawnCharacter(cls, session.GetBuild(cls.Class), db, position,
-                    isPlayer || InLobby ? null : partyTree, isPlayer ? $"플레이어 ({cls.DisplayName})" : $"AI {cls.DisplayName}");
-                if (InLobby == true)
-                {
-                    character.transform.rotation = Quaternion.LookRotation(LobbyArea.GateDirection, Vector3.up);
-                }
-
-                party.Add(character);
-                if (isPlayer == true)
-                {
-                    player = character;
-                    controller.Bind(player);
-                }
-            }
+            party.Add(character);
+            player = character;
+            controller.Bind(player);
         }
 
         /// <summary>현재 저장 설정(직업/관문)으로 레이드를 처음부터 다시 만든다 (대기실 준비 확인 없이 — 입장 · 네트워크용).</summary>
@@ -350,7 +311,15 @@ namespace DemoLA.Core
             cameraRig.SetTarget(player.transform);
             hud.Build(player, boss, party);
             window.Build(session, player, changeClass);
-            Raid.Message(bossDef != null ? $"{bossDef.DisplayName} 레이드 시작" : "보스 데이터 없음 (Resources/Data CSV 확인)", 3.0f, false);
+            if (boss != null && boss.Definition.PlayIntro == true)
+            {
+                // 보스 진입 시네마틱 (연출 동안 AI · 입력 정지, 끝나면 전투 시작).
+                BossIntroCinematic.Play(boss, player != null ? player.transform : null);
+            }
+            else
+            {
+                Raid.Message(bossDef != null ? $"{bossDef.DisplayName} 레이드 시작" : "보스 데이터 없음 (Resources/Data CSV 확인)", 3.0f, false);
+            }
         }
 
         private void Update()
@@ -437,14 +406,6 @@ namespace DemoLA.Core
                 lobby.SetPlayerReady(false);
                 Raid.Message("설정이 바뀌어 준비가 해제되었습니다", 2.0f, false);
             }
-        }
-
-        private static List<ECharacterClass> allyOrder(ECharacterClass InPlayer)
-        {
-            // 서포터(도화가)를 먼저 넣어 4인 파티 = 딜러 3 + 서포터 1 구성을 만든다.
-            var order = new List<ECharacterClass> { ECharacterClass.Artist, ECharacterClass.Slayer, ECharacterClass.Infighter, ECharacterClass.Summoner };
-            order.Remove(InPlayer);
-            return order;
         }
 
         /// <summary>오프라인 레이드 · 대기실을 걷어 낸다 (네트워크 세션이 시작될 때).</summary>

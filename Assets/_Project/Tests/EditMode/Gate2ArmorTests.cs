@@ -81,8 +81,9 @@ namespace DemoLA.Tests
             Assert.IsTrue(boss.HasTag((int)ETag.State_Groggy), "벽에 부딪혀도 그로기");
             Assert.IsTrue(armor.IsWeakened, "충돌 그로기 = 부위파괴 계수 감소");
 
-            // 평소라면 40% 인 수치가 ×2.5 로 들어가 갑옷 1중첩이 깨진다.
-            addDestruction(armor.DestructionPerStack * 0.4f);
+            // 평소라면 70% 인 수치가 ×1.5 로 들어가 갑옷 1중첩이 깨진다 (평소 필요량 = 그로기 때의 1.5배).
+            Assert.AreEqual(1.5f, armor.CrashWeaknessMultiplier, 0.001f);
+            addDestruction(armor.DestructionPerStack * 0.7f);
             Assert.AreEqual(1, armor.RemainingStacks);
             Assert.IsFalse(boss.HasTag((int)ETag.State_Groggy), "부위파괴 → 그로기 해제");
             Assert.IsNotNull(boss.ActivePattern);
@@ -146,6 +147,30 @@ namespace DemoLA.Tests
             Assert.Greater(leap.Steps[0].LeapDuration, 0.0f);
             Assert.IsTrue(leap.IgnoreInPatternCount);
             Assert.IsFalse(leap.RandomSelectable);
+        }
+
+        [Test]
+        public void ChargeFollowUps_QueuedEvenWhenCrashGroggy()
+        {
+            Assert.IsTrue(boss.TryActivatePattern("G2-11", null));
+            armor.NotifyChargeCrashed(wall());
+            Assert.IsTrue(boss.HasTag((int)ETag.State_Groggy), "충돌 그로기로 돌진이 끊김");
+            Assert.AreEqual("G2-23", boss.PeekQueuedPattern(), "그래도 도약 십자 + 추적 휠윈드가 이어진다");
+            Assert.AreEqual("G2-23", boss.ConsumeQueuedPattern());
+            Assert.IsNull(boss.ConsumeQueuedPattern(), "첫 돌진 뒤에도 외곽 이탈 도약(G2-28, 삭제)은 없다");
+
+            boss.NotifyPatternEnded(boss.GetPattern("G2-11"), true);
+            Assert.AreEqual("G2-23", boss.ConsumeQueuedPattern());
+            Assert.IsNull(boss.ConsumeQueuedPattern(), "두 번째 돌진 뒤에도 G2-23 만");
+            var cross = boss.Definition.GetPattern("G2-23").Steps[0];
+            Assert.AreEqual(4, cross.ArmCount);
+            Assert.IsFalse(cross.RandomCrossOrX, "십자 고정");
+        }
+
+        [Test]
+        public void ExitLeap_Removed()
+        {
+            Assert.IsNull(boss.Definition.GetPattern("G2-28"), "외곽 이탈 도약(G2-28)은 삭제 — 보스가 외곽에 머물러 공격이 끊겼다");
         }
     }
 }

@@ -57,8 +57,11 @@ namespace DemoLA.Testing
     {
         public ECharacterClass Class = ECharacterClass.Slayer;
         public Vector3 Position;
-        [Tooltip("켜면 파티 AI 가 싸운다. 끄면 제자리에 서 있는 더미")]
-        public bool UseAI;
+        [Tooltip("켜면 테스트 딜 측정기(ScenarioAutoAttacker)가 보스를 때린다. 끄면 제자리에 서 있는 더미 (게임에는 아군 AI 가 없다)")]
+        [UnityEngine.Serialization.FormerlySerializedAs("UseAI")]
+        public bool AutoAttack;
+        [Tooltip("켜면 무적 (피해 · 넉백 없음) — 보스 AI 를 오래 돌려 패턴 순서만 볼 때")]
+        public bool Invulnerable;
     }
 
     /// <summary>파티를 만든다. 0번이 보스의 첫 어그로 대상(패턴 대상)이다.</summary>
@@ -72,10 +75,16 @@ namespace DemoLA.Testing
             var host = Host(InContext);
             for (int i = 0; i < Members.Count; ++i)
             {
-                if (host.SpawnMember(Members[i].Class, Members[i].Position, Members[i].UseAI) == null)
+                var member = host.SpawnMember(Members[i].Class, Members[i].Position, Members[i].AutoAttack);
+                if (member == null)
                 {
                     Fail(InContext, $"직업 {Members[i].Class} 없음");
                     yield break;
+                }
+
+                if (Members[i].Invulnerable == true)
+                {
+                    member.Asc.Tags.AddTag((int)DemoLA.Core.ETag.State_Invulnerable);
                 }
             }
 

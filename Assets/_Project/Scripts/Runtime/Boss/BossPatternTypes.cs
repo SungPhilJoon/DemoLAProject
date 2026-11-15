@@ -62,6 +62,8 @@ namespace DemoLA.Boss
         ArenaCenter = 4,
         /// <summary>보스 위치, 어그로 대상 방향.</summary>
         BossTowardAggro = 5,
+        /// <summary>파티(살아 있는 플레이어 무게중심) 반대편 경기장 가장자리 (EdgeDistance). 정면 = 경기장 중심 쪽.</summary>
+        ArenaEdgeAwayFromParty = 6,
     }
 
     public enum EStaggerFailOutcome
@@ -117,6 +119,8 @@ namespace DemoLA.Boss
         public HitArea Area = HitArea.Circle(4.0f);
         [Tooltip("판정 원점을 정면 방향으로 옮긴다 (m). 도끼 찍기처럼 '찍은 곳' 에 범위를 만들 때. 음수 = 뒤쪽")]
         public float ForwardOffset;
+        [Tooltip("ArenaEdgeAwayFromParty: 경기장 중심에서 이 거리 (m). 외곽 벽 링(21m) 바깥이면 맵 밖으로 빠진 것처럼 보인다")]
+        public float EdgeDistance = 23.5f;
         [Tooltip("전조 시간 (초). xlsx 에서 미측정 — 자리 표시 값")]
         public float TelegraphTime = 1.2f;
         [Tooltip("전조 중 대상을 따라간다 (추적 장판)")]
@@ -149,6 +153,18 @@ namespace DemoLA.Boss
         public float StartLeapDuration;
         [Tooltip("판정 순간 크게 터지는 연출 (충격파 · 강한 화면 흔들림)")]
         public bool BigImpact;
+
+        [Header("엄폐 기둥 (G2-27)")]
+        [Tooltip("이 단계가 시작될 때 경기장 중심 기준 12 · 3 · 6 · 9시 방향에 엄폐 기둥 4개가 솟아난다 (패턴이 끝나면 사라짐)")]
+        public bool SpawnCoverPillars;
+        public float CoverPillarDistance = 10.0f;
+        [Tooltip("판정 원점 → 대상 사이에 엄폐 기둥이 있으면(기둥 뒤) 피해를 받지 않는다. 기둥 뒤 안전 구역을 파란색으로 보여 준다")]
+        public bool BlockedByCover;
+        [Tooltip("이 판정 범위에 닿은 엄폐 기둥은 크게 폭발한다 (기둥 주변 CoverExplosionRadius 즉사)")]
+        public bool ExplodesCover;
+        public float CoverExplosionRadius = 5.0f;
+        [Tooltip("전조가 시작될 때 \"OO 추적!\" 안내 (부채꼴이 누구를 따라가는지)")]
+        public bool AnnounceTarget;
 
         [Header("십자 / X 범위 (ArmCount > 0): 중심에서 뻗는 직선 범위")]
         public int ArmCount;

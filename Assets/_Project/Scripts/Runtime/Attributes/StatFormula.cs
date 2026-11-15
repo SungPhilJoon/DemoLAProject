@@ -36,8 +36,8 @@ namespace DemoLA.Attributes
         public float HeadAttackAngle = 60.0f;
         [Tooltip("이동 속도 100% 일 때 m/s")]
         public float BaseMoveSpeedMeters = 5.5f;
-        [Tooltip("플레이어가 주는 모든 피해 배율 (밸런스). 0.18 = 4인 파티 기준 2관문 순수 딜 시간 약 6~7분 (갑옷 · 기믹 시간 별도)")]
-        public float PlayerDamageScale = 0.18f;
+        [Tooltip("플레이어가 주는 모든 피해 배율 (밸런스). 0.25 = 예전 0.18 대비 +39%. 보스 체력 · 피해는 인원 밸런스(GameDatabase.PartyBalance)")]
+        public float PlayerDamageScale = 0.25f;
         [Tooltip("이동/공격 속도 상한 %")]
         public float SpeedCap = 140.0f;
     }

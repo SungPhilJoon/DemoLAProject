@@ -69,6 +69,9 @@ namespace DemoLA.Editor
                 EditorUtility.SetDirty(database);
             }
 
+            // Generated 직업 에셋을 다시 만들면 모델 연결이 사라지므로 다시 붙인다 (모델 프리팹은 Generated 밖).
+            SlayerCharacterBuilder.AssignToClass(AssetDatabase.LoadAssetAtPath<GameObject>(SlayerCharacterBuilder.PrefabPath));
+
             var controls = EnsureInputAsset();
             RegisterAddressables(database, tables, controls);
             if (InCreateScene == true)
@@ -283,9 +286,6 @@ namespace DemoLA.Editor
                 AssetDatabase.CreateAsset(created, path);
             }
 
-            ensureFolder($"{DataRoot}/StateTree");
-            var partyTree = DefaultTrees.CreatePartyAI();
-            AssetDatabase.CreateAsset(partyTree, $"{DataRoot}/StateTree/ST_Party.asset");
             AssetDatabase.CreateAsset(database, DatabasePath);
             // 먼저 저장된 에셋(직업 등)이 나중에 에셋이 된 객체(스킬 등)를 가리키도록 전부 다시 직렬화한다.
             foreach (var created in DefaultContent.CreatedObjects)
@@ -308,10 +308,9 @@ namespace DemoLA.Editor
                 }
             }
 
-            written.Add(AssetDatabase.GetAssetPath(partyTree));
             written.Add(DatabasePath);
             AssetDatabase.ForceReserializeAssets(written, ForceReserializeAssetsOptions.ReserializeAssets);
-            Debug.Log($"[DemoLA] 데이터 에셋 {DefaultContent.CreatedObjects.Count + 2}개 생성 → {DataRoot}");
+            Debug.Log($"[DemoLA] 데이터 에셋 {DefaultContent.CreatedObjects.Count + 1}개 생성 → {DataRoot}");
             return database;
         }
 
@@ -413,7 +412,6 @@ namespace DemoLA.Editor
             serialized.FindProperty("database").objectReferenceValue = InDatabase;
             serialized.FindProperty("arena").objectReferenceValue = floor;
             serialized.FindProperty("controls").objectReferenceValue = InControls;
-            serialized.FindProperty("partyTree").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Framework.StateTree.StateTreeAsset>($"{DataRoot}/StateTree/ST_Party.asset");
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             ensureFolder(SceneRoot);

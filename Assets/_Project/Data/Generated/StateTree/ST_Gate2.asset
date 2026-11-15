@@ -30,9 +30,9 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.2, g: 0.45, b: 0.6, a: 1}
     EnterConditions:
-    - rid: 7158115549729260168
+    - rid: 7158115549729260321
     Tasks:
-    - rid: 7158115549729260169
+    - rid: 7158115549729260322
     Transitions: []
   - Id: 3
     Name: "\uD328\uD134/\uAE30\uBBF9 \uC9C4\uD589 \uC911"
@@ -41,10 +41,10 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
     EnterConditions:
-    - rid: 7158115549729260170
-    - rid: 7158115549729260171
+    - rid: 7158115549729260323
+    - rid: 7158115549729260324
     Tasks:
-    - rid: 7158115549729260172
+    - rid: 7158115549729260325
     Transitions: []
   - Id: 4
     Name: "G2-01 \uAC11\uC637 \uC2DC\uC791"
@@ -53,10 +53,10 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
     EnterConditions:
-    - rid: 7158115549729260173
+    - rid: 7158115549729260326
     Tasks:
-    - rid: 7158115549729260174
-    - rid: 7158115549729260175
+    - rid: 7158115549729260327
+    - rid: 7158115549729260328
     Transitions: []
   - Id: 5
     Name: "G2-02 \uBC29\uC5B4 \uAD6C\uC2AC (131\uC904)"
@@ -65,11 +65,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260176
-    - rid: 7158115549729260177
+    - rid: 7158115549729260329
+    - rid: 7158115549729260330
     Tasks:
-    - rid: 7158115549729260178
-    - rid: 7158115549729260179
+    - rid: 7158115549729260331
+    - rid: 7158115549729260332
     Transitions: []
   - Id: 6
     Name: "G2-03 \uC989\uC0AC \uC7A5\uD310 2\uC5F0\uC18D (130\uC904)"
@@ -78,11 +78,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260180
-    - rid: 7158115549729260181
+    - rid: 7158115549729260333
+    - rid: 7158115549729260334
     Tasks:
-    - rid: 7158115549729260182
-    - rid: 7158115549729260183
+    - rid: 7158115549729260335
+    - rid: 7158115549729260336
     Transitions: []
   - Id: 7
     Name: "\u2192 G2-P2 \uC9C0\uD615 \uD30C\uAD34 \uAD6C\uAC04"
@@ -91,10 +91,10 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.25, g: 0.4, b: 0.25, a: 1}
     EnterConditions:
-    - rid: 7158115549729260184
-    - rid: 7158115549729260185
+    - rid: 7158115549729260337
+    - rid: 7158115549729260338
     Tasks:
-    - rid: 7158115549729260186
+    - rid: 7158115549729260339
     Transitions: []
   - Id: 8
     Name: "G2-05 \uC9C0\uD615 \uD30C\uAD34 1\uCC28 (88\uC904)"
@@ -103,11 +103,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260187
-    - rid: 7158115549729260188
+    - rid: 7158115549729260340
+    - rid: 7158115549729260341
     Tasks:
-    - rid: 7158115549729260189
-    - rid: 7158115549729260190
+    - rid: 7158115549729260342
+    - rid: 7158115549729260343
     Transitions: []
   - Id: 9
     Name: "G2-07 \uCE74\uC6B4\uD130 \uB3CC\uC9C4 (65\uC904)"
@@ -116,11 +116,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260191
-    - rid: 7158115549729260192
+    - rid: 7158115549729260344
+    - rid: 7158115549729260345
     Tasks:
-    - rid: 7158115549729260193
-    - rid: 7158115549729260194
+    - rid: 7158115549729260346
+    - rid: 7158115549729260347
     Transitions: []
   - Id: 10
     Name: "G2-06 \uC9C0\uD615 \uD30C\uAD34 2\uCC28 (30\uC904)"
@@ -129,11 +129,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260195
-    - rid: 7158115549729260196
+    - rid: 7158115549729260348
+    - rid: 7158115549729260349
     Tasks:
-    - rid: 7158115549729260197
-    - rid: 7158115549729260198
+    - rid: 7158115549729260350
+    - rid: 7158115549729260351
     Transitions: []
   - Id: 11
     Name: "G2-09 \uC5F0\uC18D \uD0C0\uACA9 (16\uC904)"
@@ -142,11 +142,11 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.5, g: 0.4, b: 0.15, a: 1}
     EnterConditions:
-    - rid: 7158115549729260199
-    - rid: 7158115549729260200
+    - rid: 7158115549729260352
+    - rid: 7158115549729260353
     Tasks:
-    - rid: 7158115549729260201
-    - rid: 7158115549729260202
+    - rid: 7158115549729260354
+    - rid: 7158115549729260355
     Transitions: []
   - Id: 12
     Name: "\u2192 G2-P3 \uC720\uB839 \uAD6C\uAC04 (40\uC904)"
@@ -155,12 +155,36 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.25, g: 0.4, b: 0.25, a: 1}
     EnterConditions:
-    - rid: 7158115549729260203
-    - rid: 7158115549729260204
+    - rid: 7158115549729260356
+    - rid: 7158115549729260357
     Tasks:
-    - rid: 7158115549729260205
+    - rid: 7158115549729260358
     Transitions: []
   - Id: 13
+    Name: "\uC870\uC6B0 \uD720\uC708\uB4DC (G2-21, 1\uD68C)"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.55, g: 0.25, b: 0.2, a: 1}
+    EnterConditions:
+    - rid: 7158115549729260359
+    - rid: 7158115549729260360
+    Tasks:
+    - rid: 7158115549729260361
+    - rid: 7158115549729260362
+    Transitions: []
+  - Id: 14
+    Name: "\uC5F0\uACB0 \uD328\uD134 (\uB3CC\uC9C4 \u2192 G2-23)"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.55, g: 0.35, b: 0.2, a: 1}
+    EnterConditions:
+    - rid: 7158115549729260363
+    Tasks:
+    - rid: 7158115549729260364
+    Transitions: []
+  - Id: 15
     Name: "\uC7AC\uB3C4\uC57D (135\uC904 \uC774\uD6C4 \xB7 \uD328\uD134 \uB05D\uB0A0
       \uB54C\uB9C8\uB2E4)"
     ParentId: 1
@@ -168,28 +192,29 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.45, g: 0.3, b: 0.65, a: 1}
     EnterConditions:
-    - rid: 7158115549729260206
-    - rid: 7158115549729260207
-    - rid: 7158115549729260208
+    - rid: 7158115549729260365
+    - rid: 7158115549729260366
+    - rid: 7158115549729260367
     Tasks:
-    - rid: 7158115549729260209
+    - rid: 7158115549729260368
     Transitions: []
-  - Id: 14
-    Name: "\uB3CC\uC9C4 (135\uC904 \uC804: \uC870\uC6B0 \xB7 \uCC29\uC9C0 \uD6C4
-      \xB7 \uD328\uD134 3\uAC1C\uB9C8\uB2E4)"
+  - Id: 16
+    Name: "\uB3CC\uC9C4 (135\uC904 \uC804: \uC870\uC6B0 \uD720\uC708\uB4DC \uB4A4
+      \xB7 \uCC29\uC9C0 \uD6C4 \xB7 \uD328\uD134 3\uAC1C\uB9C8\uB2E4 \u2192 \uBB34\uC791\uC704
+      \uB300\uC0C1)"
     ParentId: 1
     Enabled: 1
     Selection: 0
     Color: {r: 0.25, g: 0.35, b: 0.65, a: 1}
     EnterConditions:
-    - rid: 7158115549729260210
-    - rid: 7158115549729260211
-    - rid: 7158115549729260212
+    - rid: 7158115549729260369
+    - rid: 7158115549729260370
+    - rid: 7158115549729260371
     Tasks:
-    - rid: 7158115549729260213
-    - rid: 7158115549729260214
+    - rid: 7158115549729260372
+    - rid: 7158115549729260373
     Transitions: []
-  - Id: 15
+  - Id: 17
     Name: "\uCE74\uC6B4\uD130 \uB3CC\uC9C4 (135\uC904 \uC774\uD6C4: \uD328\uD134
       3\uAC1C\uB9C8\uB2E4 G2-07)"
     ParentId: 1
@@ -197,27 +222,39 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.25, g: 0.45, b: 0.75, a: 1}
     EnterConditions:
-    - rid: 7158115549729260215
-    - rid: 7158115549729260216
-    - rid: 7158115549729260217
+    - rid: 7158115549729260374
+    - rid: 7158115549729260375
+    - rid: 7158115549729260376
     Tasks:
-    - rid: 7158115549729260218
+    - rid: 7158115549729260377
     Transitions: []
-  - Id: 16
+  - Id: 18
+    Name: "\uAE30\uB465 \uC5C4\uD3D0 \uB099\uD558 (135\uC904 \uC774\uD6C4 G2-27)"
+    ParentId: 1
+    Enabled: 1
+    Selection: 0
+    Color: {r: 0.6, g: 0.5, b: 0.25, a: 1}
+    EnterConditions:
+    - rid: 7158115549729260378
+    - rid: 7158115549729260379
+    Tasks:
+    - rid: 7158115549729260380
+    Transitions: []
+  - Id: 19
     Name: "\uB808\uC774\uC800 \uACAC\uC81C (G2-16 \u2192 \uC704\uD611 2\uC704)"
     ParentId: 1
     Enabled: 1
     Selection: 0
     Color: {r: 0.25, g: 0.35, b: 0.65, a: 1}
     EnterConditions:
-    - rid: 7158115549729260219
-    - rid: 7158115549729260220
-    - rid: 7158115549729260221
+    - rid: 7158115549729260381
+    - rid: 7158115549729260382
+    - rid: 7158115549729260383
     Tasks:
-    - rid: 7158115549729260222
-    - rid: 7158115549729260223
+    - rid: 7158115549729260384
+    - rid: 7158115549729260385
     Transitions: []
-  - Id: 17
+  - Id: 20
     Name: "\uC57D\uC790 \uC0AC\uB0E5 (G2-P3 \xB7 \uCCB4\uB825 \uBE44\uC728 \uCD5C\uC800
       \uC5B4\uADF8\uB85C 8\uCD08)"
     ParentId: 1
@@ -225,23 +262,24 @@ MonoBehaviour:
     Selection: 0
     Color: {r: 0.25, g: 0.35, b: 0.65, a: 1}
     EnterConditions:
-    - rid: 7158115549729260224
-    - rid: 7158115549729260225
+    - rid: 7158115549729260386
+    - rid: 7158115549729260387
     Tasks:
-    - rid: 7158115549729260226
-    - rid: 7158115549729260227
+    - rid: 7158115549729260388
+    - rid: 7158115549729260389
     Transitions: []
-  - Id: 18
+  - Id: 21
     Name: "\uD328\uD134 \uACF5\uACA9"
     ParentId: 1
     Enabled: 1
     Selection: 0
     Color: {r: 0.55, g: 0.2, b: 0.2, a: 1}
-    EnterConditions: []
+    EnterConditions:
+    - rid: 7158115700374503503
     Tasks:
-    - rid: 7158115549729260228
+    - rid: 7158115549729260390
     Transitions: []
-  - Id: 19
+  - Id: 22
     Name: "\uCD94\uC801"
     ParentId: 1
     Enabled: 1
@@ -249,9 +287,9 @@ MonoBehaviour:
     Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
     EnterConditions: []
     Tasks:
-    - rid: 7158115549729260229
+    - rid: 7158115549729260391
     Transitions: []
-  - Id: 20
+  - Id: 23
     Name: "\uB300\uAE30"
     ParentId: 1
     Enabled: 1
@@ -259,16 +297,16 @@ MonoBehaviour:
     Color: {r: 0.3, g: 0.3, b: 0.35, a: 1}
     EnterConditions: []
     Tasks:
-    - rid: 7158115549729260230
+    - rid: 7158115549729260392
     Transitions: []
   Evaluators:
-  - rid: 7158115549729260231
+  - rid: 7158115549729260393
   GlobalTasks: []
-  NextStateId: 21
+  NextStateId: 24
   references:
     version: 2
     RefIds:
-    - rid: 7158115549729260168
+    - rid: 7158115549729260321
       type: {class: HasTagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -276,11 +314,11 @@ MonoBehaviour:
         Invert: 0
         Tag: 8
         CheckTarget: 0
-    - rid: 7158115549729260169
+    - rid: 7158115549729260322
       type: {class: WaitWhileGroggyTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-    - rid: 7158115549729260170
+    - rid: 7158115549729260323
       type: {class: HasTagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -288,7 +326,7 @@ MonoBehaviour:
         Invert: 0
         Tag: 75
         CheckTarget: 0
-    - rid: 7158115549729260171
+    - rid: 7158115549729260324
       type: {class: HasTagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -296,34 +334,34 @@ MonoBehaviour:
         Invert: 0
         Tag: 74
         CheckTarget: 0
-    - rid: 7158115549729260172
+    - rid: 7158115549729260325
       type: {class: WaitTask, ns: Framework.StateTree, asm: Framework.Runtime}
       data:
         Enabled: 1
         Duration: 0.1
         RandomDeviation: 0
-    - rid: 7158115549729260173
+    - rid: 7158115549729260326
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 101
-    - rid: 7158115549729260174
+    - rid: 7158115549729260327
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 101
         Value: 1
         CompleteImmediately: 1
-    - rid: 7158115549729260175
+    - rid: 7158115549729260328
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         GimmickId: G2-01
         WaitForCompletion: 0
         ResetFirst: 1
-    - rid: 7158115549729260176
+    - rid: 7158115549729260329
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -331,28 +369,28 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 131
-    - rid: 7158115549729260177
+    - rid: 7158115549729260330
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 102
-    - rid: 7158115549729260178
+    - rid: 7158115549729260331
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 102
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260179
+    - rid: 7158115549729260332
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         GimmickId: G2-02
         WaitForCompletion: 1
         ResetFirst: 1
-    - rid: 7158115549729260180
+    - rid: 7158115549729260333
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -360,47 +398,47 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 130
-    - rid: 7158115549729260181
+    - rid: 7158115549729260334
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 103
-    - rid: 7158115549729260182
+    - rid: 7158115549729260335
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 103
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260183
+    - rid: 7158115549729260336
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-03
         WaitForEnd: 1
-    - rid: 7158115549729260184
+    - rid: 7158115549729260337
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Key: 103
-    - rid: 7158115549729260185
+    - rid: 7158115549729260338
       type: {class: PhaseCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PhaseId: G2-P1
-    - rid: 7158115549729260186
+    - rid: 7158115549729260339
       type: {class: SetPhaseTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PhaseId: G2-P2
         CompleteImmediately: 1
-    - rid: 7158115549729260187
+    - rid: 7158115549729260340
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -408,28 +446,28 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 88
-    - rid: 7158115549729260188
+    - rid: 7158115549729260341
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 104
-    - rid: 7158115549729260189
+    - rid: 7158115549729260342
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 104
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260190
+    - rid: 7158115549729260343
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         GimmickId: G2-05
         WaitForCompletion: 1
         ResetFirst: 1
-    - rid: 7158115549729260191
+    - rid: 7158115549729260344
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -437,27 +475,27 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 65
-    - rid: 7158115549729260192
+    - rid: 7158115549729260345
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 105
-    - rid: 7158115549729260193
+    - rid: 7158115549729260346
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 105
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260194
+    - rid: 7158115549729260347
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-07
         WaitForEnd: 1
-    - rid: 7158115549729260195
+    - rid: 7158115549729260348
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -465,28 +503,28 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 30
-    - rid: 7158115549729260196
+    - rid: 7158115549729260349
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 106
-    - rid: 7158115549729260197
+    - rid: 7158115549729260350
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 106
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260198
+    - rid: 7158115549729260351
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         GimmickId: G2-06
         WaitForCompletion: 1
         ResetFirst: 1
-    - rid: 7158115549729260199
+    - rid: 7158115549729260352
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -494,47 +532,84 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 16
-    - rid: 7158115549729260200
+    - rid: 7158115549729260353
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 1
         Key: 107
-    - rid: 7158115549729260201
+    - rid: 7158115549729260354
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Key: 107
         Value: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260202
+    - rid: 7158115549729260355
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-09
         WaitForEnd: 1
-    - rid: 7158115549729260203
+    - rid: 7158115549729260356
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Key: 107
-    - rid: 7158115549729260204
+    - rid: 7158115549729260357
       type: {class: PhaseCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PhaseId: G2-P2
-    - rid: 7158115549729260205
+    - rid: 7158115549729260358
       type: {class: SetPhaseTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PhaseId: G2-P3
         CompleteImmediately: 1
-    - rid: 7158115549729260206
+    - rid: 7158115549729260359
+      type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 1
+        Key: 108
+    - rid: 7158115549729260360
+      type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        PatternId: G2-21
+    - rid: 7158115549729260361
+      type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Key: 108
+        Value: 1
+        CompleteImmediately: 0
+    - rid: 7158115549729260362
+      type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        PatternId: G2-21
+        WaitForEnd: 1
+    - rid: 7158115549729260363
+      type: {class: HasQueuedPatternCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+    - rid: 7158115549729260364
+      type: {class: UseQueuedPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+    - rid: 7158115549729260365
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -542,7 +617,7 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 135
-    - rid: 7158115549729260207
+    - rid: 7158115549729260366
       type: {class: LastPatternCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -550,20 +625,20 @@ MonoBehaviour:
         Invert: 1
         PatternId: G2-26
         RequireAnyPattern: 1
-    - rid: 7158115549729260208
+    - rid: 7158115549729260367
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PatternId: G2-26
-    - rid: 7158115549729260209
+    - rid: 7158115549729260368
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-26
         WaitForEnd: 1
-    - rid: 7158115549729260210
+    - rid: 7158115549729260369
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -571,38 +646,38 @@ MonoBehaviour:
         Invert: 0
         Op: 2
         Line: 135
-    - rid: 7158115549729260211
+    - rid: 7158115549729260370
       type: {class: ChargeDueCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Patterns: 3
-    - rid: 7158115549729260212
+    - rid: 7158115549729260371
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PatternId: G2-11
-    - rid: 7158115549729260213
+    - rid: 7158115549729260372
       type: {class: SelectTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Selector:
-          rid: 7158115549729260232
+          rid: 7158115549729260394
         ApplyTo: 0
         HoldSeconds: 0
         FailIfNone: 1
         Announce: 0
         CompleteImmediately: 0
-    - rid: 7158115549729260214
+    - rid: 7158115549729260373
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-11
         WaitForEnd: 1
-    - rid: 7158115549729260215
+    - rid: 7158115549729260374
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
@@ -610,135 +685,166 @@ MonoBehaviour:
         Invert: 0
         Op: 1
         Line: 135
-    - rid: 7158115549729260216
+    - rid: 7158115549729260375
       type: {class: ChargeDueCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Patterns: 3
-    - rid: 7158115549729260217
+    - rid: 7158115549729260376
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PatternId: G2-07
-    - rid: 7158115549729260218
+    - rid: 7158115549729260377
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-07
         WaitForEnd: 1
-    - rid: 7158115549729260219
+    - rid: 7158115549729260378
+      type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        Op: 1
+        Line: 135
+    - rid: 7158115549729260379
+      type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        PatternId: G2-27
+    - rid: 7158115549729260380
+      type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        PatternId: G2-27
+        WaitForEnd: 1
+    - rid: 7158115549729260381
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PatternId: G2-16
-    - rid: 7158115549729260220
+    - rid: 7158115549729260382
       type: {class: TargetRuleCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Selector:
-          rid: 7158115549729260233
+          rid: 7158115549729260395
         CompareDistance: 0
         Op: 3
         Distance: 10
-    - rid: 7158115549729260221
+    - rid: 7158115549729260383
       type: {class: RandomChanceCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Chance: 0.4
-    - rid: 7158115549729260222
+    - rid: 7158115549729260384
       type: {class: SelectTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Selector:
-          rid: 7158115549729260234
+          rid: 7158115549729260396
         ApplyTo: 0
         HoldSeconds: 0
         FailIfNone: 1
         Announce: 0
         CompleteImmediately: 0
-    - rid: 7158115549729260223
+    - rid: 7158115549729260385
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternId: G2-16
         WaitForEnd: 1
-    - rid: 7158115549729260224
+    - rid: 7158115549729260386
       type: {class: PhaseCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         PhaseId: G2-P3
-    - rid: 7158115549729260225
+    - rid: 7158115549729260387
       type: {class: RandomChanceCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Operand: 0
         Invert: 0
         Chance: 0.25
-    - rid: 7158115549729260226
+    - rid: 7158115549729260388
       type: {class: SelectTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         Selector:
-          rid: 7158115549729260235
+          rid: 7158115549729260397
         ApplyTo: 1
         HoldSeconds: 8
         FailIfNone: 1
         Announce: 1
         CompleteImmediately: 0
-    - rid: 7158115549729260227
+    - rid: 7158115549729260389
       type: {class: UseRandomPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternIds: []
         CommonPhaseId: "G2-\uACF5\uD1B5"
         ExcludeCharges: 0
-    - rid: 7158115549729260228
+    - rid: 7158115549729260390
       type: {class: UseRandomPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         PatternIds: []
         CommonPhaseId: "G2-\uACF5\uD1B5"
         ExcludeCharges: 1
-    - rid: 7158115549729260229
+    - rid: 7158115549729260391
       type: {class: ChaseTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         StopDistance: 3
         Timeout: 3
-    - rid: 7158115549729260230
+    - rid: 7158115549729260392
       type: {class: WaitTask, ns: Framework.StateTree, asm: Framework.Runtime}
       data:
         Enabled: 1
         Duration: 0.4
         RandomDeviation: 0
-    - rid: 7158115549729260231
+    - rid: 7158115549729260393
       type: {class: CombatSenseEvaluator, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
         SearchRadius: 60
-    - rid: 7158115549729260232
-      type: {class: FarthestSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
-      data: 
-    - rid: 7158115549729260233
+    - rid: 7158115549729260394
+      type: {class: RandomSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
+      data:
+        ExcludeAggro: 0
+    - rid: 7158115549729260395
       type: {class: HighestThreatSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
       data:
         Rank: 2
-    - rid: 7158115549729260234
+    - rid: 7158115549729260396
       type: {class: HighestThreatSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
       data:
         Rank: 2
-    - rid: 7158115549729260235
+    - rid: 7158115549729260397
       type: {class: LowestHealthSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
       data: 
+    - rid: 7158115700374503503
+      type: {class: HasRandomPatternCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
+      data:
+        Enabled: 1
+        Operand: 0
+        Invert: 0
+        PatternIds: []
+        CommonPhaseId: "G2-\uACF5\uD1B5"
+        ExcludeCharges: 1

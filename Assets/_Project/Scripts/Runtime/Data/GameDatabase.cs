@@ -19,6 +19,8 @@ namespace DemoLA.Data
         public const string Address = "GameDatabase";
 
         public StatFormulaSettings StatFormula = new StatFormulaSettings();
+        [Tooltip("인원 수(1 ~ 4명) 밸런스: 보스 체력 · 무력화 · 부위파괴 · 보스 피해")]
+        public PartyBalanceSettings PartyBalance = new PartyBalanceSettings();
         public EngravingRules EngravingRules = new EngravingRules();
         public EquipmentQualitySettings Quality = new EquipmentQualitySettings();
         [Tooltip("최대 스킬 포인트")]

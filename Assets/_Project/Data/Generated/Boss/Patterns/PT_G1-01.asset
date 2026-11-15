@@ -19,6 +19,8 @@ MonoBehaviour:
   Response: 4
   ShapeText: 
   LinkedPatternId: 
+  FollowUpPatternIds: []
+  FirstTimeFollowUpPatternIds: []
   Confidence: 1
   DamageTier: 5
   Notes: "[\uD53C\uD574] \uC2E4\uD328 \uC2DC \uC804\uBA78(S1\xB7S2\xB7S11)\n\uCCB4\uB825

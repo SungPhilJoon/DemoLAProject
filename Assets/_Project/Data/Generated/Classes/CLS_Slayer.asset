@@ -16,6 +16,7 @@ MonoBehaviour:
   DisplayName: "\uC2AC\uB808\uC774\uC5B4"
   Role: 0
   BodyColor: {r: 0.85, g: 0.25, b: 0.3, a: 1}
+  ModelPrefab: {fileID: 3558904879336321916, guid: ef7cc00811e1cfb4c86b9cf8e9dfcde5, type: 3}
   BaseMaxHealth: 165000
   BaseMaxMana: 1000
   BaseDefense: 20000
@@ -41,5 +42,5 @@ MonoBehaviour:
   DodgeCooldown: 8
   DodgeDistance: 5
   DodgeInvulnerableTime: 0.3
-  AiPreferredRange: 2.8
-  AiPrefersBack: 1
+  PreferredRange: 2.8
+  PrefersBack: 1

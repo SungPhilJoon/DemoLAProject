@@ -62,6 +62,8 @@ namespace DemoLA.Player
 
             cinematic = gameObject.AddComponent<CinemachineCamera>();
             cinematic.Priority = 0;
+            // 쉬는 동안은 꺼 둔다 — 켜져 있으면 쿼터뷰와 우선순위가 같을 때 Brain 이 이 카메라를 계속 고를 수 있다.
+            cinematic.enabled = false;
             var lens = cinematic.Lens;
             lens.FieldOfView = 50.0f;
             cinematic.Lens = lens;
@@ -84,6 +86,7 @@ namespace DemoLA.Player
             cinematic.LookAt = body != null ? body : InBoss;
             transform.position = InBoss.position + follow.FollowOffset;
             cinematic.Priority = ActivePriority;
+            cinematic.enabled = true;
             remaining = Mathf.Max(0.5f, InDuration);
         }
 
@@ -97,7 +100,9 @@ namespace DemoLA.Player
             remaining -= Time.deltaTime;
             if (remaining <= 0.0f)
             {
+                // 끝: 카메라를 끄면 Brain 이 쿼터뷰로 블렌드해 돌아간다 (우선순위만 내리면 동점일 때 남아 있었다).
                 cinematic.Priority = 0;
+                cinematic.enabled = false;
             }
         }
 #endif

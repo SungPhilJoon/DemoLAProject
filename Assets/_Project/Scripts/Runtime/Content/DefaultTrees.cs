@@ -73,33 +73,6 @@ namespace DemoLA.Content
             return tree;
         }
 
-        public static StateTreeAsset CreatePartyAI()
-        {
-            var tree = create("파티 AI (NetCode 이전 아군)");
-            var root = tree.AddState("Ally", 0);
-
-            var escape = tree.AddState("장판 회피", root.Id);
-            escape.Color = new Color(0.6f, 0.3f, 0.2f);
-            escape.EnterConditions.Add(new FlagCondition { Key = EAIBlackboard.InDanger });
-            escape.Tasks.Add(new AllyEscapeTelegraphTask());
-
-            var counter = tree.AddState("카운터", root.Id);
-            counter.EnterConditions.Add(new HasTagCondition { Tag = ETag.Boss_CounterWindow, CheckTarget = true });
-            counter.Tasks.Add(new AllyCounterTask());
-
-            var orb = tree.AddState("구슬 기믹", root.Id);
-            orb.EnterConditions.Add(new GimmickStateCondition { GimmickId = "G1-01", State = EGimmickState.Running, CheckTarget = true });
-            orb.Tasks.Add(new AllyPickOrbTask { GimmickId = "G1-01" });
-
-            var fight = tree.AddState("전투", root.Id);
-            fight.EnterConditions.Add(new TargetDistanceCondition { Op = ECompareOp.LessOrEqual, Distance = 60.0f });
-            fight.Tasks.Add(new AllyFightTask());
-
-            var idle = tree.AddState("대기", root.Id);
-            idle.Tasks.Add(new WaitTask { Duration = 0.5f });
-            return tree;
-        }
-
         private static StateTreeAsset create(string InDescription)
         {
             var tree = ScriptableObject.CreateInstance<StateTreeAsset>();
@@ -136,6 +109,20 @@ namespace DemoLA.Content
         /// </summary>
         private static void addGate2ChargeRules(StateTreeAsset InTree, int InRootId)
         {
+            // 조우: 무조건 휠윈드부터 (1회).
+            var opening = InTree.AddState("조우 휠윈드 (G2-21, 1회)", InRootId);
+            opening.Color = new Color(0.55f, 0.25f, 0.2f);
+            opening.EnterConditions.Add(new FlagCondition { Key = EAIBlackboard.Flag8, Invert = true });
+            opening.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-21" });
+            opening.Tasks.Add(new SetFlagTask { Key = EAIBlackboard.Flag8, CompleteImmediately = false });
+            opening.Tasks.Add(new UsePatternTask { PatternId = "G2-21" });
+
+            // 이어질 패턴: 돌진 → 도약 십자 + 추적 휠윈드(G2-23). 그로기가 풀린 뒤에도 이어진다.
+            var followUp = InTree.AddState("연결 패턴 (돌진 → G2-23)", InRootId);
+            followUp.Color = new Color(0.55f, 0.35f, 0.2f);
+            followUp.EnterConditions.Add(new HasQueuedPatternCondition());
+            followUp.Tasks.Add(new UseQueuedPatternTask());
+
             var leap = InTree.AddState("재도약 (135줄 이후 · 패턴 끝날 때마다)", InRootId);
             leap.Color = new Color(0.45f, 0.3f, 0.65f);
             leap.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 135.0f });
@@ -143,12 +130,12 @@ namespace DemoLA.Content
             leap.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-26" });
             leap.Tasks.Add(new UsePatternTask { PatternId = "G2-26" });
 
-            var charge = InTree.AddState("돌진 (135줄 전: 조우 · 착지 후 · 패턴 3개마다)", InRootId);
+            var charge = InTree.AddState("돌진 (135줄 전: 조우 휠윈드 뒤 · 착지 후 · 패턴 3개마다 → 무작위 대상)", InRootId);
             charge.Color = new Color(0.25f, 0.35f, 0.65f);
             charge.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.Greater, Line = 135.0f });
             charge.EnterConditions.Add(new ChargeDueCondition { Patterns = 3 });
             charge.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-11" });
-            charge.Tasks.Add(new SelectTargetTask { Selector = new FarthestSelector(), ApplyTo = ETargetApply.NextPattern });
+            charge.Tasks.Add(new SelectTargetTask { Selector = new RandomSelector(), ApplyTo = ETargetApply.NextPattern });
             charge.Tasks.Add(new UsePatternTask { PatternId = "G2-11" });
 
             var counterCharge = InTree.AddState("카운터 돌진 (135줄 이후: 패턴 3개마다 G2-07)", InRootId);
@@ -157,6 +144,12 @@ namespace DemoLA.Content
             counterCharge.EnterConditions.Add(new ChargeDueCondition { Patterns = 3 });
             counterCharge.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-07" });
             counterCharge.Tasks.Add(new UsePatternTask { PatternId = "G2-07" });
+
+            var cover = InTree.AddState("기둥 엄폐 낙하 (135줄 이후 G2-27)", InRootId);
+            cover.Color = new Color(0.6f, 0.5f, 0.25f);
+            cover.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 135.0f });
+            cover.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-27" });
+            cover.Tasks.Add(new UsePatternTask { PatternId = "G2-27" });
         }
 
         private static void addGate2TargetingStates(StateTreeAsset InTree, int InRootId)
@@ -181,6 +174,8 @@ namespace DemoLA.Content
         {
             var attack = InTree.AddState("패턴 공격", InRootId);
             attack.Color = new Color(0.55f, 0.2f, 0.2f);
+            // 사거리 안에 쓸 패턴이 없으면 이 상태를 건너뛰고 "추적"으로 간다 (없으면 실패 → 다시 선택만 반복해 제자리에 선다).
+            attack.EnterConditions.Add(new HasRandomPatternCondition { CommonPhaseId = InCommonPhase, ExcludeCharges = InExcludeCharges });
             attack.Tasks.Add(new UseRandomPatternTask { CommonPhaseId = InCommonPhase, ExcludeCharges = InExcludeCharges });
 
             var chase = InTree.AddState("추적", InRootId);

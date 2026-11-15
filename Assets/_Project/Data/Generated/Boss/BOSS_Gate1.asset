@@ -127,6 +127,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 806bc4adeb4401241813a413c61b06ef, type: 2}
   - {fileID: 11400000, guid: 9b99f76c46f68b843b90932008a876f2, type: 2}
   - {fileID: 11400000, guid: 5be891d9f5b1f0d4ab1047e5f41af726, type: 2}
+  PlayIntro: 1
+  IntroDuration: 9.5
+  IntroSubtitle: "1\uAD00\uBB38 \u2014 \uBD89\uC740 \uC131\uBB38"
+  IntroLines:
+  - Start: 2.6
+    Duration: 2.2
+    Speaker: "1\uAD00\uBB38 \uC218\uBB38\uC7A5"
+    Text: "\uBC1C\uC18C\uB9AC\uAC00 \uB4E4\uB9AC\uB294\uAD70... \uC774 \uC131\uBB38\uC744
+      \uB450\uB4DC\uB9B0 \uAC83\uC774 \uB108\uD76C\uC778\uAC00."
+  - Start: 4.9
+    Duration: 2.1
+    Speaker: "1\uAD00\uBB38 \uC218\uBB38\uC7A5"
+    Text: "\uC218\uBC31 \uB144 \uB3D9\uC548 \uC774 \uBB38\uC740 \uB2E8 \uD55C \uBC88\uB3C4
+      \uC5F4\uB9B0 \uC801\uC774 \uC5C6\uB2E4."
+  - Start: 7.1
+    Duration: 2.3
+    Speaker: "1\uAD00\uBB38 \uC218\uBB38\uC7A5"
+    Text: "\uB3CC\uC544\uAC08 \uAE38\uC740 \uC5C6\uB2E4. \uC5EC\uAE30\uC11C \uC7AC\uAC00
+      \uB418\uC5B4\uB77C!"
   Gimmicks:
   - GimmickId: G1-01
     Kind: 0

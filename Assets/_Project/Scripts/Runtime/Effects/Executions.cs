@@ -132,8 +132,8 @@ namespace DemoLA.Effects
     }
 
     /// <summary>
-    /// 보스 패턴 피해 = 대상 최대 체력 × 비율 (xlsx 의 '피해 추정 (최대 체력 대비)').
-    /// 비율 1 이상은 즉사급으로 보고 피해 감소를 무시한다.
+    /// 보스 패턴 피해 = 대상 최대 체력 × 비율 (xlsx 의 '피해 추정 (최대 체력 대비)') × 인원 피해 배율.
+    /// 비율 1 이상은 즉사급으로 보고 피해 감소 · 인원 배율을 무시한다.
     /// </summary>
     public sealed class BossPatternDamageExecution : IGameplayEffectExecution
     {
@@ -151,7 +151,10 @@ namespace DemoLA.Effects
             {
                 float reduction = 1.0f - Mathf.Clamp(attributes.GetCurrent((int)EAttr.IncomingDamageReduction), 0.0f, 100.0f) * 0.01f;
                 float amplify = 1.0f + Mathf.Max(0.0f, attributes.GetCurrent((int)EAttr.IncomingDamageAmplify)) * 0.01f;
-                damage = maxHealth * fraction * reduction * amplify;
+                // 인원 밸런스: 보스가 레이드 인원에 맞춰 정한 피해 배율 (PartyBalance.Damage). 즉사급(위)에는 적용하지 않는다.
+                var boss = InSpec.Source != null ? InSpec.Source.OwnerActor as DemoLA.Boss.BossActor : null;
+                float partyScale = boss != null ? boss.DamageScale : 1.0f;
+                damage = maxHealth * fraction * reduction * amplify * partyScale;
             }
 
             var modifier = new EvaluatedModifier();

@@ -22,7 +22,8 @@ namespace DemoLA.Boss
         private readonly Dictionary<CombatActor, float> threat = new Dictionary<CombatActor, float>();
         private readonly Dictionary<string, BossGimmick> gimmicks = new Dictionary<string, BossGimmick>();
         private readonly List<CombatActor> playerBuffer = new List<CombatActor>();
-        private string queuedPattern;
+        private readonly List<string> queuedPatterns = new List<string>();
+        private readonly HashSet<string> endedPatterns = new HashSet<string>();
         private int lastHpLine;
         private float hpPerLine = 1.0f;
         private CombatActor lockedTarget;
@@ -31,8 +32,20 @@ namespace DemoLA.Boss
         private float tauntRemaining;
         private readonly List<CombatActor> threatKeys = new List<CombatActor>();
 
-        /// <summary>실제 인원 / 기준 인원 (4인 / 8인 = 0.5). 체력 · 무력화 게이지 · 기믹 개수에 곱한다.</summary>
+        /// <summary>실제 인원 / 기믹 기준 인원 (4인 / 8인 = 0.5). 기믹 개수(구슬 등)에 곱한다.</summary>
         public float PartyScale { get; private set; } = 1.0f;
+
+        /// <summary>레이드에 들어온 플레이어 수 (1 ~ 4). 체력 · 무력화 · 피해 배율의 기준 (PartyBalance).</summary>
+        public int PartySize { get; private set; } = PartyBalanceSettings.MaxPartySize;
+
+        /// <summary>무력화 게이지 배율 (패턴 StaggerGauge 에 곱한다).</summary>
+        public float StaggerScale { get; private set; } = 1.0f;
+
+        /// <summary>보스 패턴 피해 배율 (즉사급 제외).</summary>
+        public float DamageScale { get; private set; } = 1.0f;
+
+        /// <summary>부위파괴 필요량 배율.</summary>
+        public float DestructionScale { get; private set; } = 1.0f;
 
         public BossDefinition Definition { get; private set; }
         public string CurrentPhaseId { get; private set; }
@@ -78,16 +91,21 @@ namespace DemoLA.Boss
             Initialize(InDefinition, InDefinition.DesignPartySize);
         }
 
-        /// <summary>InPartySize 명 기준으로 초기화 (체력 · 무력화 · 기믹 개수를 인원 비율로 맞춘다).</summary>
+        /// <summary>InPartySize 명 기준으로 초기화 (체력 · 무력화 · 피해 · 기믹 개수를 인원에 맞춘다 — PartyBalance).</summary>
         public void Initialize(BossDefinition InDefinition, int InPartySize)
         {
             Definition = InDefinition;
-            PartyScale = Mathf.Clamp(InPartySize / (float)Mathf.Max(1, InDefinition.DesignPartySize), 0.125f, 1.0f);
+            PartySize = Mathf.Clamp(InPartySize, 1, PartyBalanceSettings.MaxPartySize);
+            PartyScale = Mathf.Clamp(PartySize / (float)Mathf.Max(1, InDefinition.DesignPartySize), 0.125f, 1.0f);
+            var balance = PartyBalance.Settings;
+            StaggerScale = balance.Stagger(PartySize);
+            DamageScale = balance.Damage(PartySize);
+            DestructionScale = balance.Destruction(PartySize);
             Team = ETeam.Enemy;
             Radius = InDefinition.Radius;
             var stats = new CombatAttributeSet();
             InitializeCombat(stats);
-            hpPerLine = Mathf.Max(1.0f, InDefinition.HpPerLine * PartyScale);
+            hpPerLine = Mathf.Max(1.0f, InDefinition.HpPerLine * balance.Health(PartySize));
             stats.InitializeDefaults(InDefinition.TotalHpLines * hpPerLine, 0.0f, InDefinition.AttackPower, InDefinition.Defense);
             stats.Set(EAttr.MoveSpeed, InDefinition.MoveSpeedPercent);
             lastHpLine = CurrentHpLine;
@@ -193,17 +211,76 @@ namespace DemoLA.Boss
         /// <summary>다음 패턴 선택 시 가장 먼저 쓴다 (연결 패턴 / 실패 연쇄).</summary>
         public void QueuePattern(string InPatternId)
         {
-            if (string.IsNullOrEmpty(InPatternId) == false && patterns.ContainsKey(InPatternId) == true)
+            // 같은 패턴이 이미 대기 중이면 다시 넣지 않는다 (돌진이 연달아 끊겨도 후속 패턴이 쌓이지 않게).
+            if (string.IsNullOrEmpty(InPatternId) == false && patterns.ContainsKey(InPatternId) == true && queuedPatterns.Contains(InPatternId) == false)
             {
-                queuedPattern = InPatternId;
+                queuedPatterns.Add(InPatternId);
             }
+        }
+
+        /// <summary>대기 중인 다음 패턴 (꺼내지 않는다). 없으면 null.</summary>
+        public string PeekQueuedPattern()
+        {
+            return queuedPatterns.Count > 0 ? queuedPatterns[0] : null;
         }
 
         public string ConsumeQueuedPattern()
         {
-            var pattern = queuedPattern;
-            queuedPattern = null;
+            if (queuedPatterns.Count == 0)
+            {
+                return null;
+            }
+
+            var pattern = queuedPatterns[0];
+            queuedPatterns.RemoveAt(0);
             return pattern;
+        }
+
+        /// <summary>
+        /// 대기 중인 다음 패턴을 쓴다: 그 패턴의 쿨다운은 무시하고(정해진 순서이므로), 시작에 성공했을 때만 대기열에서 뺀다.
+        /// 그로기 · 다른 패턴 진행 중 등으로 못 쓰면 대기열은 그대로 두고 false.
+        /// </summary>
+        public bool TryActivateQueuedPattern(CombatActor InTarget, out string OutPatternId)
+        {
+            OutPatternId = PeekQueuedPattern();
+            if (OutPatternId == null)
+            {
+                return false;
+            }
+
+            ClearPatternCooldown(OutPatternId);
+            if (TryActivatePattern(OutPatternId, InTarget) == false)
+            {
+                return false;
+            }
+
+            ConsumeQueuedPattern();
+            return true;
+        }
+
+        /// <summary>패턴 하나의 쿨다운을 지운다.</summary>
+        public void ClearPatternCooldown(string InPatternId)
+        {
+            var ability = GetPattern(InPatternId);
+            if (ability == null)
+            {
+                return;
+            }
+
+            var effects = Asc.Effects;
+            for (int i = effects.Count - 1; i >= 0; --i)
+            {
+                if (i < effects.Count && effects[i].Spec.Def.IsCooldown == true && effects[i].Spec.AbilityId == ability.AbilityId)
+                {
+                    Asc.RemoveActiveEffect(effects[i].Handle);
+                }
+            }
+        }
+
+        /// <summary>대기 중인 연결 패턴을 모두 버린다 (부위파괴 반격처럼 흐름이 새로 시작될 때).</summary>
+        public void ClearQueuedPatterns()
+        {
+            queuedPatterns.Clear();
         }
 
         /// <summary>마지막 돌진 뒤 끝난 다른 패턴 수 (2관문 "다른 패턴 3개 뒤 돌진"). 처음엔 크게 — 조우하자마자 돌진.</summary>
@@ -211,6 +288,12 @@ namespace DemoLA.Boss
 
         /// <summary>마지막으로 끝난 패턴 ID (취소 포함). 없으면 null.</summary>
         public string LastEndedPatternId { get; private set; }
+
+        /// <summary>진입 시네마틱 동안 첫 패턴을 미룬다 (시네마틱 시간 + OpeningDelay).</summary>
+        public void DelayFirstPattern(float InSeconds)
+        {
+            nextPatternTime = Time.time + Mathf.Max(0.0f, InSeconds) + (Definition != null ? Definition.OpeningDelay : 0.0f);
+        }
 
         /// <summary>다음 패턴 선택 때 돌진이 바로 나오게 한다 (부위파괴 반격 착지 후 등).</summary>
         public void RequestCharge()
@@ -239,6 +322,21 @@ namespace DemoLA.Boss
             if (definition.ChargeNextAfter == true)
             {
                 RequestCharge();
+            }
+
+            // 이어지는 패턴 (그로기 · 취소로 끝나도 이어진다 — 2관문 돌진 → 도약 십자).
+            for (int i = 0; i < definition.FollowUpPatternIds.Count; ++i)
+            {
+                QueuePattern(definition.FollowUpPatternIds[i]);
+            }
+
+            // 처음 한 번만 이어지는 패턴 (도입: 첫 돌진 → 도약 십자 → 외곽 이탈 도약). 이후 돌진에서는 외곽으로 빠지지 않는다.
+            if (endedPatterns.Add(definition.PatternId) == true)
+            {
+                for (int i = 0; i < definition.FirstTimeFollowUpPatternIds.Count; ++i)
+                {
+                    QueuePattern(definition.FirstTimeFollowUpPatternIds[i]);
+                }
             }
 
             nextPatternTime = Time.time + (Definition != null ? Definition.PatternGap : 0.0f);

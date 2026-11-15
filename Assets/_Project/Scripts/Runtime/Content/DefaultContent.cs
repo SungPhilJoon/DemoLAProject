@@ -251,8 +251,8 @@ namespace DemoLA.Content
             cls.DisplayName = InName;
             cls.Role = InRole;
             cls.BodyColor = InColor;
-            cls.AiPreferredRange = InRange;
-            cls.AiPrefersBack = InBack;
+            cls.PreferredRange = InRange;
+            cls.PrefersBack = InBack;
             return cls;
         }
 
@@ -365,7 +365,8 @@ namespace DemoLA.Content
         {
             var cls = createClass(ECharacterClass.Summoner, "서머너", ECombatRole.Dealer, new Color(0.45f, 0.75f, 1.0f), 8.0f, false);
             cls.BaseMaxHealth = 140000.0f;
-            skill(cls, 0, "정령 화살", 5.0f, 30.0f, hit(HitArea.Rect(12.0f, 1.5f), 2.5f, 0.25f, 6.0f));
+            // 카운터: 직업마다 하나 (멀리서 보스 정면을 맞히는 빠른 화살).
+            skill(cls, 0, "정령 화살", 5.0f, 30.0f, hit(HitArea.Rect(12.0f, 1.5f), 2.5f, 0.25f, 6.0f)).IsCounter = true;
             skill(cls, 1, "번개 구체", 9.0f, 60.0f, hit(HitArea.Circle(3.0f, 7.0f), 4.0f, 0.5f, 8.0f), hit(HitArea.Circle(3.5f, 7.0f), 3.0f, 0.3f, 6.0f));
             skill(cls, 2, "대지의 정령", 14.0f, 80.0f, hit(HitArea.Circle(4.0f, 6.0f), 6.5f, 0.6f, 15.0f));
             skill(cls, 3, "얼음 장막", 12.0f, 70.0f, hit(HitArea.Fan(8.0f, 70.0f), 5.0f, 0.4f, 10.0f));
@@ -423,7 +424,10 @@ namespace DemoLA.Content
             var positional = new List<SkillDefinition>();
             positional.Add(skill(cls, 0, "대검 베기", 5.0f, 25.0f, hit(HitArea.Fan(4.0f, 120.0f), 3.0f, 0.3f, 8.0f)));
             positional.Add(skill(cls, 1, "분쇄 일격", 9.0f, 50.0f, hit(HitArea.Circle(3.5f, 2.0f), 6.0f, 0.5f, 15.0f, 1.0f)));
-            positional.Add(skill(cls, 2, "돌진 참격", 11.0f, 55.0f, hit(HitArea.Rect(7.0f, 2.5f), 5.5f, 0.25f, 12.0f)));
+            // 카운터: 직업마다 하나 (앞으로 파고드는 참격).
+            var slash = skill(cls, 2, "돌진 참격", 11.0f, 55.0f, hit(HitArea.Rect(7.0f, 2.5f), 5.5f, 0.25f, 12.0f));
+            slash.IsCounter = true;
+            positional.Add(slash);
             positional[2].DashDistance = 5.0f;
             positional.Add(skill(cls, 3, "회전 베기", 14.0f, 70.0f, hit(HitArea.Circle(4.0f), 3.0f, 0.2f, 8.0f), hit(HitArea.Circle(4.0f), 3.0f, 0.2f, 8.0f), hit(HitArea.Circle(4.5f), 4.0f, 0.25f, 10.0f)));
             positional.Add(skill(cls, 4, "피의 폭풍", 18.0f, 90.0f, hit(HitArea.Fan(5.0f, 140.0f), 10.0f, 0.5f, 18.0f)));
@@ -468,7 +472,8 @@ namespace DemoLA.Content
             var empower = skill(cls, 4, "영감의 붓질", 16.0f, 80.0f, hit(HitArea.Fan(6.0f, 60.0f), 1.0f, 0.3f, 6.0f));
             empower.PartyBuffs.Add(buff);
             skill(cls, 5, "산수화 펼치기", 20.0f, 100.0f, hit(HitArea.Circle(6.0f, 5.0f), 3.0f, 0.6f, 25.0f));
-            skill(cls, 6, "학 날리기", 12.0f, 60.0f, hit(HitArea.Rect(12.0f, 2.5f), 2.0f, 0.3f, 12.0f));
+            // 카운터: 직업마다 하나 (멀리 날아가는 학).
+            skill(cls, 6, "학 날리기", 12.0f, 60.0f, hit(HitArea.Rect(12.0f, 2.5f), 2.0f, 0.3f, 12.0f)).IsCounter = true;
             skill(cls, 8, "먹물 튀기기", 5.0f, 25.0f, hit(HitArea.Fan(6.0f, 90.0f), 3.0f, 0.25f, 8.0f));
             skill(cls, 9, "달빛 붓질", 11.0f, 60.0f, hit(HitArea.Circle(4.0f, 4.0f), 5.0f, 0.4f, 12.0f));
             skill(cls, 10, "나비 떼", 14.0f, 70.0f, hit(HitArea.Circle(5.0f, 5.0f), 2.0f, 0.3f, 5.0f), hit(HitArea.Circle(5.0f, 5.0f), 2.0f, 0.3f, 5.0f));
@@ -510,6 +515,28 @@ namespace DemoLA.Content
 
         // ================================================================== bosses
 
+        /// <summary>진입 시네마틱 대사 (프로젝트 자체 대사 — BossDefinition.IntroLines 에서 바꾼다).</summary>
+        public static void fillIntro(BossDefinition InBoss, string InGatePrefix)
+        {
+            InBoss.PlayIntro = true;
+            InBoss.IntroDuration = 9.5f;
+            InBoss.IntroLines.Clear();
+            if (InGatePrefix == "G1")
+            {
+                InBoss.IntroSubtitle = "1관문 — 붉은 성문";
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 2.6f, Duration = 2.2f, Speaker = InBoss.DisplayName, Text = "발소리가 들리는군... 이 성문을 두드린 것이 너희인가." });
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 4.9f, Duration = 2.1f, Speaker = InBoss.DisplayName, Text = "수백 년 동안 이 문은 단 한 번도 열린 적이 없다." });
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 7.1f, Duration = 2.3f, Speaker = InBoss.DisplayName, Text = "돌아갈 길은 없다. 여기서 재가 되어라!" });
+            }
+            else
+            {
+                InBoss.IntroSubtitle = "2관문 — 무너지는 성채";
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 2.6f, Duration = 2.2f, Speaker = InBoss.DisplayName, Text = "...여기까지 기어 올라온 자가 또 있었군." });
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 4.9f, Duration = 2.1f, Speaker = InBoss.DisplayName, Text = "이 문 너머는 너희 따위가 밟을 땅이 아니다." });
+                InBoss.IntroLines.Add(new BossIntroLine { Start = 7.1f, Duration = 2.3f, Speaker = InBoss.DisplayName, Text = "무릎 꿇어라. 그 자리가 너희의 무덤이 될 테니!" });
+            }
+        }
+
         private static BossDefinition createBoss(string InId, string InName, string InGatePrefix, int InLines, DemoLATables InTables, Framework.StateTree.StateTreeAsset InTree)
         {
             var boss = track(ScriptableObject.CreateInstance<BossDefinition>(), $"BOSS_{InId}");
@@ -518,6 +545,7 @@ namespace DemoLA.Content
             boss.TotalHpLines = InLines;
             boss.HpPerLine = 1500000.0f;
             boss.Brain = InTree;
+            fillIntro(boss, InGatePrefix);
             // 군단장 레이드: 성속성에 약하다 (카드 속성 변환과 연결).
             boss.Weaknesses.Add(new ElementWeakness { Element = EElement.Holy, DamagePercent = 15.0f });
             InTree.name = $"ST_{InId}";

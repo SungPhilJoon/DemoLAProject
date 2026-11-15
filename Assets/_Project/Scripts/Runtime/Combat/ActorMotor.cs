@@ -29,6 +29,7 @@ namespace DemoLA.Combat
 
         // 도약 / 넉백 (몸이 포물선으로 뜨는 연출은 "Body" · "Facing" 자식만 올린다 — 발밑 표시는 그대로)
         private bool leaping;
+        private bool leapDetachedAgent;
         private bool knockedBack;
         private float knockbackEndTime = -100.0f;
         private bool arcActive;
@@ -163,6 +164,12 @@ namespace DemoLA.Combat
         {
             dashRemaining = 0.0f;
             dashVelocity = Vector3.zero;
+            if (leapDetachedAgent == true)
+            {
+                // 도약 중 취소: 그 자리에서 NavMesh 로 복귀 (에이전트가 꺼진 채 남지 않게).
+                leaping = false;
+                reattachAgentAfterLeap();
+            }
         }
 
         /// <summary>이번 프레임에 InDelta 만큼 옮긴다 (보스 추적 휠윈드 등 패턴 이동).</summary>
@@ -178,6 +185,12 @@ namespace DemoLA.Combat
             Dash(delta.sqrMagnitude > 0.0001f ? delta : transform.forward, delta.magnitude, InDuration);
             leaping = true;
             startArc(InDuration, InHeight);
+            // 도약은 NavMesh 밖으로(외곽 벽 너머 등) 날아갈 수 있다 → 공중에서는 에이전트를 끄고 착지하면 다시 붙인다.
+            if (UsesNavMesh == true)
+            {
+                agent.enabled = false;
+                leapDetachedAgent = true;
+            }
         }
 
         /// <summary>
@@ -245,6 +258,12 @@ namespace DemoLA.Combat
             return InDistance;
         }
 
+        /// <summary>도약 중이거나 몸이 포물선으로 떠 있다 (네트워크 클라이언트의 PlayVisualArc 포함).</summary>
+        public bool IsAirborne
+        {
+            get { return leaping == true || arcActive == true; }
+        }
+
         /// <summary>위치는 그대로 두고 몸(Body · Facing)만 포물선으로 띄운다 — 네트워크 클라이언트가 서버의 도약을 따라 그릴 때.</summary>
         public void PlayVisualArc(float InDuration, float InHeight)
         {
@@ -307,6 +326,9 @@ namespace DemoLA.Combat
         public void Teleport(Vector3 InPosition)
         {
             Stop();
+            leaping = false;
+            leapDetachedAgent = false;
+            dashRemaining = 0.0f;
             if (agent != null && agent.enabled == false && owner != null && owner.IsDead == false)
             {
                 agent.enabled = true;
@@ -357,6 +379,19 @@ namespace DemoLA.Combat
                 float step = Mathf.Min(deltaTime, dashRemaining);
                 dashRemaining -= step;
                 var dashDelta = dashVelocity * step;
+                if (leapDetachedAgent == true)
+                {
+                    // 도약 중: 지형 · 벽과 상관없이 직접 이동, 착지하면 가장 가까운 NavMesh 위로 붙인다.
+                    transform.position += dashDelta;
+                    if (dashRemaining <= 0.0f)
+                    {
+                        leaping = false;
+                        reattachAgentAfterLeap();
+                    }
+
+                    return;
+                }
+
                 if (dashRemaining <= 0.0f)
                 {
                     leaping = false;
@@ -568,6 +603,25 @@ namespace DemoLA.Combat
                 moveBy(correction);
                 position += correction;
             }
+        }
+
+        private void reattachAgentAfterLeap()
+        {
+            leapDetachedAgent = false;
+            if (agent == null || owner == null || owner.IsDead == true)
+            {
+                return;
+            }
+
+            UnityEngine.AI.NavMeshHit hit;
+            var position = transform.position;
+            if (UnityEngine.AI.NavMesh.SamplePosition(position, out hit, 4.0f, UnityEngine.AI.NavMesh.AllAreas) == true)
+            {
+                position = hit.position;
+            }
+
+            agent.enabled = true;
+            agent.Warp(position);
         }
 
         private void moveBy(Vector3 InDelta)

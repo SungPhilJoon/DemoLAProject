@@ -148,7 +148,11 @@ sys.exit(1 if fails or not s else 0)
       # 빌드는 비동기 — 보고서(Builds/build-report.json)가 새로 써질 때까지 기다린다 (최대 30분).
       for _ in $(seq 1 360); do
         now="$(stat -c %Y "$ROOT/Builds/build-report.json" 2>/dev/null || echo 0)"
-        [[ "$now" != "$before" ]] && break
+        # 보고서는 "Running" 으로 먼저 써진다 → 결과가 Running 이 아닐 때까지 기다린다.
+        if [[ "$now" != "$before" ]]; then
+          state="$("$PY" -I -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); print(r.get("Result") or r.get("result") or "")' "$ROOT/Builds/build-report.json" 2>/dev/null || true)"
+          [[ -n "$state" && "$state" != "Running" ]] && break
+        fi
         sleep 5
       done
       "$PY" -I -c 'import json,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); print("빌드:", r.get("Result") or r.get("result"), r.get("OutputPath") or r.get("outputPath"))' "$ROOT/Builds/build-report.json" || true

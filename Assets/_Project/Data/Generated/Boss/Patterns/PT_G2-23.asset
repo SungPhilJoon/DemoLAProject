@@ -19,6 +19,8 @@ MonoBehaviour:
   Response: 6
   ShapeText: "\uC6D0"
   LinkedPatternId: 
+  FollowUpPatternIds: []
+  FirstTimeFollowUpPatternIds: []
   Confidence: 1
   DamageTier: 0
   Notes: "\uC5B4\uADF8\uB85C \uB300\uC0C1 \uC704\uCE58\uB85C \uB6F0\uC5B4\uC62C\uB77C
@@ -49,6 +51,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 1.6
     TrackDuringTelegraph: 1
     TrackLockBefore: 0.5
@@ -67,11 +70,17 @@ MonoBehaviour:
     LeapHeight: 5
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 4
     ArmLength: 20
     ArmWidth: 4
     ArmAngleOffset: 0
-    RandomCrossOrX: 1
+    RandomCrossOrX: 0
     KnockbackHeight: 2.5
     ChaseTarget: 0
     ChaseSpeed: 5
@@ -96,6 +105,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -114,6 +124,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -143,6 +159,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -161,6 +178,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -190,6 +213,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -208,6 +232,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -237,6 +267,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -255,6 +286,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -284,6 +321,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -302,6 +340,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -331,6 +375,7 @@ MonoBehaviour:
       Length: 0
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 0.5
     TrackDuringTelegraph: 1
     TrackLockBefore: 0
@@ -349,6 +394,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4

@@ -155,7 +155,7 @@ namespace DemoLA.Character
                 return;
             }
 
-            float perGauge = Mathf.Max(1.0f, InBoss.Definition.HpPerLine * Mathf.Max(0.1f, HpLinesPerGauge));
+            float perGauge = Mathf.Max(1.0f, InBoss.HpPerLine * Mathf.Max(0.1f, HpLinesPerGauge));
             Gauge = Mathf.Min(Max, Gauge + InHealthLost / perGauge * Max);
         }
 
@@ -216,7 +216,7 @@ namespace DemoLA.Character
         {
             if (InBoss != null)
             {
-                hitBoss(InUser, InBoss, InBoss.Definition.HpPerLine * InEsther.DamageHpLines, InEsther.Stagger);
+                hitBoss(InUser, InBoss, InBoss.HpPerLine * InEsther.DamageHpLines, InEsther.Stagger);
             }
 
             if (InEsther.BuffDamagePercent > 0.0f && InEsther.BuffDuration > 0.0f)
@@ -236,7 +236,7 @@ namespace DemoLA.Character
                 return;
             }
 
-            hitBoss(InUser, InBoss, InBoss.Definition.HpPerLine * InEsther.DamageHpLines, InEsther.Stagger);
+            hitBoss(InUser, InBoss, InBoss.HpPerLine * InEsther.DamageHpLines, InEsther.Stagger);
             if (InBoss.HasTag((int)ETag.Boss_CounterWindow) == true)
             {
                 // 카운터 구간이면 카운터 성공으로 처리 (패턴 취소 + 패턴의 카운터 그로기).

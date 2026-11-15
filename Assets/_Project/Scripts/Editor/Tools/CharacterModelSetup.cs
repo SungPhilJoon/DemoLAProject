@@ -26,7 +26,7 @@ namespace DemoLA.Editor
                 AssetDatabase.CreateFolder(ModelRoot, "Materials");
 
             // 텍스처 임포트 설정을 먼저 확정 (포스트프로세서가 처리하도록 강제 재임포트)
-            foreach (var guid in AssetDatabase.FindAssets("t:Texture2D", new[] { TextureRoot }))
+            foreach (var guid in AssetDatabase.FindAssets("t:Texture2D", new[] { ModelRoot }))
                 AssetDatabase.ImportAsset(AssetDatabase.GUIDToAssetPath(guid), ImportAssetOptions.ForceUpdate);
 
             int count = 0;
@@ -50,12 +50,13 @@ namespace DemoLA.Editor
             {
                 if (obj is not Material src) continue;
                 string part = PartName(src.name);
-                if (part == null || !File.Exists($"{TextureRoot}/T_{part}_BaseColor.png"))
+                string texDir = part == null ? null : TextureDirFor(fbxPath, part);
+                if (texDir == null)
                 {
                     Debug.LogWarning($"[DemoLA] {fbxPath}: 머티리얼 '{src.name}' 에 맞는 T_{part}_BaseColor 텍스처가 없어 건너뜀");
                     continue;
                 }
-                var mat = CreateOrUpdateMaterial(part);
+                var mat = CreateOrUpdateMaterial(part, texDir);
                 importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material), src.name), mat);
                 n++;
             }
@@ -73,6 +74,11 @@ namespace DemoLA.Editor
                 importer.animationType = ModelImporterAnimationType.Generic; // Blender Rigify DEF-* 스켈레톤
             }
             importer.SaveAndReimport();
+            if (IsMixamoStyleRig(fbxPath))
+            {
+                // 본 이름이 바뀌어 예전 매핑이 남으면 아바타 생성이 실패한다 → 실제 계층으로 매핑을 다시 만든다.
+                MixamoHumanoid.EnsureHumanoid(fbxPath);
+            }
             return n;
         }
 
@@ -89,13 +95,26 @@ namespace DemoLA.Editor
         /// <summary>"M_SorceressBody_Baked" → "SorceressBody"</summary>
         internal static string PartName(string matName)
         {
-            string s = matName;
+            // Blender 가 이름 충돌 시 붙이는 ".001" 같은 접미사는 무시한다 ("M_X_Baked.009" → "X").
+            string s = System.Text.RegularExpressions.Regex.Replace(matName, @"\.\d+$", "");
             if (s.StartsWith("M_")) s = s.Substring(2);
             if (s.EndsWith("_Baked")) s = s.Substring(0, s.Length - "_Baked".Length);
             return string.IsNullOrEmpty(s) ? null : s;
         }
 
-        private static Material CreateOrUpdateMaterial(string part)
+        /// <summary>
+        /// T_&lt;part&gt;_BaseColor.png 가 있는 텍스처 폴더. FBX 옆의 Textures/ (예: Assets/Models/Weapons/Textures) 를 먼저,
+        /// 없으면 공용 Assets/Models/Textures 를 본다. 둘 다 없으면 null.
+        /// </summary>
+        internal static string TextureDirFor(string fbxPath, string part)
+        {
+            string local = Path.GetDirectoryName(fbxPath).Replace('\\', '/') + "/Textures";
+            if (File.Exists($"{local}/T_{part}_BaseColor.png")) return local;
+            if (File.Exists($"{TextureRoot}/T_{part}_BaseColor.png")) return TextureRoot;
+            return null;
+        }
+
+        private static Material CreateOrUpdateMaterial(string part, string texDir)
         {
             string matPath = $"{MaterialRoot}/M_{part}_Baked.mat";
             var shader = Shader.Find("Universal Render Pipeline/Lit");
@@ -107,22 +126,22 @@ namespace DemoLA.Editor
             }
             else if (mat.shader != shader) mat.shader = shader;
 
-            var baseMap = Tex(part, "BaseColor");
+            var baseMap = Tex(texDir, part, "BaseColor");
             mat.SetTexture("_BaseMap", baseMap);
             mat.SetColor("_BaseColor", Color.white);
 
-            var normal = Tex(part, "Normal");
+            var normal = Tex(texDir, part, "Normal");
             mat.SetTexture("_BumpMap", normal);
             mat.SetFloat("_BumpScale", 1f);
             SetKeyword(mat, "_NORMALMAP", normal != null);
 
-            var ms = Tex(part, "MetallicSmoothness");
+            var ms = Tex(texDir, part, "MetallicSmoothness");
             mat.SetTexture("_MetallicGlossMap", ms);
             mat.SetFloat("_Smoothness", 1f);            // 알파 채널 값을 그대로 사용
             mat.SetFloat("_SmoothnessTextureChannel", 0); // 0 = Metallic 맵 알파
             SetKeyword(mat, "_METALLICSPECGLOSSMAP", ms != null);
 
-            var emission = Tex(part, "Emission");
+            var emission = Tex(texDir, part, "Emission");
             if (emission != null)
             {
                 mat.SetTexture("_EmissionMap", emission);
@@ -141,8 +160,8 @@ namespace DemoLA.Editor
             return mat;
         }
 
-        private static Texture2D Tex(string part, string key) =>
-            AssetDatabase.LoadAssetAtPath<Texture2D>($"{TextureRoot}/T_{part}_{key}.png");
+        private static Texture2D Tex(string dir, string part, string key) =>
+            AssetDatabase.LoadAssetAtPath<Texture2D>($"{dir}/T_{part}_{key}.png");
 
         private static void SetKeyword(Material m, string kw, bool on)
         {
@@ -150,12 +169,12 @@ namespace DemoLA.Editor
         }
     }
 
-    /// <summary>Assets/Models/Textures 에 들어오는 베이크 텍스처의 임포트 타입 자동 지정.</summary>
+    /// <summary>Assets/Models/**/Textures 에 들어오는 베이크 텍스처의 임포트 타입 자동 지정.</summary>
     public class CharacterTexturePostprocessor : AssetPostprocessor
     {
         private void OnPreprocessTexture()
         {
-            if (!assetPath.StartsWith(CharacterModelSetup.TextureRoot + "/")) return;
+            if (!assetPath.StartsWith(CharacterModelSetup.ModelRoot + "/") || !assetPath.Contains("/Textures/")) return;
             var ti = (TextureImporter)assetImporter;
             string name = Path.GetFileNameWithoutExtension(assetPath);
             if (name.EndsWith("_Normal"))
@@ -207,7 +226,7 @@ namespace DemoLA.Editor
                 if (obj is not Material m) continue;
                 // 텍스처가 없는 머티리얼은 SetupModel 이 건너뛰므로 대상에서 제외 (재임포트 무한루프 방지)
                 string part = CharacterModelSetup.PartName(m.name);
-                if (part == null || !File.Exists($"{CharacterModelSetup.TextureRoot}/T_{part}_BaseColor.png")) continue;
+                if (part == null || CharacterModelSetup.TextureDirFor(fbxPath, part) == null) continue;
                 if (!map.ContainsKey(new AssetImporter.SourceAssetIdentifier(typeof(Material), m.name))) return true;
             }
             return false;

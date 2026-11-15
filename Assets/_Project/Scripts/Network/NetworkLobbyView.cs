@@ -12,7 +12,7 @@ namespace DemoLA.Network
 {
     /// <summary>
     /// Relay 로비 창 (F7). 호스트 → 참가 코드 공유 → 친구가 코드로 참가 → 호스트가 "레이드 시작".
-    /// 빈 자리는 AI 아군이 채운다. 나가면 오프라인 레이드로 돌아간다.
+    /// 파티는 들어온 플레이어만 (1 ~ 4명, 아군 AI 없음) — 보스는 인원에 맞춰 조정된다. 나가면 혼자(오프라인) 대기실로 돌아간다.
     /// GameBootstrap 이 있는 씬에 자동으로 붙는다 (RuntimeInitializeOnLoadMethod).
     /// </summary>
     public class NetworkLobbyView : BaseBehaviour

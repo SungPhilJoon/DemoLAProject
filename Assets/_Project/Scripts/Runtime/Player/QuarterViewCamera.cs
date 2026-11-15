@@ -22,6 +22,8 @@ namespace DemoLA.Player
         [SerializeField] private float maxZoom = 1.2f;
         [SerializeField] private float zoomStep = 0.08f;
 
+        public const int GameplayPriority = 10;
+
         private Transform target;
         private Camera mainCamera;
         private float zoom = 1.0f;
@@ -124,6 +126,8 @@ namespace DemoLA.Player
                 var go = new GameObject("CM QuarterView");
                 go.transform.SetParent(transform, false);
                 virtualCamera = go.AddComponent<CinemachineCamera>();
+                // 기본 게임 카메라 우선순위. 연출 카메라(진입 60 · 도약 50)보다 낮고, 기본값 0 인 다른 카메라와 동점이 되지 않게.
+                virtualCamera.Priority = GameplayPriority;
                 follow = go.AddComponent<CinemachineFollow>();
                 shakeOffset = go.AddComponent<CinemachineCameraOffset>();
                 var tracker = follow.TrackerSettings;

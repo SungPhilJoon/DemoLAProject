@@ -19,6 +19,9 @@ MonoBehaviour:
   Response: 1
   ShapeText: "\uC9C1\uC120(\uC0AC\uAC01\uD615)"
   LinkedPatternId: 
+  FollowUpPatternIds:
+  - G2-23
+  FirstTimeFollowUpPatternIds: []
   Confidence: 1
   DamageTier: 0
   Notes: "\uACE0\uAC1C\uB97C \uB450 \uBC88 \uC219\uC778 \uB4A4 \uB3CC\uC9C4\uD558\uBA70
@@ -34,7 +37,7 @@ MonoBehaviour:
   MaxRange: 16
   RandomSelectable: 1
   TargetSelector:
-    rid: 7158115549729260239
+    rid: 7158115700374503508
   Steps:
   - Label: Hit
     StartDelay: 0
@@ -48,6 +51,7 @@ MonoBehaviour:
       Length: 16
       ForwardOffset: 0
     ForwardOffset: 0
+    EdgeDistance: 23.5
     TelegraphTime: 2
     TrackDuringTelegraph: 1
     TrackLockBefore: 0.3
@@ -66,6 +70,12 @@ MonoBehaviour:
     LeapHeight: 4
     StartLeapDuration: 0
     BigImpact: 0
+    SpawnCoverPillars: 0
+    CoverPillarDistance: 10
+    BlockedByCover: 0
+    ExplodesCover: 0
+    CoverExplosionRadius: 5
+    AnnounceTarget: 0
     ArmCount: 0
     ArmLength: 20
     ArmWidth: 4
@@ -109,6 +119,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7158115549729260239
+    - rid: 7158115700374503508
       type: {class: NearestSelector, ns: DemoLA.Boss, asm: DemoLA.Runtime}
       data: 

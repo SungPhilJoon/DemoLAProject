@@ -10,12 +10,12 @@ namespace DemoLA.Editor
 {
     /// <summary>
     /// 프레임워크 StateTree 에디터(Window/Framework/StateTree Editor) 확장.
-    /// 템플릿: 1관문 / 2관문 보스, 파티 AI. 블록: 체력 줄 기믹 상태, 패턴 공격 묶음, 무력화 대기.
+    /// 템플릿: 1관문 / 2관문 보스. 블록: 체력 줄 기믹 상태, 패턴 공격 묶음, 무력화 대기.
     /// 보스 패턴을 에디터에서 모듈식으로 조합/변경하기 위한 도우미 (프로젝트 개발 사항.md).
     /// </summary>
     public class DemoLAStateTreeExtension : StateTreeEditorExtension
     {
-        private static readonly string[] Templates = { "1관문 보스 (xlsx G1)", "2관문 보스 (xlsx G2)", "파티 AI" };
+        private static readonly string[] Templates = { "1관문 보스 (xlsx G1)", "2관문 보스 (xlsx G2)" };
         private static readonly string[] Blocks =
         {
             "체력 줄 기믹 (HpLine ≤ N, 1회)", "패턴 공격 + 추적 + 대기", "무력화/패턴 진행 대기",
@@ -33,7 +33,6 @@ namespace DemoLA.Editor
             {
                 case 0: return DefaultTrees.CreateGate1Boss();
                 case 1: return DefaultTrees.CreateGate2Boss();
-                case 2: return DefaultTrees.CreatePartyAI();
             }
 
             return null;
@@ -56,7 +55,9 @@ namespace DemoLA.Editor
                     state.Tasks.Add(new UsePatternTask { PatternId = "G1-01" });
                     break;
                 case 1:
-                    InAsset.AddState("패턴 공격", InParentId).Tasks.Add(new UseRandomPatternTask());
+                    var attack = InAsset.AddState("패턴 공격", InParentId);
+                    attack.EnterConditions.Add(new HasRandomPatternCondition());
+                    attack.Tasks.Add(new UseRandomPatternTask());
                     InAsset.AddState("추적", InParentId).Tasks.Add(new ChaseTargetTask());
                     InAsset.AddState("대기", InParentId).Tasks.Add(new WaitTask { Duration = 0.4f });
                     break;

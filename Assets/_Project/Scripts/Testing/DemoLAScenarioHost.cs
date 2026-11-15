@@ -75,6 +75,9 @@ namespace DemoLA.Testing
             }
 
             Arena.RestoreAll();
+            // 앞 테스트의 진입 시네마틱 정지 · 엄폐 기둥이 남아 있지 않게.
+            DemoLA.Core.CinematicHold.Release();
+            DemoLA.World.CoverPillars.Clear();
             for (int i = 0; i < ArenaStructure.Structures.Count; ++i)
             {
                 ArenaStructure.Structures[i].Restore();
@@ -174,7 +177,8 @@ namespace DemoLA.Testing
             return Boss;
         }
 
-        public PartyCharacter SpawnMember(ECharacterClass InClass, Vector3 InPosition, bool InUseAI)
+        /// <param name="InAutoAttack">true 면 테스트 딜 측정기(ScenarioAutoAttacker)를 붙인다 — 밸런스 측정용. false 면 제자리 더미.</param>
+        public PartyCharacter SpawnMember(ECharacterClass InClass, Vector3 InPosition, bool InAutoAttack)
         {
             var cls = Database.GetClass(InClass);
             if (cls == null)
@@ -182,8 +186,12 @@ namespace DemoLA.Testing
                 return null;
             }
 
-            var tree = InUseAI ? DemoLA.Content.DefaultTrees.CreatePartyAI() : null;
-            var member = RaidSpawner.SpawnCharacter(cls, DefaultContent.CreateDefaultBuild(Database, InClass), Database, InPosition, tree, $"{(InUseAI ? "AI" : "더미")} {cls.DisplayName} {Party.Count}");
+            var member = RaidSpawner.SpawnCharacter(cls, DefaultContent.CreateDefaultBuild(Database, InClass), Database, InPosition, $"{(InAutoAttack ? "딜러" : "더미")} {cls.DisplayName} {Party.Count}");
+            if (InAutoAttack == true)
+            {
+                member.gameObject.AddComponent<ScenarioAutoAttacker>();
+            }
+
             spawned.Add(member.gameObject);
             Party.Add(member);
             return member;

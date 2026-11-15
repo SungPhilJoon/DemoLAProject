@@ -17,31 +17,33 @@ namespace DemoLA.World
     /// </summary>
     public static class RaidSpawner
     {
-        public static PartyCharacter SpawnCharacter(CharacterClassDefinition InClass, CharacterBuildData InBuild, GameDatabase InDatabase, Vector3 InPosition, StateTreeAsset InAITree, string InName)
+        /// <summary>플레이어 캐릭터를 만든다 (조작은 PlayerController / 네트워크 명령 — 아군 AI 없음).</summary>
+        public static PartyCharacter SpawnCharacter(CharacterClassDefinition InClass, CharacterBuildData InBuild, GameDatabase InDatabase, Vector3 InPosition, string InName)
         {
             var go = new GameObject(InName);
             go.transform.position = InPosition;
-            return AttachCharacter(go, InClass, InBuild, InDatabase, InAITree);
+            return AttachCharacter(go, InClass, InBuild, InDatabase);
         }
 
         /// <summary>이미 있는 오브젝트(네트워크 프리팹 등)에 파티원 몸 · 이동 · 전투 컴포넌트를 붙인다.</summary>
-        public static PartyCharacter AttachCharacter(GameObject InRoot, CharacterClassDefinition InClass, CharacterBuildData InBuild, GameDatabase InDatabase, StateTreeAsset InAITree)
+        public static PartyCharacter AttachCharacter(GameObject InRoot, CharacterClassDefinition InClass, CharacterBuildData InBuild, GameDatabase InDatabase)
         {
             var go = InRoot;
-            addBody(go.transform, PrimitiveType.Capsule, InClass.BodyColor, new Vector3(1.0f, 1.0f, 1.0f), 1.0f);
-            addNose(go.transform, new Vector3(0.0f, 1.5f, 0.45f), new Vector3(0.25f, 0.15f, 0.35f), Color.white);
+            if (InClass.ModelPrefab != null)
+            {
+                addModel(go, InClass.ModelPrefab);
+            }
+            else
+            {
+                addBody(go.transform, PrimitiveType.Capsule, InClass.BodyColor, new Vector3(1.0f, 1.0f, 1.0f), 1.0f);
+                addNose(go.transform, new Vector3(0.0f, 1.5f, 0.45f), new Vector3(0.25f, 0.15f, 0.35f), Color.white);
+            }
+
             addAgent(go, 0.45f, 2.0f, false);
             go.AddComponent<ActorMotor>();
             var character = go.AddComponent<PartyCharacter>();
             character.Radius = 0.45f;
             character.Initialize(InClass, InBuild, InDatabase);
-
-            if (InAITree != null)
-            {
-                var brain = go.AddComponent<CombatBrain>();
-                brain.SetTree(InAITree, true);
-            }
-
             return character;
         }
 
@@ -129,6 +131,24 @@ namespace DemoLA.World
             body.transform.localScale = InScale;
             body.transform.localPosition = new Vector3(0.0f, InHeightOffset, 0.0f);
             body.GetComponent<Renderer>().material.color = InColor;
+        }
+
+        /// <summary>
+        /// 직업 모델 프리팹을 "Body" 로 붙인다 (ActorMotor 의 도약/넉백 연출이 "Body" 자식을 올린다).
+        /// 루트 모션은 쓰지 않는다 — 이동은 NavMeshAgent / ActorMotor 가 하고, Animator 에는 속도만 넘긴다.
+        /// </summary>
+        private static void addModel(GameObject InRoot, GameObject InPrefab)
+        {
+            var body = Object.Instantiate(InPrefab, InRoot.transform, false);
+            body.name = "Body";
+            body.transform.localPosition = Vector3.zero;
+            body.transform.localRotation = Quaternion.identity;
+            var animator = body.GetComponentInChildren<Animator>();
+            if (animator != null)
+            {
+                animator.applyRootMotion = false;
+                InRoot.AddComponent<CharacterAnimatorDriver>().Bind(animator);
+            }
         }
 
         private static void addNose(Transform InParent, Vector3 InLocalPosition, Vector3 InScale, Color InColor)

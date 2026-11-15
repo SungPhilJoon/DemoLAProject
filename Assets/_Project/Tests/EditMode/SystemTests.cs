@@ -8,6 +8,7 @@ using DemoLA.Combat;
 using DemoLA.Content;
 using DemoLA.Core;
 using DemoLA.Data;
+using DemoLA.Effects;
 using DemoLA.Player;
 using DemoLA.Tools;
 using NUnit.Framework;
@@ -40,8 +41,8 @@ namespace DemoLA.Tests
             string errors;
             var tables = DemoLATables.FromCsv(TablePaths.ReadCsv, out errors);
             Assert.IsEmpty(errors);
-            // xlsx 43개 + 자체 추가 6개 (BossPatternTable.csv 의 '자체 추가' 행).
-            Assert.AreEqual(43 + 6, tables.BossPattern.Count);
+            // xlsx 43개 + 자체 추가 8개 (BossPatternTable.csv 의 '자체 추가' 행).
+            Assert.AreEqual(43 + 8, tables.BossPattern.Count);
             Assert.AreEqual(9, tables.BossPhase.Count);
             Assert.Greater(tables.Engraving.Count, 20);
             Assert.AreEqual(10, tables.Gem.Count);
@@ -215,8 +216,67 @@ namespace DemoLA.Tests
             boss.Initialize(def, 4);
             Assert.AreEqual(0.5f, boss.PartyScale, 0.001f);
             Assert.AreEqual(4, orbs.OrbCount);
-            Assert.AreEqual(def.HpPerLine * 0.5f, boss.HpPerLine, 1.0f);
+            Assert.AreEqual(def.HpPerLine * PartyBalance.Settings.Health(4), boss.HpPerLine, 1.0f);
             Object.DestroyImmediate(go);
+        }
+
+        [Test]
+        public void EveryClass_HasCounterSkill_ShownInTooltip()
+        {
+            foreach (var cls in TestWorld.Database.Classes)
+            {
+                var counter = cls.Skills.Find(s => s != null && s.IsCounter == true);
+                Assert.IsNotNull(counter, $"{cls.DisplayName}: 카운터 가능한 스킬이 하나 있어야 한다");
+                var tooltip = DemoLA.UI.ItemTooltips.Skill(counter, null, null);
+                StringAssert.Contains("카운터 가능", tooltip.Subtitle, $"{counter.DisplayName} 툴팁 분류");
+            }
+        }
+
+        [Test]
+        public void PartyBalance_FewerPlayers_WeakerBoss()
+        {
+            var balance = PartyBalance.Settings;
+            float previousHp = 0.0f;
+            float previousDamage = 0.0f;
+            for (int size = 1; size <= 4; ++size)
+            {
+                var boss = world.Boss("Gate2", new Vector3(size * 20.0f, 0.0f, 0.0f), new Vector3(size * 20.0f, 0.0f, -1.0f), size);
+                Assert.AreEqual(size, boss.PartySize);
+                Assert.Greater(boss.HpPerLine, previousHp, $"{size}인 체력은 {size - 1}인보다 많다");
+                Assert.Greater(boss.DamageScale, previousDamage, $"{size}인 보스 피해는 {size - 1}인보다 크다");
+                Assert.AreEqual(balance.Stagger(size), boss.StaggerScale, 0.0001f);
+                previousHp = boss.HpPerLine;
+                previousDamage = boss.DamageScale;
+            }
+
+            // 4인 기준: 예전(8인 설계의 절반 체력 · 피해 100%)보다 확실히 약해야 한다.
+            var four = world.Boss("Gate1", new Vector3(0.0f, 0.0f, 100.0f), new Vector3(0.0f, 0.0f, 99.0f), 4);
+            Assert.Less(four.HpPerLine, four.Definition.HpPerLine * 0.5f);
+            Assert.Less(four.DamageScale, 1.0f);
+
+            // 5인 이상은 4인으로 취급 (최대 4인).
+            var many = world.Boss("Gate1", new Vector3(0.0f, 0.0f, 150.0f), new Vector3(0.0f, 0.0f, 149.0f), 8);
+            Assert.AreEqual(4, many.PartySize);
+        }
+
+        [Test]
+        public void PartyBalance_BossDamage_ScaledExceptLethal()
+        {
+            var boss = world.Boss("Gate1", new Vector3(0.0f, 0.0f, 6.0f), Vector3.zero, 1);
+            var player = world.Character(ECharacterClass.Slayer, new Vector3(0.0f, 0.0f, -3.0f), true);
+            float max = player.Stats.Get(EAttr.MaxHealth);
+
+            var spec = boss.Asc.MakeOutgoingSpec(GameEffects.BossPatternDamage, 1);
+            spec.SetByCaller((int)ESetByCaller.MaxHealthFraction, 0.5f);
+            boss.Asc.ApplyGameplayEffectSpecToTarget(spec, player.Asc);
+            float lost = max - player.Stats.Get(EAttr.Health) + 0.0f;
+            float expected = max * 0.5f * boss.DamageScale * (1.0f - Mathf.Clamp(player.Stats.Get(EAttr.IncomingDamageReduction), 0.0f, 100.0f) * 0.01f);
+            Assert.AreEqual(expected, lost, max * 0.02f, "일반 피해 = 비율 × 인원 피해 배율");
+
+            var lethal = boss.Asc.MakeOutgoingSpec(GameEffects.BossPatternDamage, 1);
+            lethal.SetByCaller((int)ESetByCaller.MaxHealthFraction, 1.0f);
+            boss.Asc.ApplyGameplayEffectSpecToTarget(lethal, player.Asc);
+            Assert.LessOrEqual(player.Stats.Get(EAttr.Health), 0.0f, "즉사급은 인원과 상관없이 즉사");
         }
 
         [Test]

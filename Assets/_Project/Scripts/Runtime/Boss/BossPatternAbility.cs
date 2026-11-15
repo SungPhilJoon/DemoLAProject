@@ -36,6 +36,8 @@ namespace DemoLA.Boss
         public static event System.Action<float, float> LeapStarted;
 
         private TelegraphView safeZoneView;
+        private bool spawnedCover;
+        private readonly List<TelegraphView> shelterViews = new List<TelegraphView>();
 
         private readonly List<TelegraphView> views = new List<TelegraphView>();
         private readonly List<CombatActor> trackedTargets = new List<CombatActor>();
@@ -134,6 +136,7 @@ namespace DemoLA.Boss
             }
 
             Owner.OnGameplayEvent += handleGameplayEvent;
+            BossPatternLog.Started(boss, Definition, primaryTarget);
             boss.Announce(Definition, Definition.Response);
 
             if (Definition.StaggerCheck == true)
@@ -153,6 +156,13 @@ namespace DemoLA.Boss
                 safeZoneView = null;
             }
 
+            despawnShelters();
+            if (spawnedCover == true)
+            {
+                spawnedCover = false;
+                CoverPillars.Clear();
+            }
+
             endCharge(true);
             endChase();
             closeCounterWindow();
@@ -166,6 +176,7 @@ namespace DemoLA.Boss
             var boss = Boss;
             if (boss != null)
             {
+                BossPatternLog.Ended(boss, Definition, InWasCancelled);
                 boss.NotifyPatternEnded(this, InWasCancelled);
             }
         }
@@ -230,12 +241,25 @@ namespace DemoLA.Boss
                 scheduleCounterWindow(InStep.CounterWindowStart, InStep.CounterWindowEnd);
             }
 
+            if (InStep.SpawnCoverPillars == true)
+            {
+                var center = ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero;
+                CoverPillars.Spawn(CoverPillars.Positions(center, InStep.CoverPillarDistance));
+                spawnedCover = true;
+            }
+
+            if (InStep.AnnounceTarget == true && trackedTargets.Count > 0 && trackedTargets[0] != null)
+            {
+                Raid.Message($"{trackedTargets[0].GetName()} 추적!", 2.0f, true);
+            }
+
             if (InStep.StartLeapDuration > 0.0f && boss.Motor != null && trackedTargets.Count > 0)
             {
                 // 지금부터 도약 (뒤 단계들은 보스가 공중에 있는 동안 진행된다).
                 Vector3 leapOrigin;
                 Vector3 leapForward;
                 placement(InStep, boss, trackedTargets[0], out leapOrigin, out leapForward);
+                BossPatternLog.Leap(boss, Definition, stepIndex, InStep.Targeting, leapOrigin);
                 boss.Motor.Leap(leapOrigin, InStep.StartLeapDuration, InStep.LeapHeight);
                 LeapStarted?.Invoke(InStep.StartLeapDuration, InStep.LeapHeight);
                 playCinematic(InStep.StartLeapDuration + 0.8f);
@@ -259,6 +283,11 @@ namespace DemoLA.Boss
                     float angle = armOffset + 360.0f / InStep.ArmCount * a;
                     spawnView(InStep, boss, armArea, origin, Quaternion.AngleAxis(angle, Vector3.up) * forward, i, angle);
                 }
+            }
+
+            if (InStep.BlockedByCover == true && views.Count > 0)
+            {
+                spawnShelters(views[0].Origin);
             }
 
             float duration = Mathf.Max(0.01f, InStep.TelegraphTime);
@@ -317,6 +346,69 @@ namespace DemoLA.Boss
             views.Add(view);
             viewOwners.Add(InOwner);
             viewAngles.Add(InAngle);
+        }
+
+        /// <summary>
+        /// 기둥 뒤 안전 구역 표시 (파란 직선: 기둥에서 충격파 반대쪽으로) + AI 가 숨을 곳 (PendingBlastOrigin).
+        /// 실제 판정은 CoverPillars.IsCovered (원점 → 대상 선분이 기둥을 지나는가).
+        /// </summary>
+        private void spawnShelters(Vector3 InOrigin)
+        {
+            despawnShelters();
+            CoverPillars.PendingBlastOrigin = InOrigin;
+            var pillars = CoverPillars.Pillars;
+            for (int i = 0; i < pillars.Count; ++i)
+            {
+                if (pillars[i] == null || pillars[i].IsDestroyed == true)
+                {
+                    continue;
+                }
+
+                var p = HitGeometry.Flat(pillars[i].transform.position);
+                var away = HitGeometry.Flat(p - InOrigin).normalized;
+                var view = TelegraphView.Spawn(HitArea.Rect(12.0f, pillars[i].Radius * 1.6f), p + away * pillars[i].Radius, away, true);
+                view.SetProgress(1.0f);
+                shelterViews.Add(view);
+            }
+        }
+
+        private void despawnShelters()
+        {
+            for (int i = 0; i < shelterViews.Count; ++i)
+            {
+                if (shelterViews[i] != null)
+                {
+                    shelterViews[i].Despawn();
+                }
+            }
+
+            shelterViews.Clear();
+        }
+
+        /// <summary>부채꼴에 닿은 엄폐 기둥 → 크게 폭발 (기둥 주변 즉사) 후 사라진다.</summary>
+        private void explodeCover(PatternStep InStep, BossActor InBoss, TelegraphView InView)
+        {
+            var pillars = CoverPillars.Pillars;
+            for (int i = 0; i < pillars.Count; ++i)
+            {
+                var pillar = pillars[i];
+                if (pillar == null || pillar.IsDestroyed == true || pillar.Overlaps(InStep.Area, InView.Origin, InView.ForwardDirection) == false)
+                {
+                    continue;
+                }
+
+                var center = HitGeometry.Flat(pillar.transform.position);
+                CombatRegistry.FindHostiles(InBoss, HitArea.Circle(InStep.CoverExplosionRadius), center, Vector3.forward, buffer);
+                for (int t = 0; t < buffer.Count; ++t)
+                {
+                    applyHit(buffer[t], InStep, DamageTierUtil.Fraction(EDamageTier.Lethal));
+                }
+
+                pillar.Break(null);
+                BossImpactFx.Play(center, InStep.CoverExplosionRadius, 1.0f);
+                ImpactPlayed?.Invoke(center, InStep.CoverExplosionRadius, 1.0f);
+                Raid.Message("기둥 폭발!", 1.5f, true);
+            }
         }
 
         private void playCinematic(float InDuration)
@@ -429,12 +521,29 @@ namespace DemoLA.Boss
                 CombatRegistry.FindHostiles(boss, view.Area, view.Origin, view.ForwardDirection, buffer);
                 for (int t = 0; t < buffer.Count; ++t)
                 {
+                    // 엄폐: 원점 → 대상 사이에 엄폐 기둥이 있으면(기둥 뒤) 막힌다.
+                    if (InStep.BlockedByCover == true && CoverPillars.IsCovered(view.Origin, buffer[t].Position) == true)
+                    {
+                        continue;
+                    }
+
                     if (hitOnce.Add(buffer[t]) == true)
                     {
                         applyHit(buffer[t], InStep, fraction);
                         knockback(buffer[t], InStep, view.Origin);
                     }
                 }
+
+                if (InStep.ExplodesCover == true)
+                {
+                    explodeCover(InStep, boss, view);
+                }
+            }
+
+            if (InStep.BlockedByCover == true)
+            {
+                CoverPillars.PendingBlastOrigin = null;
+                despawnShelters();
             }
 
             if (InStep.BreaksWalls == true)
@@ -785,7 +894,7 @@ namespace DemoLA.Boss
         {
             staggerActive = true;
             var stats = Boss.Stats;
-            float gauge = Definition.StaggerGauge * Boss.PartyScale;
+            float gauge = Definition.StaggerGauge * Boss.StaggerScale;
             stats.Set(EAttr.MaxStaggerGauge, gauge);
             stats.Set(EAttr.StaggerGauge, gauge);
             Owner.Tags.AddTag((int)ETag.Boss_StaggerCheck);
@@ -901,6 +1010,18 @@ namespace DemoLA.Boss
                     OutOrigin = ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero;
                     OutForward = Vector3.forward;
                     break;
+                case EPatternTargeting.ArenaEdgeAwayFromParty:
+                    var arenaCenter = HitGeometry.Flat(ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero);
+                    var away = arenaCenter - partyCenter(InBoss, arenaCenter);
+                    if (away.sqrMagnitude < 0.25f)
+                    {
+                        away = -InBoss.Forward;
+                    }
+
+                    away = HitGeometry.Flat(away).normalized;
+                    OutOrigin = arenaCenter + away * InStep.EdgeDistance;
+                    OutForward = -away;
+                    break;
                 default:
                     OutOrigin = targetPosition;
                     OutForward = toTarget;
@@ -912,6 +1033,24 @@ namespace DemoLA.Boss
                 // 찍은 곳에 범위: 원점을 정면(음수면 뒤)으로 옮긴다. 방향은 그대로.
                 OutOrigin += HitGeometry.Flat(OutForward).normalized * InStep.ForwardOffset;
             }
+        }
+
+        /// <summary>살아 있는 플레이어 위치 평균 (없으면 InFallback).</summary>
+        private static Vector3 partyCenter(BossActor InBoss, Vector3 InFallback)
+        {
+            var players = InBoss.AlivePlayers();
+            if (players.Count == 0)
+            {
+                return InFallback;
+            }
+
+            var sum = Vector3.zero;
+            for (int i = 0; i < players.Count; ++i)
+            {
+                sum += HitGeometry.Flat(players[i].Position);
+            }
+
+            return sum / players.Count;
         }
 
         /// <summary>판정 순간 장판을 번쩍이고 사라지게 한다.</summary>

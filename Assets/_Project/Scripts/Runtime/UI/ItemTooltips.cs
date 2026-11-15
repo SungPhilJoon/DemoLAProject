@@ -463,9 +463,12 @@ namespace DemoLA.UI
                 tags.Add("헤드어택");
             }
 
-            if (InSkill.IsCounter == true)
+            // 카운터: 스킬 자체 또는 고른 트라이포드가 부여 (잠긴 트라이포드는 제외).
+            string counterTripod = CounterTripodName(InSkill, InProgress);
+            bool canCounter = InSkill.IsCounter == true || counterTripod != null;
+            if (canCounter == true)
             {
-                tags.Add("카운터");
+                tags.Add("카운터 가능");
             }
 
             var content = new TooltipContent
@@ -538,9 +541,10 @@ namespace DemoLA.UI
                     break;
             }
 
-            if (InSkill.IsCounter == true)
+            if (canCounter == true)
             {
-                content.Line("카운터 가능: 보스의 카운터 구간(푸른 빛)에 맞히면 보스가 무력화됩니다.", TooltipContent.Section);
+                string source = InSkill.IsCounter == true ? string.Empty : $" (트라이포드 '{counterTripod}')";
+                content.Line($"카운터 가능{source}: 보스가 푸른 빛으로 빛나는 카운터 구간에 맞히면 패턴을 끊고 그로기 상태로 만듭니다.", TooltipContent.Section);
             }
 
             if (InSkill.Tiers.Count > 0)
@@ -567,6 +571,27 @@ namespace DemoLA.UI
             }
 
             return content;
+        }
+
+        /// <summary>선택해 열린 트라이포드 중 카운터를 부여하는 것의 이름 (없으면 null).</summary>
+        public static string CounterTripodName(SkillDefinition InSkill, SkillProgress InProgress)
+        {
+            if (InSkill == null || InProgress == null)
+            {
+                return null;
+            }
+
+            for (int t = 0; t < InSkill.Tiers.Count && t < 3; ++t)
+            {
+                var tier = InSkill.Tiers[t];
+                int choice = InProgress.GetChoice(t);
+                if (choice >= 0 && choice < tier.Options.Count && InProgress.Level >= tier.UnlockSkillLevel && tier.Options[choice].GrantsCounter == true)
+                {
+                    return tier.Options[choice].Name;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>무력화 수치 합 → 등급.</summary>

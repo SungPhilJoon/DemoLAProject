@@ -25,8 +25,8 @@ namespace DemoLA.Boss
         public float ReductionPerStack = 40.0f;
         [Tooltip("갑옷 1중첩을 벗기는 데 필요한 부위파괴 수치 (평소 기준)")]
         public float DestructionPerStack = 15.0f;
-        [Tooltip("돌진 충돌 그로기 동안 부위파괴 수치 배율 (부위파괴 계수 감소)")]
-        public float CrashWeaknessMultiplier = 2.5f;
+        [Tooltip("돌진 충돌 그로기 동안 부위파괴 수치 배율 (부위파괴 계수 감소). 1.5 = 평소 필요량이 그로기 때의 1.5배")]
+        public float CrashWeaknessMultiplier = 1.5f;
         [Tooltip("돌진이 벽 · 기둥에 부딪혔을 때 그로기 (초)")]
         public float GroggyTime = 6.0f;
         public string SkyfallPatternId = "G2-25";
@@ -69,6 +69,15 @@ namespace DemoLA.Boss
 
                 string weak = crashGroggy ? $" · 충돌 그로기: 부위파괴 ×{CrashWeaknessMultiplier:0.#}" : " — 돌진을 벽 · 기둥으로 유도";
                 return $"갑옷 {remaining}중첩 · 부위파괴 {Progress * 100.0f:0}%{weak}";
+            }
+        }
+
+        public override void ApplyPartyScale(float InScale)
+        {
+            // 부위파괴 필요량은 인원 밸런스(PartyBalance.Destruction)를 따른다 — 인원이 적으면 덜 필요.
+            if (Boss != null)
+            {
+                DestructionPerStack *= Boss.DestructionScale;
             }
         }
 
@@ -126,8 +135,9 @@ namespace DemoLA.Boss
             applyArmor();
             Raid.Message(remaining > 0 ? $"부위 파괴! 갑옷 {remaining}중첩 남음 — 보스가 도약합니다" : "부위 파괴! 갑옷이 모두 벗겨졌습니다 — 보스가 도약합니다", 2.5f, false);
             Boss.Asc.RemoveEffectsWithGrantedTags(GameTags.Container(ETag.State_Groggy));
-            // 진행 중인 패턴을 끊고 바로 반격한다.
+            // 진행 중인 패턴 · 이어질 패턴을 끊고 바로 반격한다 (반격 착지 후 다시 돌진부터).
             Boss.Asc.CancelAbilitiesWithTags(GameTags.Container(ETag.Ability_BossPattern), null);
+            Boss.ClearQueuedPatterns();
             if (Boss.TryActivatePattern(SkyfallPatternId, null) == false)
             {
                 Boss.QueuePattern(SkyfallPatternId);

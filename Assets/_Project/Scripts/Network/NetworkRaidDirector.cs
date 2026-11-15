@@ -13,7 +13,7 @@ namespace DemoLA.Network
 {
     /// <summary>
     /// 네트워크 레이드 진행 (씬에 놓인 NetworkObject).
-    /// 서버(호스트): "시작" 시 플레이어가 고르지 않은 직업을 AI 아군으로 채우고(최대 4인), 보스를 스폰한다.
+    /// 서버(호스트): "시작" 시 접속한 플레이어 수(1 ~ 4명)에 맞춘 보스를 스폰한다 (아군 AI 없음 — PartyBalance 가 인원 밸런스).
     /// 서버의 장판(20Hz 스냅샷) · 안내 문구 · 구조물 파괴 · 바닥 붕괴 · 바닥 구슬을 클라이언트에 복제한다.
     /// 모든 피어: 로컬 플레이어/보스가 준비되면 GameBootstrap 의 HUD · 카메라 · 입력을 네트워크 쪽으로 다시 연결한다.
     /// </summary>
@@ -64,6 +64,8 @@ namespace DemoLA.Network
                 BossPatternAbility.ImpactPlayed += serverImpact;
                 BossPatternAbility.CinematicPlayed += serverCinematic;
                 BossPatternAbility.LeapStarted += serverLeap;
+                CoverPillars.Spawned += serverCoverSpawned;
+                CoverPillars.Cleared += serverCoverCleared;
                 ArenaFloor.OnCollapsed += serverFloorCollapsed;
                 ArenaFloor.OnCollapsedAllExceptCenter += serverFloorCollapsedCenter;
                 ArenaFloor.OnRestored += serverFloorRestored;
@@ -80,6 +82,8 @@ namespace DemoLA.Network
             BossPatternAbility.ImpactPlayed -= serverImpact;
             BossPatternAbility.CinematicPlayed -= serverCinematic;
             BossPatternAbility.LeapStarted -= serverLeap;
+            CoverPillars.Spawned -= serverCoverSpawned;
+            CoverPillars.Cleared -= serverCoverCleared;
             ArenaFloor.OnCollapsed -= serverFloorCollapsed;
             ArenaFloor.OnCollapsedAllExceptCenter -= serverFloorCollapsedCenter;
             ArenaFloor.OnRestored -= serverFloorRestored;
@@ -102,7 +106,7 @@ namespace DemoLA.Network
         {
         }
 
-        /// <summary>서버: AI 채우기 + 보스 스폰. 호스트의 로비 "시작" 버튼이 부른다.</summary>
+        /// <summary>서버: 접속 인원 기준으로 보스 스폰. 호스트의 로비 "시작" 버튼이 부른다.</summary>
         public void ServerStartRaid(string InBossId)
         {
             if (IsServer == false || raidStarted == true)
@@ -112,48 +116,22 @@ namespace DemoLA.Network
 
             raidStarted = true;
             var bootstrap = GameBootstrap.Current;
-            var taken = new HashSet<ECharacterClass>();
             int players = 0;
             foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
             {
-                if (client.PlayerObject == null)
+                if (client.PlayerObject != null)
                 {
-                    continue;
+                    players += 1;
                 }
-
-                var member = client.PlayerObject.GetComponent<NetworkPartyMember>();
-                if (member != null && member.ClassId.Value >= 0)
-                {
-                    taken.Add((ECharacterClass)member.ClassId.Value);
-                }
-
-                players += 1;
             }
 
-            // 플레이어가 고르지 않은 직업 = AI (도화가 우선 → 딜러 3 + 서포터 1).
-            var order = new[] { ECharacterClass.Artist, ECharacterClass.Slayer, ECharacterClass.Infighter, ECharacterClass.Summoner };
-            int partySize = players;
-            for (int i = 0; i < order.Length && partySize < RelaySessionService.MaxPlayers; ++i)
-            {
-                if (taken.Contains(order[i]) == true)
-                {
-                    continue;
-                }
-
-                var spawn = bootstrap != null ? bootstrap.PlayerSpawn : Vector3.back * 10.0f;
-                var go = Instantiate(partyMemberPrefab, spawn + new Vector3((partySize - 2) * 2.5f, 0.0f, -1.5f), Quaternion.identity);
-                var network = go.GetComponent<NetworkObject>();
-                network.Spawn(true);
-                go.GetComponent<NetworkPartyMember>().ServerInitAI(order[i]);
-                taken.Add(order[i]);
-                partySize += 1;
-            }
-
+            players = Mathf.Clamp(players, 1, RelaySessionService.MaxPlayers);
             var bossPosition = bootstrap != null ? bootstrap.BossSpawn : Vector3.forward * 6.0f;
             var bossGo = Instantiate(bossPrefab, bossPosition, Quaternion.LookRotation(Vector3.back));
             bossGo.GetComponent<NetworkObject>().Spawn(true);
-            bossGo.GetComponent<NetworkBossProxy>().ServerInit(InBossId, partySize);
-            Raid.Message($"네트워크 레이드 시작 · {players}명 + AI {partySize - players}명", 3.0f, false);
+            bossGo.GetComponent<NetworkBossProxy>().ServerInit(InBossId, players);
+            Raid.Message($"네트워크 레이드 시작 · {players}인 파티 (보스 체력 · 피해 {players}인 기준)", 3.0f, false);
+            IntroRpc();
         }
 
         // ------------------------------------------------------------------ replication (server → clients)
@@ -209,6 +187,29 @@ namespace DemoLA.Network
             BossImpactFx.Play(InPosition, InRadius, InStrength);
         }
 
+        // 엄폐 기둥 (G2-27): 솟아남 · 사라짐. 폭발(파괴)은 StructureBrokenRpc 가 이름으로 처리한다.
+        private void serverCoverSpawned(Vector3[] InPositions)
+        {
+            CoverSpawnedRpc(InPositions);
+        }
+
+        private void serverCoverCleared()
+        {
+            CoverClearedRpc();
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void CoverSpawnedRpc(Vector3[] InPositions)
+        {
+            CoverPillars.Spawn(InPositions);
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void CoverClearedRpc()
+        {
+            CoverPillars.Clear();
+        }
+
         private void serverLeap(float InDuration, float InHeight)
         {
             LeapRpc(InDuration, InHeight);
@@ -237,6 +238,39 @@ namespace DemoLA.Network
             {
                 DemoLA.Player.BossCinematicCamera.Play(boss.transform, InDuration);
             }
+        }
+
+        // 보스 진입 시네마틱: 모든 피어에서 재생 (AI 정지 · 첫 패턴 지연은 서버 기준).
+        [Rpc(SendTo.Everyone)]
+        private void IntroRpc()
+        {
+            StartCoroutine(playIntroWhenReady());
+        }
+
+        private System.Collections.IEnumerator playIntroWhenReady()
+        {
+            // 클라이언트는 보스 · 내 캐릭터가 막 만들어지는 중일 수 있다.
+            float giveUp = Time.realtimeSinceStartup + 3.0f;
+            BossActor bossActor = null;
+            while (Time.realtimeSinceStartup < giveUp)
+            {
+                bossActor = FindAnyObjectByType<BossActor>();
+                if (bossActor != null && bossActor.Definition != null)
+                {
+                    break;
+                }
+
+                yield return null;
+            }
+
+            if (bossActor == null)
+            {
+                yield break;
+            }
+
+            var controller = FindAnyObjectByType<DemoLA.Player.PlayerController>();
+            var me = controller != null && controller.Character != null ? controller.Character.transform : null;
+            DemoLA.Player.BossIntroCinematic.Play(bossActor, me);
         }
 
         private void serverFloorCollapsed(ETileGroup InGroup, bool InKeepSurvivors)
@@ -568,7 +602,7 @@ namespace DemoLA.Network
                 }
 
                 party.Add(members[i].Character);
-                if (members[i].IsOwner == true && members[i].IsAI.Value == false)
+                if (members[i].IsOwner == true)
                 {
                     local = members[i];
                 }

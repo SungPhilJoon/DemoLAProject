@@ -41,5 +41,5 @@ MonoBehaviour:
   DodgeCooldown: 9
   DodgeDistance: 5
   DodgeInvulnerableTime: 0.3
-  AiPreferredRange: 8
-  AiPrefersBack: 0
+  PreferredRange: 8
+  PrefersBack: 0

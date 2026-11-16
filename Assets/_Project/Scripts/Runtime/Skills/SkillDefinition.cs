@@ -68,6 +68,18 @@ namespace DemoLA.Skills
         public float DashDistance;
         public float DashDuration = 0.2f;
 
+        [Header("Animation")]
+        [Tooltip("시전 애니메이션 (Humanoid 클립 권장 — 모델이 달라도 리타깃된다). 비우면 이동 애니메이션 그대로.\n툴: DemoLA/Tools/Skill Ability Tool (미리보기에서 타격 시점과 맞춘다)")]
+        public AnimationClip CastAnimation;
+        [Tooltip("클립 재생 배율. 실제 재생 속도 = 이 값 × 시전 속도 (공격 속도 · 트라이포드)")]
+        public float AnimationSpeed = 1.0f;
+        [Tooltip("클립 시작 위치 (초) — 앞쪽 준비 동작을 잘라낼 때")]
+        public float AnimationStartTime;
+        [Tooltip("이동 애니메이션 → 시전 클립 블렌드 (초)")]
+        public float AnimationBlendIn = 0.08f;
+        [Tooltip("시전 클립 → 이동 애니메이션 블렌드 (초). 클립이 끝나기 이만큼 전, 또는 스킬이 끝날 때 시작")]
+        public float AnimationBlendOut = 0.15f;
+
         [Header("Combat")]
         public List<SkillHit> Hits = new List<SkillHit>();
         public ESkillPositionalType Positional;
@@ -112,6 +124,30 @@ namespace DemoLA.Skills
 
                 return range + DashDistance;
             }
+        }
+
+        /// <summary>InHitIndex 번째 타격 시각 (시전 시작 기준 초, 시전 속도 1배). 지연은 누적이다.</summary>
+        public float HitTime(int InHitIndex)
+        {
+            float t = 0.0f;
+            for (int i = 0; i <= InHitIndex && i < Hits.Count; ++i)
+            {
+                t += Mathf.Max(0.0f, Hits[i].Delay);
+            }
+
+            return t;
+        }
+
+        /// <summary>시전 시간 (마지막 타격 + 후딜, 시전 속도 1배). 추가 타격 트라이포드는 뺀다.</summary>
+        public float CastDuration
+        {
+            get { return HitTime(Hits.Count - 1) + Mathf.Max(0.0f, Recovery); }
+        }
+
+        /// <summary>시전 시간 동안 재생되는 클립 길이 (초, 클립 기준).</summary>
+        public float AnimationCoveredTime
+        {
+            get { return CastDuration * Mathf.Max(0.01f, AnimationSpeed); }
         }
 
         /// <summary>레벨 피해 배율 % (1레벨 = 100).</summary>

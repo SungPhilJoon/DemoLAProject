@@ -556,6 +556,11 @@ namespace DemoLA.Editor.Gas
             var so = serializedFor(InSkill);
             so.Update();
             EditorGUILayout.LabelField($"[{InSkill.SkillId}] {InSkill.DisplayName} (플레이어 스킬)", EditorStyles.largeLabel);
+            if (GUILayout.Button("Skill Ability Tool 에서 열기 (시전 애니메이션 · 미리보기)", GUILayout.Height(24.0f)) == true)
+            {
+                DemoLA.Editor.SkillTool.SkillAbilityToolWindow.OpenSkill(InSkill);
+            }
+
             EditorGUILayout.HelpBox("플레이어 스킬은 Data/Generated 에셋이라 전체 셋업(setup overwrite) 시 코드(DefaultContent) 값으로 돌아갑니다. 영구 변경은 DefaultContent.cs 에 반영하세요.", MessageType.Info);
             var iterator = so.GetIterator();
             bool enter = true;

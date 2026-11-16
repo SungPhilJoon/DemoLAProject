@@ -18,10 +18,15 @@ MonoBehaviour:
   OwnerClass: 2
   IconColor: {r: 0.95, g: 0.42749998, b: 0.42749998, a: 1}
   Cooldown: 5
-  ManaCost: 25
-  Recovery: 0.25
+  ManaCost: 10
+  Recovery: 0.3
   DashDistance: 0
   DashDuration: 0.2
+  CastAnimation: {fileID: -203655887218126122, guid: de5857e162694294f9ad18f7d2a2dfb0, type: 3}
+  AnimationSpeed: 3.6035879
+  AnimationStartTime: 0
+  AnimationBlendIn: 0
+  AnimationBlendOut: 0.15
   Hits:
   - Delay: 0.3
     Area:
@@ -43,8 +48,8 @@ MonoBehaviour:
   Positional: 1
   Element: 6
   SuperArmor: 0
-  Protection: 0
-  IsCounter: 0
+  Protection: 1
+  IsCounter: 1
   IsAwakening: 0
   LocksMovement: 1
   AiRange: 0

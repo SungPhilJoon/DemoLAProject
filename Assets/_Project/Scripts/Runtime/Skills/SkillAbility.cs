@@ -268,10 +268,76 @@ namespace DemoLA.Skills
             }
 
             applySupport(actor);
+            playCastAnimation(actor);
 
             hitIndex = 0;
             extraHitsRemaining = Mathf.Max(0, Mathf.RoundToInt(Params.Get(ESkillAttr.ExtraHits)));
             scheduleNext();
+        }
+
+        /// <summary>시전 애니메이션 시작 (서버/로컬). 네트워크는 CastAnimationPlayed 로 클라이언트에 알린다.</summary>
+        public static event System.Action<CombatActor, SkillDefinition, float> CastAnimationPlayed;
+        /// <summary>시전 애니메이션 중단 (스킬이 취소 · 종료됨).</summary>
+        public static event System.Action<CombatActor> CastAnimationStopped;
+
+        private bool castAnimationPlaying;
+
+        /// <summary>시전 속도(공격 속도 · 트라이포드)를 반영한 클립 재생 배율.</summary>
+        public float CastAnimationSpeed
+        {
+            get
+            {
+                float timeScale = Owner != null ? Params.TimeScale(Owner.Attributes.GetCurrent((int)EAttr.AttackSpeed)) : 1.0f;
+                return Definition.AnimationSpeed / Mathf.Max(0.01f, timeScale);
+            }
+        }
+
+        private void playCastAnimation(CombatActor InActor)
+        {
+            castAnimationPlaying = false;
+            if (Definition.CastAnimation == null)
+            {
+                return;
+            }
+
+            float speed = CastAnimationSpeed;
+            PlayCastAnimation(InActor, Definition, speed);
+            castAnimationPlaying = true;
+            CastAnimationPlayed?.Invoke(InActor, Definition, speed);
+        }
+
+        /// <summary>InActor 모델에서 스킬 시전 클립을 재생한다 (네트워크 클라이언트도 이것으로 재생).</summary>
+        public static void PlayCastAnimation(CombatActor InActor, SkillDefinition InDefinition, float InSpeed)
+        {
+            var driver = InActor != null ? InActor.GetComponent<DemoLA.Character.CharacterAnimatorDriver>() : null;
+            if (driver != null && InDefinition != null && InDefinition.CastAnimation != null)
+            {
+                driver.PlayAction(InDefinition.CastAnimation, InSpeed, InDefinition.AnimationStartTime, InDefinition.AnimationBlendIn, InDefinition.AnimationBlendOut);
+            }
+        }
+
+        public static void StopCastAnimation(CombatActor InActor, float InBlendOut = -1.0f)
+        {
+            var driver = InActor != null ? InActor.GetComponent<DemoLA.Character.CharacterAnimatorDriver>() : null;
+            if (driver != null)
+            {
+                driver.StopAction(InBlendOut);
+            }
+        }
+
+        protected override void OnEnd(bool InWasCancelled)
+        {
+            base.OnEnd(InWasCancelled);
+            if (castAnimationPlaying == false)
+            {
+                return;
+            }
+
+            castAnimationPlaying = false;
+            // 스킬이 끝나면(후딜 끝 · 취소) 클립이 남아 있어도 이동 애니메이션으로 돌아간다. 이미 끝난 클립이면 아무 일 없음.
+            var actor = Actor;
+            StopCastAnimation(actor, Definition.AnimationBlendOut);
+            CastAnimationStopped?.Invoke(actor);
         }
 
         private void scheduleNext()

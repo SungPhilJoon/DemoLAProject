@@ -22,8 +22,13 @@ MonoBehaviour:
   Recovery: 0.25
   DashDistance: 0
   DashDuration: 0.2
+  CastAnimation: {fileID: -203655887218126122, guid: de5857e162694294f9ad18f7d2a2dfb0, type: 3}
+  AnimationSpeed: 1
+  AnimationStartTime: 0
+  AnimationBlendIn: 0.08
+  AnimationBlendOut: 0.15
   Hits:
-  - Delay: 0.8
+  - Delay: 1.18
     Area:
       Shape: 1
       Radius: 4

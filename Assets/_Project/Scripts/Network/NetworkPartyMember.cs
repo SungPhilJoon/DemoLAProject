@@ -46,6 +46,11 @@ namespace DemoLA.Network
 
             ClassId.OnValueChanged += handleClassChanged;
             tags.OnValueChanged += handleTagsChanged;
+            if (IsServer == true)
+            {
+                DemoLA.Skills.SkillAbility.CastAnimationPlayed += serverCastAnimation;
+                DemoLA.Skills.SkillAbility.CastAnimationStopped += serverCastAnimationStopped;
+            }
             if (ClassId.Value >= 0)
             {
                 build();
@@ -65,6 +70,52 @@ namespace DemoLA.Network
         {
             ClassId.OnValueChanged -= handleClassChanged;
             tags.OnValueChanged -= handleTagsChanged;
+            DemoLA.Skills.SkillAbility.CastAnimationPlayed -= serverCastAnimation;
+            DemoLA.Skills.SkillAbility.CastAnimationStopped -= serverCastAnimationStopped;
+        }
+
+        // ------------------------------------------------------------------ skill animation (서버 → 클라이언트)
+
+        private void serverCastAnimation(DemoLA.Combat.CombatActor InActor, DemoLA.Skills.SkillDefinition InDefinition, float InSpeed)
+        {
+            if (Character != null && InActor == Character && InDefinition != null)
+            {
+                CastAnimationRpc(InDefinition.SkillId, InDefinition.IsAwakening, InSpeed);
+            }
+        }
+
+        private void serverCastAnimationStopped(DemoLA.Combat.CombatActor InActor)
+        {
+            if (Character != null && InActor == Character)
+            {
+                StopCastAnimationRpc();
+            }
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void CastAnimationRpc(int InSkillId, bool InAwakening, float InSpeed)
+        {
+            var cls = Character != null ? Character.ClassDefinition : null;
+            if (cls == null)
+            {
+                return;
+            }
+
+            var list = InAwakening == true ? cls.Awakenings : cls.Skills;
+            for (int i = 0; i < list.Count; ++i)
+            {
+                if (list[i] != null && list[i].SkillId == InSkillId)
+                {
+                    DemoLA.Skills.SkillAbility.PlayCastAnimation(Character, list[i], InSpeed);
+                    return;
+                }
+            }
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void StopCastAnimationRpc()
+        {
+            DemoLA.Skills.SkillAbility.StopCastAnimation(Character);
         }
 
         [Rpc(SendTo.Server)]

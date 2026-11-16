@@ -216,6 +216,9 @@ namespace DemoLA.Editor
                 }
             }
 
+            // 스킬 시전 애니메이션(Skill Ability Tool 에서 정한 값)은 코드(DefaultContent)에 없다 → SkillId 별로 기억했다가 새 에셋에 다시 넣는다.
+            var keptSkillAnimations = SkillTool.SkillAnimationSettings.Collect(DataRoot);
+
             // 폴더는 남기고 안의 에셋만 지운다 (같은 폴더를 지웠다 바로 만들면 AssetDatabase 가 어긋난다).
             if (AssetDatabase.IsValidFolder(DataRoot) == true)
             {
@@ -263,6 +266,8 @@ namespace DemoLA.Editor
             {
                 UnityEngine.Object.DestroyImmediate(edited);
             }
+
+            SkillTool.SkillAnimationSettings.Restore(DefaultContent.CreatedObjects, keptSkillAnimations);
 
             addAuthoredPatterns(database);
 

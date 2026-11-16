@@ -1,14 +1,18 @@
+using System.Collections.Generic;
 using DemoLA.Character;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace DemoLA.Editor
 {
     /// <summary>
-    /// 슬레이어 = ElegantFemale 모델 + 대검 + Animator(Idle/Run).
-    ///  - AC_Slayer: Speed(float) &gt; 0.1 → Run (Great Sword Run), 아니면 Idle (같은 클립 첫 프레임 정지)
-    ///  - Slayer_ElegantFemale.prefab: 모델 + Animator + 오른손 소켓에 대검
+    /// 슬레이어 = Unity-chan 모델(머리카락/치마 SpringBone 포함) + 대검 + Animator(Idle/Run).
+    ///  - AC_Slayer: Speed(float) &gt; 0.1 → Run (Great Sword Run), 아니면 Idle (Unity-chan WAIT00)
+    ///  - Slayer_UnityChan.prefab: unitychan_dynamic 프리팹 기반 + 오른손 소켓에 대검
+    ///  - Unity-chan 셰이더는 Built-in(ForwardBase) 전용이라 URP 에서 보이지 않는다 → URP Lit 사본 머티리얼로 교체
+    ///  - 레거시 Input 을 쓰는 Unity-chan 데모 스크립트(FaceUpdate/IdleChanger/IKCtrlRightHand/RandomWind)는 제거
     ///  - CLS_Slayer.ModelPrefab 에 연결 (전체 셋업이 Generated 를 다시 만들어도 다시 연결된다)
     /// 에셋이 없으면 에디터 로드 시 자동으로 만든다. 메뉴로 다시 만들 수 있다.
     /// </summary>
@@ -16,13 +20,22 @@ namespace DemoLA.Editor
     public static class SlayerCharacterBuilder
     {
         public const string Folder = "Assets/_Project/Art/Characters/Slayer";
+        public const string MaterialFolder = Folder + "/Materials";
         public const string ControllerPath = Folder + "/AC_Slayer.controller";
-        public const string PrefabPath = Folder + "/Slayer_ElegantFemale.prefab";
-        public const string ModelPath = "Assets/Models/ElegantFemale.fbx";
+        public const string PrefabPath = Folder + "/Slayer_UnityChan.prefab";
+        public const string UnityChanRoot = "Assets/unity-chan!/Unity-chan! Model";
+        public const string ModelPrefabPath = UnityChanRoot + "/Prefabs/unitychan_dynamic.prefab";
+        public const string IdleClipPath = UnityChanRoot + "/Art/Animations/unitychan_WAIT00.fbx";
         public const string RunClipPath = "Assets/Models/Animations/ElegantFemale/Maw J Laygo@Great Sword Run.fbx";
         public const string WeaponPath = "Assets/Models/Weapons/Greatsword.fbx";
         public const string ClassPath = DemoLAProjectSetup.DataRoot + "/Classes/CLS_Slayer.asset";
         public const float RunThreshold = 0.1f;
+
+        /// <summary>게임 쪽 조작/카메라와 충돌하는 Unity-chan 데모 컴포넌트 (레거시 Input · OnGUI 사용).</summary>
+        private static readonly HashSet<string> StripComponents = new HashSet<string>
+        {
+            "FaceUpdate", "IdleChanger", "IKCtrlRightHand", "RandomWind",
+        };
 
         static SlayerCharacterBuilder()
         {
@@ -36,7 +49,7 @@ namespace DemoLA.Editor
                 return;
             }
 
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(ModelPath) == null || AssetDatabase.LoadAssetAtPath<GameObject>(RunClipPath) == null)
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(ModelPrefabPath) == null || AssetDatabase.LoadAssetAtPath<GameObject>(RunClipPath) == null)
             {
                 return; // 모델/클립이 아직 임포트되지 않음
             }
@@ -51,23 +64,29 @@ namespace DemoLA.Editor
             }
         }
 
-        [MenuItem("DemoLA/Characters/슬레이어 (ElegantFemale) 다시 만들기", priority = 70)]
+        [MenuItem("DemoLA/Characters/슬레이어 (Unity-chan) 다시 만들기", priority = 70)]
         public static void Build()
         {
             ensureFolder(Folder);
-            var clip = prepareRunClip();
-            if (clip == null)
+            ensureFolder(MaterialFolder);
+            var run = prepareRunClip();
+            if (run == null)
             {
                 Debug.LogError($"[DemoLA] 슬레이어: {RunClipPath} 에서 애니메이션 클립을 찾지 못했습니다");
                 return;
             }
 
-            ensureHumanoid(ModelPath);
-            var controller = buildController(clip);
+            var idle = loadClip(IdleClipPath);
+            var controller = buildController(idle, run);
             var prefab = buildPrefab(controller);
+            if (prefab == null)
+            {
+                return;
+            }
+
             AssignToClass(prefab);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[DemoLA] 슬레이어 캐릭터 생성: {PrefabPath} (Animator {ControllerPath}, Run = {clip.name})");
+            Debug.Log($"[DemoLA] 슬레이어 캐릭터 생성: {PrefabPath} (Animator {ControllerPath}, Idle = {(idle != null ? idle.name : "Run 첫 프레임")}, Run = {run.name})");
         }
 
         /// <summary>CLS_Slayer 에 모델 프리팹을 연결한다 (전체 셋업 뒤에도 호출됨).</summary>
@@ -133,7 +152,12 @@ namespace DemoLA.Editor
                 importer.SaveAndReimport();
             }
 
-            foreach (var asset in AssetDatabase.LoadAllAssetRepresentationsAtPath(RunClipPath))
+            return loadClip(RunClipPath);
+        }
+
+        private static AnimationClip loadClip(string InPath)
+        {
+            foreach (var asset in AssetDatabase.LoadAllAssetRepresentationsAtPath(InPath))
             {
                 if (asset is AnimationClip clip && clip.name.StartsWith("__preview__") == false)
                 {
@@ -144,14 +168,9 @@ namespace DemoLA.Editor
             return null;
         }
 
-        private static void ensureHumanoid(string InPath)
-        {
-            MixamoHumanoid.EnsureHumanoid(InPath);
-        }
-
         // ------------------------------------------------------------------ controller
 
-        private static AnimatorController buildController(AnimationClip InRun)
+        private static AnimatorController buildController(AnimationClip InIdle, AnimationClip InRun)
         {
             AssetDatabase.DeleteAsset(ControllerPath);
             var controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
@@ -159,9 +178,16 @@ namespace DemoLA.Editor
 
             var sm = controller.layers[0].stateMachine;
             var idle = sm.AddState("Idle", new Vector3(250.0f, 0.0f, 0.0f));
-            idle.motion = InRun;
-            idle.speed = 0.0f;          // 대기 클립이 생기기 전까지 달리기 첫 프레임에 멈춘 자세
-            idle.cycleOffset = 0.0f;
+            if (InIdle != null)
+            {
+                idle.motion = InIdle;
+            }
+            else
+            {
+                idle.motion = InRun;
+                idle.speed = 0.0f;      // 대기 클립이 없으면 달리기 첫 프레임에 멈춘 자세
+            }
+
             var run = sm.AddState("Run", new Vector3(250.0f, 120.0f, 0.0f));
             run.motion = InRun;
             sm.defaultState = idle;
@@ -184,11 +210,14 @@ namespace DemoLA.Editor
 
         private static GameObject buildPrefab(AnimatorController InController)
         {
-            var model = AssetDatabase.LoadAssetAtPath<GameObject>(ModelPath);
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(ModelPrefabPath);
             var root = (GameObject)PrefabUtility.InstantiatePrefab(model);
-            PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.OutermostRoot, InteractionMode.AutomatedAction);
-            root.name = "Slayer_ElegantFemale";
+            PrefabUtility.UnpackPrefabInstance(root, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            root.name = "Slayer_UnityChan";
             root.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            root.transform.localScale = Vector3.one;
+
+            stripDemoComponents(root);
 
             var animator = root.GetComponent<Animator>();
             if (animator == null)
@@ -196,16 +225,142 @@ namespace DemoLA.Editor
                 animator = root.AddComponent<Animator>();
             }
 
+            if (animator.avatar == null || animator.avatar.isHuman == false)
+            {
+                Debug.LogError("[DemoLA] 슬레이어: Unity-chan 프리팹에 Humanoid Avatar 가 없습니다");
+                Object.DestroyImmediate(root);
+                return null;
+            }
+
             animator.runtimeAnimatorController = InController;
             animator.applyRootMotion = false;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
+            convertMaterials(root);
             attachWeapon(root, animator);
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
             return prefab;
         }
+
+        private static void stripDemoComponents(GameObject InRoot)
+        {
+            var behaviours = InRoot.GetComponentsInChildren<MonoBehaviour>(true);
+            for (int i = 0; i < behaviours.Length; ++i)
+            {
+                var b = behaviours[i];
+                if (b != null && StripComponents.Contains(b.GetType().Name) == true)
+                {
+                    Object.DestroyImmediate(b);
+                }
+            }
+
+            // 스크립트를 잃은 컴포넌트(Missing Script)도 정리.
+            foreach (var t in InRoot.GetComponentsInChildren<Transform>(true))
+            {
+                GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
+            }
+        }
+
+        // ------------------------------------------------------------------ materials
+
+        /// <summary>
+        /// Unity-chan 머티리얼을 URP Lit 사본으로 바꾼다 (원본 에셋은 건드리지 않음).
+        /// _MainTex/_Color 를 옮기고, "Transparent" 셰이더는 알파 블렌드, "Double-sided" 는 양면으로.
+        /// </summary>
+        private static void convertMaterials(GameObject InRoot)
+        {
+            var lit = Shader.Find("Universal Render Pipeline/Lit");
+            if (lit == null)
+            {
+                Debug.LogWarning("[DemoLA] 슬레이어: URP Lit 셰이더를 찾지 못해 머티리얼을 변환하지 않았습니다");
+                return;
+            }
+
+            var cache = new Dictionary<Material, Material>();
+            foreach (var renderer in InRoot.GetComponentsInChildren<Renderer>(true))
+            {
+                var mats = renderer.sharedMaterials;
+                for (int i = 0; i < mats.Length; ++i)
+                {
+                    if (mats[i] == null)
+                    {
+                        continue;
+                    }
+
+                    if (cache.TryGetValue(mats[i], out var converted) == false)
+                    {
+                        converted = convertMaterial(mats[i], lit);
+                        cache.Add(mats[i], converted);
+                    }
+
+                    mats[i] = converted;
+                }
+
+                renderer.sharedMaterials = mats;
+            }
+        }
+
+        private static Material convertMaterial(Material InSource, Shader InLit)
+        {
+            string path = $"{MaterialFolder}/M_Slayer_{InSource.name}.mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(InLit);
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+            {
+                mat.shader = InLit;
+            }
+
+            string shaderName = InSource.shader != null ? InSource.shader.name : string.Empty;
+            bool transparent = shaderName.Contains("Transparent");
+            bool doubleSided = shaderName.Contains("Double-sided");
+
+            Texture main = InSource.HasProperty("_MainTex") ? InSource.GetTexture("_MainTex") : null;
+            Color color = InSource.HasProperty("_Color") ? InSource.GetColor("_Color") : Color.white;
+            mat.SetTexture("_BaseMap", main);
+            mat.SetColor("_BaseColor", color);
+            mat.SetFloat("_Metallic", 0.0f);
+            mat.SetFloat("_Smoothness", 0.15f);
+            mat.SetFloat("_EnvironmentReflections", 0.0f);
+            mat.SetFloat("_SpecularHighlights", 0.0f);
+            mat.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
+            mat.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+
+            mat.SetFloat("_Cull", doubleSided ? (float)CullMode.Off : (float)CullMode.Back);
+            if (transparent == true)
+            {
+                mat.SetFloat("_Surface", 1.0f);
+                mat.SetFloat("_Blend", 0.0f);   // Alpha
+                mat.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+                mat.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+                mat.SetFloat("_SrcBlendAlpha", (float)BlendMode.One);
+                mat.SetFloat("_DstBlendAlpha", (float)BlendMode.OneMinusSrcAlpha);
+                mat.SetFloat("_ZWrite", 0.0f);
+                mat.SetOverrideTag("RenderType", "Transparent");
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.renderQueue = (int)RenderQueue.Transparent;
+            }
+            else
+            {
+                mat.SetFloat("_Surface", 0.0f);
+                mat.SetFloat("_SrcBlend", (float)BlendMode.One);
+                mat.SetFloat("_DstBlend", (float)BlendMode.Zero);
+                mat.SetFloat("_ZWrite", 1.0f);
+                mat.SetOverrideTag("RenderType", "Opaque");
+                mat.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                mat.renderQueue = (int)RenderQueue.Geometry;
+            }
+
+            EditorUtility.SetDirty(mat);
+            return mat;
+        }
+
+        // ------------------------------------------------------------------ weapon
 
         /// <summary>
         /// 오른손에 대검을 쥐인다. 손 방향은 바인드 포즈에서 계산한다:
@@ -214,16 +369,15 @@ namespace DemoLA.Editor
         private static void attachWeapon(GameObject InRoot, Animator InAnimator)
         {
             var weapon = AssetDatabase.LoadAssetAtPath<GameObject>(WeaponPath);
-            Transform hand = InAnimator.isHuman == true ? InAnimator.GetBoneTransform(HumanBodyBones.RightHand) : null;
-            hand = hand != null ? hand : findDeep(InRoot.transform, "mixamorig:RightHand");
+            Transform hand = InAnimator.GetBoneTransform(HumanBodyBones.RightHand);
             if (weapon == null || hand == null)
             {
                 Debug.LogWarning("[DemoLA] 슬레이어: 대검 또는 오른손 본을 찾지 못해 무기를 붙이지 않았습니다");
                 return;
             }
 
-            Transform middle = findDeep(hand, "mixamorig:RightHandMiddle1");
-            Transform thumb = findDeep(hand, "mixamorig:RightHandThumb1");
+            Transform middle = InAnimator.GetBoneTransform(HumanBodyBones.RightMiddleProximal);
+            Transform thumb = InAnimator.GetBoneTransform(HumanBodyBones.RightThumbProximal);
             Vector3 fingers = middle != null ? (middle.position - hand.position).normalized : hand.TransformDirection(Vector3.up);
             Vector3 thumbDir = thumb != null ? (thumb.position - hand.position) : Vector3.forward;
             Vector3 blade = Vector3.ProjectOnPlane(thumbDir, fingers).normalized;
@@ -277,25 +431,6 @@ namespace DemoLA.Editor
             }
 
             return best;
-        }
-
-        private static Transform findDeep(Transform InRoot, string InName)
-        {
-            if (InRoot.name == InName)
-            {
-                return InRoot;
-            }
-
-            for (int i = 0; i < InRoot.childCount; ++i)
-            {
-                var found = findDeep(InRoot.GetChild(i), InName);
-                if (found != null)
-                {
-                    return found;
-                }
-            }
-
-            return null;
         }
 
         private static void ensureFolder(string InPath)

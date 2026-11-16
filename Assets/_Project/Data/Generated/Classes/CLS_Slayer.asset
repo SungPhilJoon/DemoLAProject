@@ -16,7 +16,7 @@ MonoBehaviour:
   DisplayName: "\uC2AC\uB808\uC774\uC5B4"
   Role: 0
   BodyColor: {r: 0.85, g: 0.25, b: 0.3, a: 1}
-  ModelPrefab: {fileID: 3558904879336321916, guid: ef7cc00811e1cfb4c86b9cf8e9dfcde5, type: 3}
+  ModelPrefab: {fileID: 2702205405007644664, guid: c307b85a21335bb48923b0c95c54b90c, type: 3}
   BaseMaxHealth: 165000
   BaseMaxMana: 1000
   BaseDefense: 20000

@@ -29,13 +29,12 @@ namespace DemoLA.Tests
             go.AddComponent<NavMeshAgent>();
             go.AddComponent<ActorMotor>();
             armor = go.AddComponent<ArmorStackGimmick>();
-            armor.GimmickId = "G2-01";
-            armor.PatternId = "G2-01";
+            armor.GimmickTag = ETag.Pattern_G2_ArmorBreak;
             boss = go.AddComponent<BossActor>();
             var definition = TestWorld.Database.GetBoss("Gate2");
             boss.Initialize(definition, definition.DesignPartySize);
             world.Combatant(ETeam.Player, Vector3.forward * 4.0f, 100000000.0f);
-            Assert.IsTrue(boss.StartGimmick("G2-01"));
+            Assert.IsTrue(boss.StartGimmick(ETag.Pattern_G2_ArmorBreak));
         }
 
         [TearDown]
@@ -76,7 +75,7 @@ namespace DemoLA.Tests
         [Test]
         public void ChargeCrashIntoWall_Groggy_AndWeakensArmor()
         {
-            Assert.IsTrue(boss.TryActivatePattern("G2-11", null));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_Charge, null));
             armor.NotifyChargeCrashed(wall());
             Assert.IsTrue(boss.HasTag((int)ETag.State_Groggy), "벽에 부딪혀도 그로기");
             Assert.IsTrue(armor.IsWeakened, "충돌 그로기 = 부위파괴 계수 감소");
@@ -87,13 +86,13 @@ namespace DemoLA.Tests
             Assert.AreEqual(1, armor.RemainingStacks);
             Assert.IsFalse(boss.HasTag((int)ETag.State_Groggy), "부위파괴 → 그로기 해제");
             Assert.IsNotNull(boss.ActivePattern);
-            Assert.AreEqual("G2-25", boss.ActivePattern.Definition.PatternId, "부위파괴 → 천상 낙하 반격");
+            Assert.AreEqual(ETag.Pattern_G2_Skyfall, boss.ActivePattern.Definition.PatternTag, "부위파괴 → 천상 낙하 반격");
         }
 
         [Test]
         public void Skyfall_TenSeconds_LethalExceptOuterBand_ThenChargeNext()
         {
-            var skyfall = boss.Definition.GetPattern("G2-25");
+            var skyfall = boss.Definition.GetPattern(ETag.Pattern_G2_Skyfall);
             Assert.AreEqual(10.0f, skyfall.RepeatDuration(), 0.01f, "10초 동안 공중");
             Assert.AreEqual(10.0f, skyfall.Steps[0].StartLeapDuration, 0.01f);
             int bursts = skyfall.Steps.FindAll(s => s.Targeting == EPatternTargeting.EachPlayer).Count;
@@ -106,7 +105,7 @@ namespace DemoLA.Tests
             Assert.IsTrue(HitGeometry.Contains(crash.Area, Vector3.zero, Vector3.forward, new Vector3(16.0f, 0.0f, 0.0f), 0.5f), "맵 안쪽은 즉사 범위");
             Assert.IsFalse(HitGeometry.Contains(crash.Area, Vector3.zero, Vector3.forward, new Vector3(wallInner - 0.6f, 0.0f, 0.0f), 0.5f), "벽 안쪽 가장자리 띠는 안전");
 
-            Assert.IsTrue(boss.TryActivatePattern("G2-25", null));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_Skyfall, null));
             boss.NotifyPatternEnded(boss.ActivePattern, false);
             Assert.GreaterOrEqual(boss.PatternsSinceCharge, 3, "착지 후 다음 패턴은 돌진");
         }
@@ -115,17 +114,17 @@ namespace DemoLA.Tests
         public void ChargeCadence_ThreeOtherPatterns_ReLeapNotCounted()
         {
             Assert.GreaterOrEqual(boss.PatternsSinceCharge, 3, "조우 직후 돌진");
-            boss.NotifyPatternEnded(boss.GetPattern("G2-11"), false);
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_Charge), false);
             Assert.AreEqual(0, boss.PatternsSinceCharge);
-            boss.NotifyPatternEnded(boss.GetPattern("G2-13"), false);
-            boss.NotifyPatternEnded(boss.GetPattern("G2-26"), false);
-            boss.NotifyPatternEnded(boss.GetPattern("G2-21"), false);
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_SwingSlamBurst), false);
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_ReLeap), false);
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_Whirlwind), false);
             Assert.AreEqual(2, boss.PatternsSinceCharge, "재도약은 세지 않는다");
-            boss.NotifyPatternEnded(boss.GetPattern("G2-22"), false);
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_TripleSlash), false);
             Assert.AreEqual(3, boss.PatternsSinceCharge, "다른 패턴 3개 → 돌진 차례");
-            Assert.AreEqual("G2-22", boss.LastEndedPatternId);
-            Assert.IsTrue(boss.Definition.GetPattern("G2-07").IsCharge, "135줄 이후 돌진(G2-07)도 돌진으로 센다");
-            Assert.IsTrue(boss.Definition.GetPattern("G2-07").IsCounterable, "135줄 이후 돌진은 카운터 가능");
+            Assert.AreEqual(ETag.Pattern_G2_TripleSlash, boss.LastEndedPatternTag);
+            Assert.IsTrue(boss.Definition.GetPattern(ETag.Pattern_G2_CounterCharge).IsCharge, "135줄 이후 돌진(Pattern.G2.CounterCharge)도 돌진으로 센다");
+            Assert.IsTrue(boss.Definition.GetPattern(ETag.Pattern_G2_CounterCharge).IsCounterable, "135줄 이후 돌진은 카운터 가능");
         }
 
         [Test]
@@ -142,7 +141,7 @@ namespace DemoLA.Tests
         [Test]
         public void ReLeap_IsCinematic()
         {
-            var leap = boss.Definition.GetPattern("G2-26");
+            var leap = boss.Definition.GetPattern(ETag.Pattern_G2_ReLeap);
             Assert.IsTrue(leap.CinematicLeap);
             Assert.Greater(leap.Steps[0].LeapDuration, 0.0f);
             Assert.IsTrue(leap.IgnoreInPatternCount);
@@ -152,17 +151,17 @@ namespace DemoLA.Tests
         [Test]
         public void ChargeFollowUps_QueuedEvenWhenCrashGroggy()
         {
-            Assert.IsTrue(boss.TryActivatePattern("G2-11", null));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_Charge, null));
             armor.NotifyChargeCrashed(wall());
             Assert.IsTrue(boss.HasTag((int)ETag.State_Groggy), "충돌 그로기로 돌진이 끊김");
-            Assert.AreEqual("G2-23", boss.PeekQueuedPattern(), "그래도 도약 십자 + 추적 휠윈드가 이어진다");
-            Assert.AreEqual("G2-23", boss.ConsumeQueuedPattern());
-            Assert.IsNull(boss.ConsumeQueuedPattern(), "첫 돌진 뒤에도 외곽 이탈 도약(G2-28, 삭제)은 없다");
+            Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.PeekQueuedPattern(), "그래도 도약 십자 + 추적 휠윈드가 이어진다");
+            Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.ConsumeQueuedPattern());
+            Assert.AreEqual(ETag.None, boss.ConsumeQueuedPattern(), "첫 돌진 뒤에도 외곽 이탈 도약(xlsx G2-28, 삭제)은 없다");
 
-            boss.NotifyPatternEnded(boss.GetPattern("G2-11"), true);
-            Assert.AreEqual("G2-23", boss.ConsumeQueuedPattern());
-            Assert.IsNull(boss.ConsumeQueuedPattern(), "두 번째 돌진 뒤에도 G2-23 만");
-            var cross = boss.Definition.GetPattern("G2-23").Steps[0];
+            boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_Charge), true);
+            Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.ConsumeQueuedPattern());
+            Assert.AreEqual(ETag.None, boss.ConsumeQueuedPattern(), "두 번째 돌진 뒤에도 Pattern.G2.LeapSmashWhirlwind 만");
+            var cross = boss.Definition.GetPattern(ETag.Pattern_G2_LeapSmashWhirlwind).Steps[0];
             Assert.AreEqual(4, cross.ArmCount);
             Assert.IsFalse(cross.RandomCrossOrX, "십자 고정");
         }
@@ -170,7 +169,11 @@ namespace DemoLA.Tests
         [Test]
         public void ExitLeap_Removed()
         {
-            Assert.IsNull(boss.Definition.GetPattern("G2-28"), "외곽 이탈 도약(G2-28)은 삭제 — 보스가 외곽에 머물러 공격이 끊겼다");
+            // 외곽 이탈 도약(xlsx G2-28)은 삭제 — 보스가 외곽에 머물러 공격이 끊겼다. 태그도 만들지 않았다.
+            foreach (var pattern in boss.Definition.Patterns)
+            {
+                Assert.IsTrue(pattern == null || pattern.DisplayName.Contains("외곽 이탈") == false, $"{pattern?.TagName} 외곽 이탈 도약은 삭제됨");
+            }
         }
     }
 }

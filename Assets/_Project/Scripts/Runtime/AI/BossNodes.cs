@@ -10,23 +10,23 @@ namespace DemoLA.AI
 {
     /// <summary>지정 패턴을 쓰고 끝날 때까지 기다린다.</summary>
     [Serializable]
-    [StateTreeNodeInfo("DemoLA/Boss", "PatternId 패턴 사용. 끝나면 Succeeded, 쓸 수 없으면 Failed")]
+    [StateTreeNodeInfo("DemoLA/Boss", "PatternTag 패턴 사용. 끝나면 Succeeded, 쓸 수 없으면 Failed")]
     public class UsePatternTask : StateTreeTask
     {
-        [DemoLA.Boss.PatternId] public string PatternId = "G1-06";
+        [PatternTag] public ETag PatternTag = ETag.Pattern_G1_BlinkDoubleClaw;
         public bool WaitForEnd = true;
         [NonSerialized] private BossPatternAbility ability;
 
         public override ETaskStatus EnterState(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            if (boss == null || boss.TryActivatePattern(PatternId, AIContext.PatternTarget(InContext)) == false)
+            if (boss == null || boss.TryActivatePattern(PatternTag, AIContext.PatternTarget(InContext)) == false)
             {
                 return ETaskStatus.Failed;
             }
 
             AIContext.ClearPatternTarget(InContext);
-            ability = boss.GetPattern(PatternId);
+            ability = boss.GetPattern(PatternTag);
             return WaitForEnd == true ? ETaskStatus.Running : ETaskStatus.Succeeded;
         }
 
@@ -37,20 +37,20 @@ namespace DemoLA.AI
 
         public override string Describe()
         {
-            return $"Pattern {PatternId}";
+            return $"Pattern {GameTags.ToTagString(PatternTag)}";
         }
     }
 
     /// <summary>
-    /// 현재 페이즈(또는 PatternIds)에서 쿨다운이 끝났고 사거리 안인 패턴을 가중치로 골라 쓴다.
-    /// 연결 패턴(LinkedPatternId)이나 실패 연쇄가 대기 중이면 그것을 먼저 쓴다.
+    /// 현재 페이즈(또는 PatternTags)에서 쿨다운이 끝났고 사거리 안인 패턴을 가중치로 골라 쓴다.
+    /// 연결 패턴(LinkedPatternTag)이나 실패 연쇄가 대기 중이면 그것을 먼저 쓴다.
     /// </summary>
     [Serializable]
     [StateTreeNodeInfo("DemoLA/Boss", "페이즈 패턴 중 가중치 랜덤 사용 (연결 패턴 우선)")]
     public class UseRandomPatternTask : StateTreeTask
     {
         [Tooltip("비우면 현재 페이즈 + '공통' 페이즈의 패턴")]
-        public List<string> PatternIds = new List<string>();
+        [PatternTag] public List<ETag> PatternTags = new List<ETag>();
         [Tooltip("현재 페이즈 이외에 함께 쓰는 공통 페이즈 (예: G1-공통)")]
         public string CommonPhaseId;
         [Tooltip("돌진 패턴은 랜덤으로 고르지 않는다 (2관문: 돌진은 ChargeDueCondition 상태가 정해진 순서로만 쓴다)")]
@@ -69,7 +69,7 @@ namespace DemoLA.AI
 
             // 지정 대상(SelectTargetTask)이 있으면 그 대상 기준으로 사거리를 본다. 없으면 null 로 넘겨 패턴 규칙 · 어그로에 맡긴다.
             var target = AIContext.PatternTarget(InContext);
-            string queued;
+            ETag queued;
             if (boss.TryActivateQueuedPattern(target, out queued) == true)
             {
                 AIContext.ClearPatternTarget(InContext);
@@ -77,7 +77,7 @@ namespace DemoLA.AI
                 return ETaskStatus.Running;
             }
 
-            if (queued != null)
+            if (queued != ETag.None)
             {
                 // 이어질 패턴이 있는데 지금 못 쓴다 → 다른 패턴으로 새치기하지 않고 다음 판단을 기다린다.
                 return ETaskStatus.Failed;
@@ -89,7 +89,7 @@ namespace DemoLA.AI
             }
 
             float distance = RandomPatternCandidates.Distance(InContext, boss, target);
-            RandomPatternCandidates.Collect(boss, PatternIds, CommonPhaseId, ExcludeCharges, distance, candidates);
+            RandomPatternCandidates.Collect(boss, PatternTags, CommonPhaseId, ExcludeCharges, distance, candidates);
             float total = 0.0f;
             for (int i = 0; i < candidates.Count; ++i)
             {
@@ -105,7 +105,7 @@ namespace DemoLA.AI
                     continue;
                 }
 
-                if (boss.TryActivatePattern(candidates[i].Definition.PatternId, target) == true)
+                if (boss.TryActivatePattern(candidates[i].Definition.PatternTag, target) == true)
                 {
                     AIContext.ClearPatternTarget(InContext);
                     ability = candidates[i];
@@ -123,7 +123,7 @@ namespace DemoLA.AI
 
         public override string Describe()
         {
-            return PatternIds != null && PatternIds.Count > 0 ? $"Random of {PatternIds.Count}" : $"Random (phase + {CommonPhaseId})";
+            return PatternTags != null && PatternTags.Count > 0 ? $"Random of {PatternTags.Count}" : $"Random (phase + {CommonPhaseId})";
         }
     }
 
@@ -138,23 +138,26 @@ namespace DemoLA.AI
         }
 
         /// <summary>쿨다운이 끝났고 사거리(MinRange~MaxRange) 안인 랜덤 선택 가능 패턴.</summary>
-        public static void Collect(BossActor InBoss, List<string> InPatternIds, string InCommonPhaseId, bool InExcludeCharges, float InDistance, List<BossPatternAbility> OutCandidates)
+        [ThreadStatic] private static List<ETag> phaseTags;
+
+        public static void Collect(BossActor InBoss, List<ETag> InPatternTags, string InCommonPhaseId, bool InExcludeCharges, float InDistance, List<BossPatternAbility> OutCandidates)
         {
             OutCandidates.Clear();
-            List<string> ids = InPatternIds;
+            List<ETag> ids = InPatternTags;
             if (ids == null || ids.Count == 0)
             {
-                ids = new List<string>();
+                ids = phaseTags ??= new List<ETag>();
+                ids.Clear();
                 var phase = InBoss.CurrentPhase;
                 if (phase != null)
                 {
-                    ids.AddRange(phase.PatternIds);
+                    ids.AddRange(phase.PatternTags);
                 }
 
                 var common = InBoss.Definition.GetPhase(InCommonPhaseId);
                 if (common != null)
                 {
-                    ids.AddRange(common.PatternIds);
+                    ids.AddRange(common.PatternTags);
                 }
             }
 
@@ -196,7 +199,7 @@ namespace DemoLA.AI
     public class HasRandomPatternCondition : StateTreeCondition
     {
         [Tooltip("비우면 현재 페이즈 + CommonPhaseId 페이즈의 패턴")]
-        public List<string> PatternIds = new List<string>();
+        [PatternTag] public List<ETag> PatternTags = new List<ETag>();
         public string CommonPhaseId;
         public bool ExcludeCharges;
         [NonSerialized] private List<BossPatternAbility> buffer;
@@ -211,13 +214,13 @@ namespace DemoLA.AI
 
             buffer ??= new List<BossPatternAbility>();
             float distance = RandomPatternCandidates.Distance(InContext, boss, AIContext.PatternTarget(InContext));
-            RandomPatternCandidates.Collect(boss, PatternIds, CommonPhaseId, ExcludeCharges, distance, buffer);
+            RandomPatternCandidates.Collect(boss, PatternTags, CommonPhaseId, ExcludeCharges, distance, buffer);
             return buffer.Count > 0;
         }
 
         public override string Describe()
         {
-            return PatternIds != null && PatternIds.Count > 0 ? $"Has random of {PatternIds.Count}" : $"Has random (phase + {CommonPhaseId})";
+            return PatternTags != null && PatternTags.Count > 0 ? $"Has random of {PatternTags.Count}" : $"Has random (phase + {CommonPhaseId})";
         }
     }
 
@@ -225,7 +228,8 @@ namespace DemoLA.AI
     [StateTreeNodeInfo("DemoLA/Boss", "기믹 시작. WaitForCompletion 이면 결과에 따라 Succeeded/Failed")]
     public class StartGimmickTask : StateTreeTask
     {
-        public string GimmickId = "G1-01";
+        [Tooltip("기믹 = 그 기믹 패턴의 태그")]
+        [PatternTag] public ETag GimmickTag = ETag.Pattern_G1_OrbStagger;
         public bool WaitForCompletion = true;
         public bool ResetFirst = true;
         [NonSerialized] private BossGimmick gimmick;
@@ -233,7 +237,7 @@ namespace DemoLA.AI
         public override ETaskStatus EnterState(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            gimmick = boss != null ? boss.GetGimmick(GimmickId) : null;
+            gimmick = boss != null ? boss.GetGimmick(GimmickTag) : null;
             if (gimmick == null)
             {
                 return ETaskStatus.Failed;
@@ -244,7 +248,7 @@ namespace DemoLA.AI
                 gimmick.ResetGimmick();
             }
 
-            if (boss.StartGimmick(GimmickId) == false)
+            if (boss.StartGimmick(GimmickTag) == false)
             {
                 return ETaskStatus.Failed;
             }
@@ -272,7 +276,7 @@ namespace DemoLA.AI
 
         public override string Describe()
         {
-            return $"Gimmick {GimmickId}{(WaitForCompletion == true ? string.Empty : " (async)")}";
+            return $"Gimmick {GameTags.ToTagString(GimmickTag)}{(WaitForCompletion == true ? string.Empty : " (async)")}";
         }
     }
 
@@ -319,7 +323,7 @@ namespace DemoLA.AI
     }
 
     /// <summary>
-    /// 이어질 패턴이 대기 중이고 지금 쓸 수 있는가 (FollowUpPatternIds · LinkedPatternId).
+    /// 이어질 패턴이 대기 중이고 지금 쓸 수 있는가 (FollowUpPatternTags · LinkedPatternTag).
     /// 패턴 간격(PatternGap)이 지났고 그로기가 아닐 때만 참 — 그로기가 풀린 뒤 이어서 쓴다.
     /// </summary>
     [Serializable]
@@ -329,8 +333,8 @@ namespace DemoLA.AI
         protected override bool Test(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            string next = boss != null ? boss.PeekQueuedPattern() : null;
-            return next != null && boss.IsPatternGapElapsed == true && boss.HasTag((int)ETag.State_Groggy) == false;
+            ETag next = boss != null ? boss.PeekQueuedPattern() : ETag.None;
+            return next != ETag.None && boss.IsPatternGapElapsed == true && boss.HasTag((int)ETag.State_Groggy) == false;
         }
 
         public override string Describe()
@@ -350,7 +354,7 @@ namespace DemoLA.AI
         {
             ability = null;
             var boss = AIContext.Boss(InContext);
-            string next;
+            ETag next;
             if (boss == null || boss.TryActivateQueuedPattern(AIContext.PatternTarget(InContext), out next) == false)
             {
                 return ETaskStatus.Failed;

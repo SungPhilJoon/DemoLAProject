@@ -13,17 +13,18 @@ namespace DemoLA.Boss
     public class BossPatternDefinition : ScriptableObject
     {
         [Header("xlsx 패턴목록")]
-        public string PatternId = "G1-01";
+        [Tooltip("패턴 ID = GameplayTag (Pattern.G1.OrbStagger). 패턴 조회 · 대기열 · StateTree 비교는 모두 이 태그 값으로 한다")]
+        [PatternTag] public ETag PatternTag = ETag.None;
         public string PhaseId = "G1-P1";
         public string DisplayName = "Pattern";
         public EPatternCategory Category;
         public EPatternResponse Response;
         public string ShapeText;
-        public string LinkedPatternId;
+        [PatternTag] public ETag LinkedPatternTag = ETag.None;
         [Tooltip("이 패턴이 끝나면(그로기 · 취소로 끝나도) 이 순서로 이어서 쓴다. StateTree 의 '연결 패턴' 상태가 다른 상태보다 먼저 처리한다")]
-        public List<string> FollowUpPatternIds = new List<string>();
-        [Tooltip("전투에서 이 패턴이 처음 끝났을 때만 FollowUpPatternIds 뒤에 이어서 쓴다 (도입 연출)")]
-        public List<string> FirstTimeFollowUpPatternIds = new List<string>();
+        [PatternTag] public List<ETag> FollowUpPatternTags = new List<ETag>();
+        [Tooltip("전투에서 이 패턴이 처음 끝났을 때만 FollowUpPatternTags 뒤에 이어서 쓴다 (도입 연출)")]
+        [PatternTag] public List<ETag> FirstTimeFollowUpPatternTags = new List<ETag>();
         public EEvidenceConfidence Confidence = EEvidenceConfidence.PublicGuide;
         public EDamageTier DamageTier;
         [TextArea(2, 6)] public string Notes;
@@ -76,6 +77,12 @@ namespace DemoLA.Boss
         [UnityEngine.Serialization.FormerlySerializedAs("CounterEdited")]
         public bool ToolEdited;
 
+        /// <summary>GameplayTag 표기 (Pattern.G1.OrbStagger). 로그 · UI 표시용.</summary>
+        public string TagName
+        {
+            get { return GameTags.ToTagString(PatternTag); }
+        }
+
         /// <summary>돌진 패턴인가 (보스가 실제로 달려가며 몸으로 판정하는 단계가 있다).</summary>
         public bool IsCharge
         {
@@ -122,7 +129,7 @@ namespace DemoLA.Boss
         public float StaggerTime = 10.0f;
         public EStaggerFailOutcome StaggerFailOutcome = EStaggerFailOutcome.Wipe;
         public EDamageTier StaggerFailDamage = EDamageTier.Lethal;
-        public string StaggerFailChainPatternId;
+        [PatternTag] public ETag StaggerFailChainPatternTag = ETag.None;
         public float GroggyOnStaggerSuccess = 5.0f;
 
         /// <summary>회차 1번의 길이 (초): 단계마다 StartDelay + 전조 + 도약 + 돌진. 카운터 구간 · 타임라인 표시에 쓴다.</summary>

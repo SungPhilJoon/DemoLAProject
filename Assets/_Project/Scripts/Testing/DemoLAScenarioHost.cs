@@ -168,7 +168,7 @@ namespace DemoLA.Testing
                     brain.Stop();
                 }
 
-                // 생성 직후 AI 가 이미 고른 패턴(예: 1관문 G1-05 분열)이 있으면 취소한다.
+                // 생성 직후 AI 가 이미 고른 패턴(예: 1관문 Pattern.G1.Split 분열)이 있으면 취소한다.
                 Boss.Asc.CancelAbilitiesWithTags(GameTags.Container(ETag.Ability_BossPattern), null);
             }
 
@@ -288,14 +288,14 @@ namespace DemoLA.Testing
                 return;
             }
 
-            context.Recorder.Record("Pattern.Started", 1.0f, pattern.Definition.PatternId);
-            context.Recorder.Record($"Pattern.Started.{pattern.Definition.PatternId}", 1.0f);
+            context.Recorder.Record("Pattern.Started", 1.0f, pattern.Definition.TagName);
+            context.Recorder.Record($"Pattern.Started.{pattern.Definition.TagName}", 1.0f);
         }
 
         private void handlePatternEnded(BossPatternAbility InAbility, bool InCancelled)
         {
-            context.Recorder.Record("Pattern.Ended", InCancelled ? 1.0f : 0.0f, InAbility.Definition.PatternId);
-            context.Recorder.Record($"Pattern.Ended.{InAbility.Definition.PatternId}", InCancelled ? 1.0f : 0.0f);
+            context.Recorder.Record("Pattern.Ended", InCancelled ? 1.0f : 0.0f, InAbility.Definition.TagName);
+            context.Recorder.Record($"Pattern.Ended.{InAbility.Definition.TagName}", InCancelled ? 1.0f : 0.0f);
         }
 
         // ------------------------------------------------------------------ probes

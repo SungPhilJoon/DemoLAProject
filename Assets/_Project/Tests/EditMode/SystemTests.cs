@@ -47,13 +47,13 @@ namespace DemoLA.Tests
             Assert.Greater(tables.Engraving.Count, 20);
             Assert.AreEqual(10, tables.Gem.Count);
             Assert.Greater(tables.BattleItem.Count, 3);
-            Assert.AreEqual(9, tables.BossPhase.All.First(p => p.PhaseId == "G2-P2").PatternIds.Length, "xlsx G2-P2 패턴 9개 ('|' 배열)");
+            Assert.AreEqual(9, tables.BossPhase.All.First(p => p.PhaseId == "G2-P2").PatternTags.Length, "xlsx G2-P2 패턴 9개 ('|' 배열)");
         }
 
         [Test]
         public void MeasuredRow_OverridesPresetTimings()
         {
-            var row = new BossPatternRow { PatternId = "G1-11", Name = "t", Category = "일반 공격", TelegraphTime = 2.0f, Recovery = 0.4f, AreaScale = 2.0f, Measured = true };
+            var row = new BossPatternRow { PatternTag = "Pattern.G1.SpinKick", Name = "t", Category = "일반 공격", TelegraphTime = 2.0f, Recovery = 0.4f, AreaScale = 2.0f, Measured = true };
             var pattern = BossPatternCsv.CreatePattern(row);
             PatternPresets.Apply(pattern);
             float radius = pattern.Steps[0].Area.Radius;
@@ -210,7 +210,7 @@ namespace DemoLA.Tests
             go.AddComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
             go.AddComponent<ActorMotor>();
             var orbs = go.AddComponent<OrbAlternationGimmick>();
-            orbs.GimmickId = "G1-01";
+            orbs.GimmickTag = ETag.Pattern_G1_OrbStagger;
             var boss = go.AddComponent<BossActor>();
             var def = TestWorld.Database.GetBoss("Gate1");
             boss.Initialize(def, 4);

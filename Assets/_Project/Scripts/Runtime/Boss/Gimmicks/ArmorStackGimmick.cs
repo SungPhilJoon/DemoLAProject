@@ -9,11 +9,11 @@ using UnityEngine;
 namespace DemoLA.Boss
 {
     /// <summary>
-    /// G2-01 갑옷 부위파괴 (돌진 유도) — 135줄 전에 갑옷 2중첩을 부위파괴로 벗긴다.
+    /// Pattern.G2.ArmorBreak 갑옷 부위파괴 (돌진 유도) — 135줄 전에 갑옷 2중첩을 부위파괴로 벗긴다.
     ///  - 갑옷: 중첩당 받는 피해 감소.
-    ///  - 부위파괴 수치(DestructionAccum)는 평소에도 쌓이지만, 돌진(G2-11 · G2-07)이 벽이나 기둥에 부딪혀 걸린 그로기 동안에는
+    ///  - 부위파괴 수치(DestructionAccum)는 평소에도 쌓이지만, 돌진(Pattern.G2.Charge · Pattern.G2.CounterCharge)이 벽이나 기둥에 부딪혀 걸린 그로기 동안에는
     ///    CrashWeaknessMultiplier 배로 쌓인다 (= 부위파괴 계수가 낮아짐 → 그로기 때 노려야 쉽다).
-    ///  - 누적이 DestructionPerStack 에 이르면 갑옷 1중첩 파괴 → 그로기를 풀고 즉시 반격 패턴(SkyfallPatternId: 10초 도약 →
+    ///  - 누적이 DestructionPerStack 에 이르면 갑옷 1중첩 파괴 → 그로기를 풀고 즉시 반격 패턴(SkyfallPatternTag: 10초 도약 →
     ///    1초마다 플레이어 위치 폭발 → 외곽 띠를 뺀 전체 즉사 낙하)을 쓴다. 반격이 끝나면(착지) 다음 패턴은 돌진 (ChargeNextAfter).
     ///  - 보스 체력이 LockHpLine 줄 이하가 되면 더 이상 부위파괴를 할 수 없다 (남은 갑옷은 그대로).
     /// 이 기믹은 전투 시작부터 패시브처럼 동작한다 (Begin 이후 끝날 때까지).
@@ -29,7 +29,7 @@ namespace DemoLA.Boss
         public float CrashWeaknessMultiplier = 1.5f;
         [Tooltip("돌진이 벽 · 기둥에 부딪혔을 때 그로기 (초)")]
         public float GroggyTime = 6.0f;
-        public string SkyfallPatternId = "G2-25";
+        [PatternTag] public ETag SkyfallPatternTag = ETag.Pattern_G2_Skyfall;
         [Tooltip("이 체력 줄 이하에서는 부위파괴 불가")]
         public float LockHpLine = 135.0f;
 
@@ -138,9 +138,9 @@ namespace DemoLA.Boss
             // 진행 중인 패턴 · 이어질 패턴을 끊고 바로 반격한다 (반격 착지 후 다시 돌진부터).
             Boss.Asc.CancelAbilitiesWithTags(GameTags.Container(ETag.Ability_BossPattern), null);
             Boss.ClearQueuedPatterns();
-            if (Boss.TryActivatePattern(SkyfallPatternId, null) == false)
+            if (Boss.TryActivatePattern(SkyfallPatternTag, null) == false)
             {
-                Boss.QueuePattern(SkyfallPatternId);
+                Boss.QueuePattern(SkyfallPatternTag);
             }
 
             if (remaining <= 0)

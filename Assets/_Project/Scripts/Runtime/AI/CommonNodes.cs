@@ -185,17 +185,17 @@ namespace DemoLA.AI
     [StateTreeNodeInfo("DemoLA", "패턴 쿨다운이 끝났는가")]
     public class PatternReadyCondition : StateTreeCondition
     {
-        [DemoLA.Boss.PatternId] public string PatternId = "G1-06";
+        [PatternTag] public ETag PatternTag = ETag.Pattern_G1_BlinkDoubleClaw;
 
         protected override bool Test(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            return boss != null && boss.IsPatternReady(PatternId) == true;
+            return boss != null && boss.IsPatternReady(PatternTag) == true;
         }
 
         public override string Describe()
         {
-            return $"Ready {PatternId}";
+            return $"Ready {GameTags.ToTagString(PatternTag)}";
         }
     }
 
@@ -203,7 +203,7 @@ namespace DemoLA.AI
     [StateTreeNodeInfo("DemoLA", "기믹 상태 비교")]
     public class GimmickStateCondition : StateTreeCondition
     {
-        public string GimmickId = "G1-01";
+        [PatternTag] public ETag GimmickTag = ETag.Pattern_G1_OrbStagger;
         public EGimmickState State = EGimmickState.Running;
         [Tooltip("자신 대신 대상의 기믹을 본다")]
         public bool CheckTarget;
@@ -211,13 +211,13 @@ namespace DemoLA.AI
         protected override bool Test(StateTreeContext InContext)
         {
             var boss = CheckTarget == true ? AIContext.Target(InContext) as BossActor : AIContext.Boss(InContext);
-            var gimmick = boss != null ? boss.GetGimmick(GimmickId) : null;
+            var gimmick = boss != null ? boss.GetGimmick(GimmickTag) : null;
             return gimmick != null && gimmick.State == State;
         }
 
         public override string Describe()
         {
-            return $"Gimmick {GimmickId} == {State}";
+            return $"Gimmick {GameTags.ToTagString(GimmickTag)} == {State}";
         }
     }
 

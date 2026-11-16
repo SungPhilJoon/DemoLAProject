@@ -72,7 +72,7 @@ namespace DemoLA.Boss
         Wipe = 0,
         /// <summary>전원에게 FailDamageTier 피해.</summary>
         HeavyDamage = 1,
-        /// <summary>FailChainPatternId 패턴을 이어서 쓴다 (G1-22).</summary>
+        /// <summary>FailChainPatternId 패턴을 이어서 쓴다 (Pattern.G1.StaggerFailChain).</summary>
         ChainPattern = 2,
     }
 
@@ -149,12 +149,12 @@ namespace DemoLA.Boss
         [Header("도약 (LeapDuration > 0): 장판 중심으로 뛰어올라 착지하며 판정")]
         public float LeapDuration;
         public float LeapHeight = 4.0f;
-        [Tooltip("이 단계가 시작되는 순간 장판 중심으로 이 시간(초) 동안 도약을 시작한다 (LeapHeight 높이). 뒤 단계들이 공중에 있는 동안 진행되고, 착지 시각에 맞춰 마지막 단계의 판정을 둔다 (G2-25 천상 낙하)")]
+        [Tooltip("이 단계가 시작되는 순간 장판 중심으로 이 시간(초) 동안 도약을 시작한다 (LeapHeight 높이). 뒤 단계들이 공중에 있는 동안 진행되고, 착지 시각에 맞춰 마지막 단계의 판정을 둔다 (Pattern.G2.Skyfall 천상 낙하)")]
         public float StartLeapDuration;
         [Tooltip("판정 순간 크게 터지는 연출 (충격파 · 강한 화면 흔들림)")]
         public bool BigImpact;
 
-        [Header("엄폐 기둥 (G2-27)")]
+        [Header("엄폐 기둥 (Pattern.G2.PillarCoverDrop)")]
         [Tooltip("이 단계가 시작될 때 경기장 중심 기준 12 · 3 · 6 · 9시 방향에 엄폐 기둥 4개가 솟아난다 (패턴이 끝나면 사라짐)")]
         public bool SpawnCoverPillars;
         public float CoverPillarDistance = 10.0f;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DemoLA.AI;
 using DemoLA.Content;
+using DemoLA.Core;
 using Framework.Editor;
 using Framework.StateTree;
 using UnityEditor;
@@ -52,7 +53,7 @@ namespace DemoLA.Editor
                     state.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 30.0f });
                     state.EnterConditions.Add(new FlagCondition { Key = EAIBlackboard.Flag8, Invert = true });
                     state.Tasks.Add(new SetFlagTask { Key = EAIBlackboard.Flag8, CompleteImmediately = false });
-                    state.Tasks.Add(new UsePatternTask { PatternId = "G1-01" });
+                    state.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G1_OrbStagger });
                     break;
                 case 1:
                     var attack = InAsset.AddState("패턴 공격", InParentId);
@@ -71,16 +72,16 @@ namespace DemoLA.Editor
                     break;
                 case 3:
                     var targeted = InAsset.AddState("대상 지정 → 패턴", InParentId);
-                    targeted.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-24" });
+                    targeted.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_AxeChopCounter });
                     targeted.Tasks.Add(new SelectTargetTask { Selector = new DemoLA.Boss.NearestSelector(), ApplyTo = ETargetApply.NextPattern });
-                    targeted.Tasks.Add(new UsePatternTask { PatternId = "G2-24" });
+                    targeted.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_AxeChopCounter });
                     break;
                 case 4:
                     var poke = InAsset.AddState("원거리 견제 돌진", InParentId);
-                    poke.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-11" });
+                    poke.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_Charge });
                     poke.EnterConditions.Add(new TargetRuleCondition { Selector = new DemoLA.Boss.FarthestSelector(), Op = ECompareOp.GreaterOrEqual, Distance = 8.0f });
                     poke.Tasks.Add(new SelectTargetTask { Selector = new DemoLA.Boss.FarthestSelector(), ApplyTo = ETargetApply.NextPattern });
-                    poke.Tasks.Add(new UsePatternTask { PatternId = "G2-11" });
+                    poke.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_Charge });
                     break;
             }
         }
@@ -126,25 +127,25 @@ namespace DemoLA.Editor
                     }
                 }
 
-                var used = new HashSet<string>();
+                var used = new HashSet<ETag>();
                 foreach (var state in InAsset.States)
                 {
                     foreach (var task in state.Tasks)
                     {
                         var use = task as UsePatternTask;
-                        if (use == null || used.Add(use.PatternId) == false)
+                        if (use == null || used.Add(use.PatternTag) == false)
                         {
                             continue;
                         }
 
-                        var pattern = boss.GetPattern(use.PatternId);
+                        var pattern = boss.GetPattern(use.PatternTag);
                         using (new EditorGUILayout.HorizontalScope())
                         {
                             string summary = pattern == null ? "⚠ 보스에 없는 패턴" : $"{pattern.DisplayName} · 타격 {pattern.Steps.Count}{(pattern.IsCounterable ? $" · ◆ {pattern.Steps.FindAll(s => s.Counterable).Count}" : string.Empty)} · {DemoLA.Boss.PatternTargeting.Describe(pattern)}";
-                            EditorGUILayout.LabelField($"  {use.PatternId}", summary, EditorStyles.miniLabel);
+                            EditorGUILayout.LabelField($"  {GameTags.ToTagString(use.PatternTag)}", summary, EditorStyles.miniLabel);
                             if (pattern != null && GUILayout.Button("GAS", EditorStyles.miniButton, GUILayout.Width(44)) == true)
                             {
-                                Gas.GasToolWindow.OpenPattern(use.PatternId);
+                                Gas.GasToolWindow.OpenPattern(use.PatternTag);
                             }
                         }
                     }

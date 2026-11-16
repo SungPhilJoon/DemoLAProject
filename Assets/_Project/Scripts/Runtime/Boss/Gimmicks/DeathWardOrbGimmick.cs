@@ -8,8 +8,8 @@ using UnityEngine;
 namespace DemoLA.Boss
 {
     /// <summary>
-    /// G2-02 방어 구슬 획득. 구조물(첨탑) 파괴 후 구조물당 OrbsPerStructure 개 생성.
-    /// 1인 1개 획득하면 Buff_DeathWard — 이후 ConsumesDeathWard 패턴(G2-03) 1회를 막아 준다.
+    /// Pattern.G2.WardOrb 방어 구슬 획득. 구조물(첨탑) 파괴 후 구조물당 OrbsPerStructure 개 생성.
+    /// 1인 1개 획득하면 Buff_DeathWard — 이후 ConsumesDeathWard 패턴(Pattern.G2.LethalFieldDouble) 1회를 막아 준다.
     /// 구조물을 무엇이 파괴하는지(보스 돌진 / 플레이어)는 미정이라 기믹 시작 시 모두 파괴한다.
     /// </summary>
     public class DeathWardOrbGimmick : BossGimmick

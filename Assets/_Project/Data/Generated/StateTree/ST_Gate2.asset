@@ -47,7 +47,7 @@ MonoBehaviour:
     - rid: 7158115549729260325
     Transitions: []
   - Id: 4
-    Name: "G2-01 \uAC11\uC637 \uC2DC\uC791"
+    Name: "Pattern.G2.ArmorBreak \uAC11\uC637 \uC2DC\uC791"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -59,7 +59,7 @@ MonoBehaviour:
     - rid: 7158115549729260328
     Transitions: []
   - Id: 5
-    Name: "G2-02 \uBC29\uC5B4 \uAD6C\uC2AC (131\uC904)"
+    Name: "Pattern.G2.WardOrb \uBC29\uC5B4 \uAD6C\uC2AC (131\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
     - rid: 7158115549729260332
     Transitions: []
   - Id: 6
-    Name: "G2-03 \uC989\uC0AC \uC7A5\uD310 2\uC5F0\uC18D (130\uC904)"
+    Name: "Pattern.G2.LethalFieldDouble \uC989\uC0AC \uC7A5\uD310 2\uC5F0\uC18D (130\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -97,7 +97,7 @@ MonoBehaviour:
     - rid: 7158115549729260339
     Transitions: []
   - Id: 8
-    Name: "G2-05 \uC9C0\uD615 \uD30C\uAD34 1\uCC28 (88\uC904)"
+    Name: "Pattern.G2.TerrainBreakHalf \uC9C0\uD615 \uD30C\uAD34 1\uCC28 (88\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
     - rid: 7158115549729260343
     Transitions: []
   - Id: 9
-    Name: "G2-07 \uCE74\uC6B4\uD130 \uB3CC\uC9C4 (65\uC904)"
+    Name: "Pattern.G2.CounterCharge \uCE74\uC6B4\uD130 \uB3CC\uC9C4 (65\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
     - rid: 7158115549729260347
     Transitions: []
   - Id: 10
-    Name: "G2-06 \uC9C0\uD615 \uD30C\uAD34 2\uCC28 (30\uC904)"
+    Name: "Pattern.G2.TerrainBreakCenter \uC9C0\uD615 \uD30C\uAD34 2\uCC28 (30\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
     - rid: 7158115549729260351
     Transitions: []
   - Id: 11
-    Name: "G2-09 \uC5F0\uC18D \uD0C0\uACA9 (16\uC904)"
+    Name: "Pattern.G2.FootFieldBarrage \uC5F0\uC18D \uD0C0\uACA9 (16\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
     - rid: 7158115549729260358
     Transitions: []
   - Id: 13
-    Name: "\uC870\uC6B0 \uD720\uC708\uB4DC (G2-21, 1\uD68C)"
+    Name: "\uC870\uC6B0 \uD720\uC708\uB4DC (Pattern.G2.Whirlwind, 1\uD68C)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -174,7 +174,7 @@ MonoBehaviour:
     - rid: 7158115549729260362
     Transitions: []
   - Id: 14
-    Name: "\uC5F0\uACB0 \uD328\uD134 (\uB3CC\uC9C4 \u2192 G2-23)"
+    Name: "\uC5F0\uACB0 \uD328\uD134 (\uB3CC\uC9C4 \u2192 Pattern.G2.LeapSmashWhirlwind)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -216,7 +216,7 @@ MonoBehaviour:
     Transitions: []
   - Id: 17
     Name: "\uCE74\uC6B4\uD130 \uB3CC\uC9C4 (135\uC904 \uC774\uD6C4: \uD328\uD134
-      3\uAC1C\uB9C8\uB2E4 G2-07)"
+      3\uAC1C\uB9C8\uB2E4 Pattern.G2.CounterCharge)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -229,7 +229,7 @@ MonoBehaviour:
     - rid: 7158115549729260377
     Transitions: []
   - Id: 18
-    Name: "\uAE30\uB465 \uC5C4\uD3D0 \uB099\uD558 (135\uC904 \uC774\uD6C4 G2-27)"
+    Name: "\uAE30\uB465 \uC5C4\uD3D0 \uB099\uD558 (135\uC904 \uC774\uD6C4 Pattern.G2.PillarCoverDrop)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -241,7 +241,7 @@ MonoBehaviour:
     - rid: 7158115549729260380
     Transitions: []
   - Id: 19
-    Name: "\uB808\uC774\uC800 \uACAC\uC81C (G2-16 \u2192 \uC704\uD611 2\uC704)"
+    Name: "\uB808\uC774\uC800 \uACAC\uC81C (Pattern.G2.TrackingLaser \u2192 \uC704\uD611 2\uC704)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -358,7 +358,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G2-01
+        GimmickTag: 251
         WaitForCompletion: 0
         ResetFirst: 1
     - rid: 7158115549729260329
@@ -387,7 +387,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G2-02
+        GimmickTag: 252
         WaitForCompletion: 1
         ResetFirst: 1
     - rid: 7158115549729260333
@@ -416,7 +416,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-03
+        PatternTag: 253
         WaitForEnd: 1
     - rid: 7158115549729260337
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -464,7 +464,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G2-05
+        GimmickTag: 255
         WaitForCompletion: 1
         ResetFirst: 1
     - rid: 7158115549729260344
@@ -493,7 +493,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-07
+        PatternTag: 257
         WaitForEnd: 1
     - rid: 7158115549729260348
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -521,7 +521,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G2-06
+        GimmickTag: 256
         WaitForCompletion: 1
         ResetFirst: 1
     - rid: 7158115549729260352
@@ -550,7 +550,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-09
+        PatternTag: 259
         WaitForEnd: 1
     - rid: 7158115549729260356
       type: {class: FlagCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -585,7 +585,7 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-21
+        PatternTag: 271
     - rid: 7158115549729260361
       type: {class: SetFlagTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
@@ -597,7 +597,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-21
+        PatternTag: 271
         WaitForEnd: 1
     - rid: 7158115549729260363
       type: {class: HasQueuedPatternCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -623,7 +623,7 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 1
-        PatternId: G2-26
+        PatternTag: 276
         RequireAnyPattern: 1
     - rid: 7158115549729260367
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -631,12 +631,12 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-26
+        PatternTag: 276
     - rid: 7158115549729260368
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-26
+        PatternTag: 276
         WaitForEnd: 1
     - rid: 7158115549729260369
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -659,7 +659,7 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-11
+        PatternTag: 261
     - rid: 7158115549729260372
       type: {class: SelectTargetTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
@@ -675,7 +675,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-11
+        PatternTag: 261
         WaitForEnd: 1
     - rid: 7158115549729260374
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -698,12 +698,12 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-07
+        PatternTag: 257
     - rid: 7158115549729260377
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-07
+        PatternTag: 257
         WaitForEnd: 1
     - rid: 7158115549729260378
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -719,12 +719,12 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-27
+        PatternTag: 277
     - rid: 7158115549729260380
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-27
+        PatternTag: 277
         WaitForEnd: 1
     - rid: 7158115549729260381
       type: {class: PatternReadyCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -732,7 +732,7 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternId: G2-16
+        PatternTag: 266
     - rid: 7158115549729260382
       type: {class: TargetRuleCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
@@ -766,7 +766,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G2-16
+        PatternTag: 266
         WaitForEnd: 1
     - rid: 7158115549729260386
       type: {class: PhaseCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -797,14 +797,14 @@ MonoBehaviour:
       type: {class: UseRandomPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternIds: []
+        PatternTags: []
         CommonPhaseId: "G2-\uACF5\uD1B5"
         ExcludeCharges: 0
     - rid: 7158115549729260390
       type: {class: UseRandomPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternIds: []
+        PatternTags: []
         CommonPhaseId: "G2-\uACF5\uD1B5"
         ExcludeCharges: 1
     - rid: 7158115549729260391
@@ -845,6 +845,6 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternIds: []
+        PatternTags: []
         CommonPhaseId: "G2-\uACF5\uD1B5"
         ExcludeCharges: 1

@@ -18,12 +18,12 @@ namespace DemoLA.Boss
     {
         private const int PatternAbilityIdBase = 50000;
 
-        private readonly Dictionary<string, BossPatternAbility> patterns = new Dictionary<string, BossPatternAbility>();
+        private readonly Dictionary<ETag, BossPatternAbility> patterns = new Dictionary<ETag, BossPatternAbility>();
         private readonly Dictionary<CombatActor, float> threat = new Dictionary<CombatActor, float>();
-        private readonly Dictionary<string, BossGimmick> gimmicks = new Dictionary<string, BossGimmick>();
+        private readonly Dictionary<ETag, BossGimmick> gimmicks = new Dictionary<ETag, BossGimmick>();
         private readonly List<CombatActor> playerBuffer = new List<CombatActor>();
-        private readonly List<string> queuedPatterns = new List<string>();
-        private readonly HashSet<string> endedPatterns = new HashSet<string>();
+        private readonly List<ETag> queuedPatterns = new List<ETag>();
+        private readonly HashSet<ETag> endedPatterns = new HashSet<ETag>();
         private int lastHpLine;
         private float hpPerLine = 1.0f;
         private CombatActor lockedTarget;
@@ -57,7 +57,7 @@ namespace DemoLA.Boss
         public event Action<string> OnPhaseChanged;
         public event Action<BossPatternAbility, bool> OnPatternEnded;
 
-        public IReadOnlyDictionary<string, BossPatternAbility> Patterns
+        public IReadOnlyDictionary<ETag, BossPatternAbility> Patterns
         {
             get { return patterns; }
         }
@@ -114,13 +114,13 @@ namespace DemoLA.Boss
             int index = 0;
             foreach (var pattern in InDefinition.Patterns)
             {
-                if (pattern == null || patterns.ContainsKey(pattern.PatternId) == true)
+                if (pattern == null || pattern.PatternTag == ETag.None || patterns.ContainsKey(pattern.PatternTag) == true)
                 {
                     continue;
                 }
 
                 var ability = GrantAbility(new BossPatternAbility(pattern, PatternAbilityIdBase + index));
-                patterns.Add(pattern.PatternId, ability);
+                patterns.Add(pattern.PatternTag, ability);
                 index += 1;
             }
 
@@ -128,9 +128,9 @@ namespace DemoLA.Boss
             {
                 gimmick.Bind(this);
                 gimmick.ApplyPartyScale(PartyScale);
-                if (string.IsNullOrEmpty(gimmick.GimmickId) == false)
+                if (gimmick.GimmickTag != ETag.None)
                 {
-                    gimmicks[gimmick.GimmickId] = gimmick;
+                    gimmicks[gimmick.GimmickTag] = gimmick;
                 }
             }
 
@@ -160,10 +160,10 @@ namespace DemoLA.Boss
 
         // ------------------------------------------------------------------ patterns
 
-        public BossPatternAbility GetPattern(string InPatternId)
+        public BossPatternAbility GetPattern(ETag InPatternTag)
         {
             BossPatternAbility ability;
-            return InPatternId != null && patterns.TryGetValue(InPatternId, out ability) == true ? ability : null;
+            return InPatternTag != ETag.None && patterns.TryGetValue(InPatternTag, out ability) == true ? ability : null;
         }
 
         /// <summary>패턴 간 최소 간격(PatternGap) · 전투 시작 대기(OpeningDelay)가 지났는가.</summary>
@@ -172,23 +172,23 @@ namespace DemoLA.Boss
             get { return Time.time >= nextPatternTime; }
         }
 
-        public bool IsPatternReady(string InPatternId)
+        public bool IsPatternReady(ETag InPatternTag)
         {
-            var ability = GetPattern(InPatternId);
+            var ability = GetPattern(InPatternTag);
             return ability != null && IsPatternGapElapsed == true && Asc.GetCooldownRemaining(ability.AbilityId) <= 0.0f;
         }
 
-        public bool TryActivatePattern(string InPatternId, CombatActor InTarget)
+        public bool TryActivatePattern(ETag InPatternTag, CombatActor InTarget)
         {
             EActivateFailReason reason;
-            return TryActivatePattern(InPatternId, InTarget, out reason);
+            return TryActivatePattern(InPatternTag, InTarget, out reason);
         }
 
         /// <summary>실패 이유까지 돌려준다 (테스트 · 디버그).</summary>
-        public bool TryActivatePattern(string InPatternId, CombatActor InTarget, out EActivateFailReason OutReason)
+        public bool TryActivatePattern(ETag InPatternTag, CombatActor InTarget, out EActivateFailReason OutReason)
         {
             OutReason = EActivateFailReason.Custom;
-            var ability = GetPattern(InPatternId);
+            var ability = GetPattern(InPatternTag);
             if (ability == null)
             {
                 return false;
@@ -209,26 +209,26 @@ namespace DemoLA.Boss
         }
 
         /// <summary>다음 패턴 선택 시 가장 먼저 쓴다 (연결 패턴 / 실패 연쇄).</summary>
-        public void QueuePattern(string InPatternId)
+        public void QueuePattern(ETag InPatternTag)
         {
             // 같은 패턴이 이미 대기 중이면 다시 넣지 않는다 (돌진이 연달아 끊겨도 후속 패턴이 쌓이지 않게).
-            if (string.IsNullOrEmpty(InPatternId) == false && patterns.ContainsKey(InPatternId) == true && queuedPatterns.Contains(InPatternId) == false)
+            if (InPatternTag != ETag.None && patterns.ContainsKey(InPatternTag) == true && queuedPatterns.Contains(InPatternTag) == false)
             {
-                queuedPatterns.Add(InPatternId);
+                queuedPatterns.Add(InPatternTag);
             }
         }
 
-        /// <summary>대기 중인 다음 패턴 (꺼내지 않는다). 없으면 null.</summary>
-        public string PeekQueuedPattern()
+        /// <summary>대기 중인 다음 패턴 (꺼내지 않는다). 없으면 None.</summary>
+        public ETag PeekQueuedPattern()
         {
-            return queuedPatterns.Count > 0 ? queuedPatterns[0] : null;
+            return queuedPatterns.Count > 0 ? queuedPatterns[0] : ETag.None;
         }
 
-        public string ConsumeQueuedPattern()
+        public ETag ConsumeQueuedPattern()
         {
             if (queuedPatterns.Count == 0)
             {
-                return null;
+                return ETag.None;
             }
 
             var pattern = queuedPatterns[0];
@@ -240,16 +240,16 @@ namespace DemoLA.Boss
         /// 대기 중인 다음 패턴을 쓴다: 그 패턴의 쿨다운은 무시하고(정해진 순서이므로), 시작에 성공했을 때만 대기열에서 뺀다.
         /// 그로기 · 다른 패턴 진행 중 등으로 못 쓰면 대기열은 그대로 두고 false.
         /// </summary>
-        public bool TryActivateQueuedPattern(CombatActor InTarget, out string OutPatternId)
+        public bool TryActivateQueuedPattern(CombatActor InTarget, out ETag OutPatternTag)
         {
-            OutPatternId = PeekQueuedPattern();
-            if (OutPatternId == null)
+            OutPatternTag = PeekQueuedPattern();
+            if (OutPatternTag == ETag.None)
             {
                 return false;
             }
 
-            ClearPatternCooldown(OutPatternId);
-            if (TryActivatePattern(OutPatternId, InTarget) == false)
+            ClearPatternCooldown(OutPatternTag);
+            if (TryActivatePattern(OutPatternTag, InTarget) == false)
             {
                 return false;
             }
@@ -259,9 +259,9 @@ namespace DemoLA.Boss
         }
 
         /// <summary>패턴 하나의 쿨다운을 지운다.</summary>
-        public void ClearPatternCooldown(string InPatternId)
+        public void ClearPatternCooldown(ETag InPatternTag)
         {
-            var ability = GetPattern(InPatternId);
+            var ability = GetPattern(InPatternTag);
             if (ability == null)
             {
                 return;
@@ -286,8 +286,8 @@ namespace DemoLA.Boss
         /// <summary>마지막 돌진 뒤 끝난 다른 패턴 수 (2관문 "다른 패턴 3개 뒤 돌진"). 처음엔 크게 — 조우하자마자 돌진.</summary>
         public int PatternsSinceCharge { get; private set; } = 99;
 
-        /// <summary>마지막으로 끝난 패턴 ID (취소 포함). 없으면 null.</summary>
-        public string LastEndedPatternId { get; private set; }
+        /// <summary>마지막으로 끝난 패턴 태그 (취소 포함). 없으면 None.</summary>
+        public ETag LastEndedPatternTag { get; private set; }
 
         /// <summary>진입 시네마틱 동안 첫 패턴을 미룬다 (시네마틱 시간 + OpeningDelay).</summary>
         public void DelayFirstPattern(float InSeconds)
@@ -309,7 +309,7 @@ namespace DemoLA.Boss
             }
 
             var definition = InAbility.Definition;
-            LastEndedPatternId = definition.PatternId;
+            LastEndedPatternTag = definition.PatternTag;
             if (definition.IsCharge == true)
             {
                 PatternsSinceCharge = 0;
@@ -325,17 +325,17 @@ namespace DemoLA.Boss
             }
 
             // 이어지는 패턴 (그로기 · 취소로 끝나도 이어진다 — 2관문 돌진 → 도약 십자).
-            for (int i = 0; i < definition.FollowUpPatternIds.Count; ++i)
+            for (int i = 0; i < definition.FollowUpPatternTags.Count; ++i)
             {
-                QueuePattern(definition.FollowUpPatternIds[i]);
+                QueuePattern(definition.FollowUpPatternTags[i]);
             }
 
             // 처음 한 번만 이어지는 패턴 (도입: 첫 돌진 → 도약 십자 → 외곽 이탈 도약). 이후 돌진에서는 외곽으로 빠지지 않는다.
-            if (endedPatterns.Add(definition.PatternId) == true)
+            if (endedPatterns.Add(definition.PatternTag) == true)
             {
-                for (int i = 0; i < definition.FirstTimeFollowUpPatternIds.Count; ++i)
+                for (int i = 0; i < definition.FirstTimeFollowUpPatternTags.Count; ++i)
                 {
-                    QueuePattern(definition.FirstTimeFollowUpPatternIds[i]);
+                    QueuePattern(definition.FirstTimeFollowUpPatternTags[i]);
                 }
             }
 
@@ -343,7 +343,7 @@ namespace DemoLA.Boss
 
             if (InWasCancelled == false)
             {
-                QueuePattern(InAbility.Definition.LinkedPatternId);
+                QueuePattern(InAbility.Definition.LinkedPatternTag);
             }
 
             OnPatternEnded?.Invoke(InAbility, InWasCancelled);
@@ -401,15 +401,15 @@ namespace DemoLA.Boss
             lastHpLine = CurrentHpLine;
         }
 
-        public BossGimmick GetGimmick(string InGimmickId)
+        public BossGimmick GetGimmick(ETag InGimmickTag)
         {
             BossGimmick gimmick;
-            return InGimmickId != null && gimmicks.TryGetValue(InGimmickId, out gimmick) == true ? gimmick : null;
+            return InGimmickTag != ETag.None && gimmicks.TryGetValue(InGimmickTag, out gimmick) == true ? gimmick : null;
         }
 
-        public bool StartGimmick(string InGimmickId)
+        public bool StartGimmick(ETag InGimmickTag)
         {
-            var gimmick = GetGimmick(InGimmickId);
+            var gimmick = GetGimmick(InGimmickTag);
             if (gimmick == null || gimmick.State == EGimmickState.Running)
             {
                 return false;

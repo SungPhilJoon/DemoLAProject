@@ -93,10 +93,10 @@ namespace DemoLA.Tests
             spawned.Add(victim.gameObject);
             spawned.Add(survivor.gameObject);
 
-            var gimmick = boss.GetGimmick("G2-06") as TerrainCollapseGimmick;
+            var gimmick = boss.GetGimmick(ETag.Pattern_G2_TerrainBreakCenter) as TerrainCollapseGimmick;
             Assert.IsNotNull(gimmick);
             gimmick.WarningTime = 0.5f;
-            Assert.IsTrue(boss.StartGimmick("G2-06"));
+            Assert.IsTrue(boss.StartGimmick(ETag.Pattern_G2_TerrainBreakCenter));
             yield return new WaitForSeconds(3.0f);
 
             Assert.IsFalse(victim.IsDead, "넉백 없이 발밑이 무너지면 낙사하지 않는다");

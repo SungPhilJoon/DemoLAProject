@@ -24,7 +24,7 @@ namespace DemoLA.Editor.Gas
         private static readonly Color HitColor = new Color(1.0f, 0.35f, 0.3f);
         private static readonly Color CounterColor = new Color(0.35f, 0.65f, 1.0f, 0.6f);
 
-        [SerializeField] private string SelectedPatternId;
+        [SerializeField] private ETag SelectedPatternTag;
         private SkillDefinition SelectedSkill;
         private SerializedObject AbilitySerialized;
         private UnityEngine.Object AbilityTarget;
@@ -42,18 +42,18 @@ namespace DemoLA.Editor.Gas
                 }
 
                 listHeader($"보스 패턴 — {boss.DisplayName}");
-                foreach (var pattern in boss.Patterns.Where(p => p != null).OrderBy(p => p.PatternId))
+                foreach (var pattern in boss.Patterns.Where(p => p != null).OrderBy(p => p.PatternTag))
                 {
                     string mark = pattern.IsCounterable == true ? " ◆" : string.Empty;
-                    string label = $"[{pattern.PatternId}] {pattern.DisplayName}{mark}";
+                    string label = $"[{pattern.TagName}] {pattern.DisplayName}{mark}";
                     if (matchesFilter(label) == false)
                     {
                         continue;
                     }
 
-                    if (listButton(SelectedSkill == null && pattern.PatternId == SelectedPatternId, label, pattern.Implemented == false) == true)
+                    if (listButton(SelectedSkill == null && pattern.PatternTag == SelectedPatternTag, label, pattern.Implemented == false) == true)
                     {
-                        SelectedPatternId = pattern.PatternId;
+                        SelectedPatternTag = pattern.PatternTag;
                         SelectedSkill = null;
                         GUI.FocusControl(null);
                     }
@@ -98,14 +98,14 @@ namespace DemoLA.Editor.Gas
         private BossPatternDefinition selectedPattern(out BossDefinition OutBoss)
         {
             OutBoss = null;
-            if (string.IsNullOrEmpty(SelectedPatternId) == true)
+            if (SelectedPatternTag == ETag.None)
             {
                 return null;
             }
 
             foreach (var boss in Database.Bosses)
             {
-                var pattern = boss != null ? boss.GetPattern(SelectedPatternId) : null;
+                var pattern = boss != null ? boss.GetPattern(SelectedPatternTag) : null;
                 if (pattern != null)
                 {
                     OutBoss = boss;
@@ -138,7 +138,7 @@ namespace DemoLA.Editor.Gas
             var so = serializedFor(pattern);
             so.Update();
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.LabelField($"[{pattern.PatternId}] {pattern.DisplayName}", EditorStyles.largeLabel);
+            EditorGUILayout.LabelField($"[{pattern.TagName}] {pattern.DisplayName}", EditorStyles.largeLabel);
             if (pattern.ToolEdited == true)
             {
                 EditorGUILayout.LabelField("GAS Tool 편집됨 — 실행 데이터는 이 에셋이 원본 (CSV 재가져오기는 이름 · 분류 · 메모만 갱신)", EditorStyles.miniLabel);
@@ -219,7 +219,7 @@ namespace DemoLA.Editor.Gas
         {
             EditorGUILayout.LabelField("Tags (발동 규칙)", EditorStyles.boldLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GasEditorGUI.TagChips(new GUIContent("Ability Tags", "모든 보스 패턴 공통"), new[] { ETag.Ability_BossPattern });
+            GasEditorGUI.TagChips(new GUIContent("Ability Tags", "모든 보스 패턴 공통 + 이 패턴의 태그 (패턴 ID)"), new[] { ETag.Ability_BossPattern, InPattern.PatternTag });
             GasEditorGUI.TagChips(new GUIContent("Block Abilities With Tag", "실행 중 다른 패턴 발동을 막음"), new[] { ETag.Ability_BossPattern });
             var owned = new List<ETag> { ETag.Boss_PatternBusy };
             if (InPattern.SuperArmor == true)
@@ -496,7 +496,7 @@ namespace DemoLA.Editor.Gas
             field(InSo, nameof(BossPatternDefinition.StaggerTime), "제한 시간 (초)");
             field(InSo, nameof(BossPatternDefinition.StaggerFailOutcome), "실패 결과");
             field(InSo, nameof(BossPatternDefinition.StaggerFailDamage), "실패 피해");
-            field(InSo, nameof(BossPatternDefinition.StaggerFailChainPatternId), "실패 시 이어지는 패턴");
+            field(InSo, nameof(BossPatternDefinition.StaggerFailChainPatternTag), "실패 시 이어지는 패턴");
             field(InSo, nameof(BossPatternDefinition.GroggyOnStaggerSuccess), "성공 그로기 (초)");
             EditorGUILayout.EndVertical();
         }
@@ -504,14 +504,14 @@ namespace DemoLA.Editor.Gas
         /// <summary>사용처: 보스 · 페이즈 · 이 패턴을 쓰는 StateTree 상태 (원본의 "사용처").</summary>
         private void drawPatternUsers(BossPatternDefinition InPattern, BossDefinition InBoss)
         {
-            var owners = patternOwners(InPattern.PatternId);
+            var owners = patternOwners(InPattern.PatternTag);
             EditorGUILayout.LabelField("사용처", owners.Count > 0 ? string.Join(", ", owners) : "아직 없음", EditorStyles.wordWrappedLabel);
             if (InBoss != null && InBoss.Brain != null)
             {
                 var states = new List<string>();
                 foreach (var state in InBoss.Brain.States)
                 {
-                    if (state.Tasks.Any(t => t is UsePatternTask use && use.PatternId == InPattern.PatternId) == true)
+                    if (state.Tasks.Any(t => t is UsePatternTask use && use.PatternTag == InPattern.PatternTag) == true)
                     {
                         states.Add(state.Name);
                     }
@@ -530,18 +530,18 @@ namespace DemoLA.Editor.Gas
             if (EditorApplication.isPlaying == true)
             {
                 var live = FindAnyObjectByType<BossActor>();
-                if (live != null && live.Definition != null && live.Definition.GetPattern(InPattern.PatternId) != null)
+                if (live != null && live.Definition != null && live.Definition.GetPattern(InPattern.PatternTag) != null)
                 {
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        bool running = live.ActivePattern != null && live.ActivePattern.IsActive && live.ActivePattern.Definition.PatternId == InPattern.PatternId;
+                        bool running = live.ActivePattern != null && live.ActivePattern.IsActive && live.ActivePattern.Definition.PatternTag == InPattern.PatternTag;
                         EditorGUILayout.LabelField("플레이", running ? (live.HasTag((int)ETag.Boss_CounterWindow) ? "실행 중 ◆ 카운터 구간 열림" : "실행 중") : "대기");
                         if (GUILayout.Button("지금 실행", GUILayout.Width(120.0f)) == true)
                         {
                             Framework.Ability.EActivateFailReason reason;
-                            if (live.TryActivatePattern(InPattern.PatternId, null, out reason) == false)
+                            if (live.TryActivatePattern(InPattern.PatternTag, null, out reason) == false)
                             {
-                                Debug.Log($"[GAS Tool] {InPattern.PatternId} 실행 실패: {reason}");
+                                Debug.Log($"[GAS Tool] {InPattern.TagName} 실행 실패: {reason}");
                             }
                         }
                     }

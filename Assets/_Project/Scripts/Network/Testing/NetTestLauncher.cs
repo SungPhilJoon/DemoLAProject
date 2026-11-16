@@ -18,7 +18,7 @@ namespace DemoLA.Network.Testing
     ///   -demolaGodMode              (호스트) 플레이어 팀 무적 — 오래 돌리는 동기화 측정용
     ///   -demolaProbe Builds/NetTest 동기화 스냅샷을 {역할}-{clientId}.jsonl 로 기록 (NetSyncProbe)
     ///   -demolaQuitAfter 60         레이드 시작 후 N 초 뒤 종료 (0 = 종료 안 함)
-    ///   -demolaScript "8:gimmick:G2-05;15:pattern:G2-24"
+    ///   -demolaScript "8:gimmick:Pattern.G2.TerrainBreakHalf;15:pattern:Pattern.G2.AxeChopCounter"
     ///                               (호스트) 레이드 시작 후 N 초에 기믹 / 패턴을 강제로 실행 — 카운터 · 지형 붕괴 · 구조물 동기화 확인용
     /// 실행: Tools/dev.sh net [클라이언트 수] [초] [관문]  (빌드한 플레이어를 호스트 1 + 클라이언트 N 개로 띄우고 분석)
     /// </summary>
@@ -218,14 +218,22 @@ namespace DemoLA.Network.Testing
         /// <summary>"초:gimmick|pattern:ID;..." 를 레이드 시작 기준 시각에 실행한다. 보스가 바쁘거나 쿨다운이면 12초까지 다시 시도.</summary>
         private IEnumerator runScript(string InScript)
         {
-            var entries = new System.Collections.Generic.List<(float Time, string Kind, string Id)>();
+            // 태그 이름(Pattern.G2.Charge)은 여기서 한 번만 ETag 로 바꾼다 — 실행 중 비교는 태그 값으로.
+            var entries = new System.Collections.Generic.List<(float Time, string Kind, DemoLA.Core.ETag Id)>();
             foreach (var part in InScript.Split(';'))
             {
                 var cells = part.Trim().Split(':');
                 float time;
+                DemoLA.Core.ETag tag;
                 if (cells.Length == 3 && float.TryParse(cells[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out time) == true)
                 {
-                    entries.Add((time, cells[1].Trim().ToLowerInvariant(), cells[2].Trim()));
+                    if (DemoLA.Core.GameTags.TryParse(cells[2], out tag) == false)
+                    {
+                        Debug.LogWarning($"[NetTest] script: 알 수 없는 패턴 태그 '{cells[2]}'");
+                        continue;
+                    }
+
+                    entries.Add((time, cells[1].Trim().ToLowerInvariant(), tag));
                 }
             }
 
@@ -247,7 +255,7 @@ namespace DemoLA.Network.Testing
                         if (entry.Kind == "gimmick")
                         {
                             var running = boss.ActiveGimmick;
-                            if (running != null && running.GimmickId != entry.Id)
+                            if (running != null && running.GimmickTag != entry.Id)
                             {
                                 running.ResetGimmick();
                             }

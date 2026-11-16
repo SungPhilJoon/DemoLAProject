@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DemoLA.Boss;
 using DemoLA.Combat;
+using DemoLA.Core;
 using DemoLA.Data;
 using UnityEngine;
 
@@ -16,14 +17,14 @@ namespace DemoLA.Content
         public static BossPatternDefinition CreatePattern(BossPatternRow InRow)
         {
             var pattern = ScriptableObject.CreateInstance<BossPatternDefinition>();
-            pattern.name = "PT_" + InRow.PatternId;
-            pattern.PatternId = InRow.PatternId;
+            pattern.PatternTag = ParseTag(InRow.PatternTag, InRow.Index);
+            pattern.name = "PT_" + GameTags.PatternAssetName(pattern.PatternTag);
             pattern.PhaseId = InRow.PhaseId;
             pattern.DisplayName = InRow.Name;
             pattern.Category = ParseCategory(InRow.Category);
             pattern.Response = ParseResponse(InRow.Response);
             pattern.ShapeText = InRow.Shape;
-            pattern.LinkedPatternId = InRow.LinkedPatternId;
+            pattern.LinkedPatternTag = string.IsNullOrWhiteSpace(InRow.LinkedPatternTag) == true ? ETag.None : ParseTag(InRow.LinkedPatternTag, InRow.Index);
             pattern.Confidence = ParseConfidence(InRow.Confidence);
             pattern.DamageTier = DamageTierUtil.FromKorean(InRow.DamageTier);
             pattern.Notes = string.IsNullOrEmpty(InRow.DamageText) == true ? InRow.Notes : $"[피해] {InRow.DamageText}\n{InRow.Notes}";
@@ -77,19 +78,27 @@ namespace DemoLA.Content
             // 원작 고유 명칭을 피하려고 화면 표시명은 페이즈 ID 기반으로 쓴다 (xlsx 이름은 조건 메모에 보관).
             phase.DisplayName = PhaseDisplayName(InRow.PhaseId);
             phase.EnterConditionText = $"{InRow.Name} / 진입: {InRow.EnterCondition} / 종료: {InRow.EndCondition}";
-            if (InRow.PatternIds != null)
+            var unknown = new List<string>();
+            phase.PatternTags.AddRange(GameTags.ParseList(InRow.PatternTags, unknown));
+            for (int i = 0; i < unknown.Count; ++i)
             {
-                for (int i = 0; i < InRow.PatternIds.Length; ++i)
-                {
-                    var id = InRow.PatternIds[i].Trim();
-                    if (id.Length > 0)
-                    {
-                        phase.PatternIds.Add(id);
-                    }
-                }
+                Debug.LogWarning($"[DemoLA] BossPhaseTable {InRow.PhaseId}: 알 수 없는 패턴 태그 '{unknown[i]}' (Pattern.G1.OrbStagger 형식, GameTags.cs 의 ETag 에 있어야 한다)");
             }
 
             return phase;
+        }
+
+        /// <summary>CSV 의 패턴 태그 칸 → ETag. 없는 태그면 경고 후 None.</summary>
+        public static ETag ParseTag(string InText, int InRowIndex)
+        {
+            ETag tag;
+            if (GameTags.TryParse(InText, out tag) == false || GameTags.IsPattern(tag) == false)
+            {
+                Debug.LogWarning($"[DemoLA] BossPatternTable {InRowIndex}: '{InText}' 는 패턴 태그가 아닙니다 (Pattern.G1.OrbStagger 형식, GameTags.cs 의 ETag 에 있어야 한다)");
+                return ETag.None;
+            }
+
+            return tag;
         }
 
         public static string PhaseDisplayName(string InPhaseId)

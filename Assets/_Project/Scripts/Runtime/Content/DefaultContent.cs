@@ -569,9 +569,11 @@ namespace DemoLA.Content
             }
 
             var rows = InTables.BossPattern.All;
+            var gate = InGatePrefix == "G1" ? ETag.Pattern_G1 : ETag.Pattern_G2;
             for (int i = 0; i < rows.Count; ++i)
             {
-                if (rows[i].PatternId.StartsWith(InGatePrefix) == false)
+                ETag tag;
+                if (GameTags.TryParse(rows[i].PatternTag, out tag) == false || GameTags.PatternGate(tag) != gate)
                 {
                     continue;
                 }
@@ -585,16 +587,16 @@ namespace DemoLA.Content
 
             if (InGatePrefix == "G1")
             {
-                boss.Gimmicks.Add(new GimmickSpec { GimmickId = "G1-01", Kind = EGimmickKind.OrbAlternation });
+                boss.Gimmicks.Add(new GimmickSpec { GimmickTag = ETag.Pattern_G1_OrbStagger, Kind = EGimmickKind.OrbAlternation });
             }
             else
             {
                 boss.BodyColor = new Color(0.35f, 0.15f, 0.08f);
                 boss.Radius = 2.0f;
-                boss.Gimmicks.Add(new GimmickSpec { GimmickId = "G2-01", Kind = EGimmickKind.ArmorStack });
-                boss.Gimmicks.Add(new GimmickSpec { GimmickId = "G2-02", Kind = EGimmickKind.DeathWardOrbs });
-                boss.Gimmicks.Add(new GimmickSpec { GimmickId = "G2-05", Kind = EGimmickKind.TerrainCollapseHalf });
-                boss.Gimmicks.Add(new GimmickSpec { GimmickId = "G2-06", Kind = EGimmickKind.TerrainCollapseCenter });
+                boss.Gimmicks.Add(new GimmickSpec { GimmickTag = ETag.Pattern_G2_ArmorBreak, Kind = EGimmickKind.ArmorStack });
+                boss.Gimmicks.Add(new GimmickSpec { GimmickTag = ETag.Pattern_G2_WardOrb, Kind = EGimmickKind.DeathWardOrbs });
+                boss.Gimmicks.Add(new GimmickSpec { GimmickTag = ETag.Pattern_G2_TerrainBreakHalf, Kind = EGimmickKind.TerrainCollapseHalf });
+                boss.Gimmicks.Add(new GimmickSpec { GimmickTag = ETag.Pattern_G2_TerrainBreakCenter, Kind = EGimmickKind.TerrainCollapseCenter });
             }
 
             return boss;

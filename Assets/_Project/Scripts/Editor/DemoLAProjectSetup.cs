@@ -172,45 +172,46 @@ namespace DemoLA.Editor
             foreach (var guid in AssetDatabase.FindAssets("t:BossPatternDefinition", new[] { folder }))
             {
                 var pattern = AssetDatabase.LoadAssetAtPath<DemoLA.Boss.BossPatternDefinition>(AssetDatabase.GUIDToAssetPath(guid));
-                if (pattern == null || string.IsNullOrEmpty(pattern.PatternId) == true)
+                string bossId = pattern != null ? DemoLA.Core.GameTags.PatternBossId(pattern.PatternTag) : null;
+                if (bossId == null)
                 {
                     continue;
                 }
 
-                var boss = InDatabase.GetBoss(pattern.PatternId.StartsWith("G1") == true ? "Gate1" : "Gate2");
-                if (boss == null || boss.GetPattern(pattern.PatternId) != null)
+                var boss = InDatabase.GetBoss(bossId);
+                if (boss == null || boss.GetPattern(pattern.PatternTag) != null)
                 {
                     continue;
                 }
 
                 boss.Patterns.Add(pattern);
                 var phase = boss.GetPhase(pattern.PhaseId);
-                if (phase != null && phase.PatternIds.Contains(pattern.PatternId) == false)
+                if (phase != null && phase.PatternTags.Contains(pattern.PatternTag) == false)
                 {
-                    phase.PatternIds.Add(pattern.PatternId);
+                    phase.PatternTags.Add(pattern.PatternTag);
                 }
             }
         }
 
         public static GameDatabase CreateDataAssets(DemoLATables InTables)
         {
-            // 패턴 대상 규칙(툴/인스펙터에서 정한 값)은 CSV 에 없다 → 지우기 전에 PatternId 별로 기억했다가 새 에셋에 다시 넣는다.
-            var keptSelectors = new Dictionary<string, DemoLA.Boss.PatternTargetSelector>();
+            // 패턴 대상 규칙(툴/인스펙터에서 정한 값)은 CSV 에 없다 → 지우기 전에 PatternTag 별로 기억했다가 새 에셋에 다시 넣는다.
+            var keptSelectors = new Dictionary<DemoLA.Core.ETag, DemoLA.Boss.PatternTargetSelector>();
             // GAS Tool 에서 편집한 패턴(ToolEdited)은 에셋 전체가 원본 → 복사해 두었다가 새 에셋에 덮고 CSV 메타데이터만 다시 넣는다.
-            var keptEdited = new Dictionary<string, DemoLA.Boss.BossPatternDefinition>();
+            var keptEdited = new Dictionary<DemoLA.Core.ETag, DemoLA.Boss.BossPatternDefinition>();
             if (AssetDatabase.IsValidFolder(DataRoot) == true)
             {
                 foreach (var guid in AssetDatabase.FindAssets("t:BossPatternDefinition", new[] { DataRoot }))
                 {
                     var old = AssetDatabase.LoadAssetAtPath<DemoLA.Boss.BossPatternDefinition>(AssetDatabase.GUIDToAssetPath(guid));
-                    if (old != null && old.TargetSelector != null && string.IsNullOrEmpty(old.PatternId) == false)
+                    if (old != null && old.TargetSelector != null && old.PatternTag != DemoLA.Core.ETag.None)
                     {
-                        keptSelectors[old.PatternId] = old.TargetSelector;
+                        keptSelectors[old.PatternTag] = old.TargetSelector;
                     }
 
-                    if (old != null && old.ToolEdited == true && string.IsNullOrEmpty(old.PatternId) == false)
+                    if (old != null && old.ToolEdited == true && old.PatternTag != DemoLA.Core.ETag.None)
                     {
-                        keptEdited[old.PatternId] = UnityEngine.Object.Instantiate(old);
+                        keptEdited[old.PatternTag] = UnityEngine.Object.Instantiate(old);
                     }
                 }
             }
@@ -241,13 +242,13 @@ namespace DemoLA.Editor
             {
                 var pattern = created as DemoLA.Boss.BossPatternDefinition;
                 DemoLA.Boss.PatternTargetSelector selector;
-                if (pattern != null && keptSelectors.TryGetValue(pattern.PatternId, out selector) == true)
+                if (pattern != null && keptSelectors.TryGetValue(pattern.PatternTag, out selector) == true)
                 {
                     pattern.TargetSelector = selector;
                 }
 
                 DemoLA.Boss.BossPatternDefinition edited;
-                if (pattern != null && keptEdited.TryGetValue(pattern.PatternId, out edited) == true)
+                if (pattern != null && keptEdited.TryGetValue(pattern.PatternTag, out edited) == true)
                 {
                     var csv = UnityEngine.Object.Instantiate(pattern);
                     string name = pattern.name;

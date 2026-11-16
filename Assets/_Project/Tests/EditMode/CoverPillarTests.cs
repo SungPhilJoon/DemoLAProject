@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace DemoLA.Tests
 {
-    /// <summary>G2-27 기둥 엄폐 낙하 · 진입 시네마틱 정지.</summary>
+    /// <summary>Pattern.G2.PillarCoverDrop 기둥 엄폐 낙하 · 진입 시네마틱 정지.</summary>
     public class CoverPillarTests
     {
         private TestWorld world;
@@ -47,7 +47,7 @@ namespace DemoLA.Tests
         [Test]
         public void G2_27_Definition()
         {
-            var pattern = boss.Definition.GetPattern("G2-27");
+            var pattern = boss.Definition.GetPattern(ETag.Pattern_G2_PillarCoverDrop);
             Assert.IsNotNull(pattern);
             Assert.AreEqual(7.0f, pattern.Steps[0].StartLeapDuration, 0.01f, "7초 도약");
             Assert.IsTrue(pattern.Steps[0].SpawnCoverPillars);
@@ -69,7 +69,7 @@ namespace DemoLA.Tests
         {
             var hidden = world.Combatant(ETeam.Player, new Vector3(0, 0, 12.5f), 1000000.0f);
             var exposed = world.Combatant(ETeam.Player, new Vector3(6, 0, 6), 1000000.0f);
-            Assert.IsTrue(boss.TryActivatePattern("G2-27", null));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_PillarCoverDrop, null));
             world.Simulate(7.2f, 0.02f);
             Assert.AreEqual(4, CoverPillars.Pillars.Count, "기둥 4개");
             Assert.IsFalse(hidden.IsDead, "기둥 뒤는 무사");

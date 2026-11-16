@@ -12,12 +12,12 @@ namespace DemoLA.Content
     public static class PatternPresets
     {
         /// <summary>구현하지 않은 패턴 ID (구현 보류 사항.md 와 일치시킨다).</summary>
-        public static readonly HashSet<string> Deferred = new HashSet<string>
+        public static readonly HashSet<ETag> Deferred = new HashSet<ETag>
         {
-            "G1-02", "G1-09", "G1-23", "G2-10", "G2-17",
+            ETag.Pattern_G1_RivalIntrusion, ETag.Pattern_G1_BleedClaw, ETag.Pattern_G1_FogPrisonGrab, ETag.Pattern_G2_CloneCounter, ETag.Pattern_G2_BeamRockChain,
         };
 
-        /// <summary>천상 낙하(G2-25) 안전 띠 폭: 캐릭터 크기(지름 약 1m)의 1.5배.</summary>
+        /// <summary>천상 낙하(Pattern.G2.Skyfall) 안전 띠 폭: 캐릭터 크기(지름 약 1m)의 1.5배.</summary>
         public const float SkyfallSafeBand = 1.5f;
 
         /// <summary>
@@ -28,26 +28,26 @@ namespace DemoLA.Content
 
         public static void Apply(BossPatternDefinition InPattern)
         {
-            InPattern.Implemented = Deferred.Contains(InPattern.PatternId) == false;
-            switch (InPattern.PatternId)
+            InPattern.Implemented = Deferred.Contains(InPattern.PatternTag) == false;
+            switch (InPattern.PatternTag)
             {
                 // ------------------------------------------------------------ Gate 1
-                case "G1-01":
+                case ETag.Pattern_G1_OrbStagger:
                     // 구슬은 OrbAlternationGimmick 이 처리. 이 패턴은 구슬을 다 모은 뒤의 무력화 체크.
                     noSteps(InPattern);
                     InPattern.StaggerCheck = true;
                     InPattern.StaggerGauge = 1500.0f;
                     InPattern.StaggerTime = 12.0f;
                     InPattern.StaggerFailOutcome = EStaggerFailOutcome.ChainPattern;
-                    InPattern.StaggerFailChainPatternId = "G1-22";
+                    InPattern.StaggerFailChainPatternTag = ETag.Pattern_G1_StaggerFailChain;
                     InPattern.GroggyOnStaggerSuccess = 5.0f;
                     break;
-                case "G1-03":
+                case ETag.Pattern_G1_ChasingWhirlwind:
                     steps(InPattern, step(EPatternTargeting.AggroTarget, HitArea.Circle(2.5f), 6.0f, EDamageTier.Normal, track: true, lockBefore: 0.6f));
                     InPattern.RandomSelectable = true;
                     InPattern.Cooldown = 20.0f;
                     break;
-                case "G1-04":
+                case ETag.Pattern_G1_FearExecution:
                     steps(InPattern, step(EPatternTargeting.RandomPlayer, HitArea.Circle(1.5f), 0.6f, EDamageTier.None, status: ETag.State_Feared, statusTime: 3.0f));
                     InPattern.StaggerCheck = true;
                     InPattern.StaggerGauge = 800.0f;
@@ -58,81 +58,81 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 45.0f;
                     InPattern.Weight = 0.5f;
                     break;
-                case "G1-05":
+                case ETag.Pattern_G1_Split:
                     steps(InPattern, step(EPatternTargeting.BossForward, HitArea.Circle(1.0f), 4.0f, EDamageTier.None, show: false));
                     InPattern.UntargetableDuring = true;
                     InPattern.RandomSelectable = false;
                     break;
-                case "G1-06":
+                case ETag.Pattern_G1_BlinkDoubleClaw:
                     steps(InPattern,
                         step(EPatternTargeting.AggroTarget, HitArea.Circle(2.5f), 0.8f, EDamageTier.Normal),
                         step(EPatternTargeting.BossForward, HitArea.Circle(4.0f), 0.5f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f));
                     break;
-                case "G1-07":
+                case ETag.Pattern_G1_TripleClaw:
                     steps(InPattern,
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(5.0f, 120.0f), 0.6f, EDamageTier.Normal),
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(5.0f, 120.0f), 0.45f, EDamageTier.Normal),
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(6.0f, 140.0f), 0.6f, EDamageTier.Normal));
                     break;
-                case "G1-08":
+                case ETag.Pattern_G1_FanFrenzyClaw:
                     steps(InPattern, step(EPatternTargeting.BossTowardAggro, HitArea.Fan(6.0f, 100.0f), 1.0f, EDamageTier.Big));
                     break;
-                case "G1-10":
+                case ETag.Pattern_G1_LeapDoubleClaw:
                     steps(InPattern,
                         step(EPatternTargeting.AggroTarget, HitArea.Circle(3.0f), 1.0f, EDamageTier.Normal),
                         step(EPatternTargeting.BossForward, HitArea.Circle(5.0f), 0.5f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f));
                     break;
-                case "G1-11":
+                case ETag.Pattern_G1_SpinKick:
                     steps(InPattern, step(EPatternTargeting.BossForward, HitArea.Circle(4.5f), 0.9f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f));
                     break;
-                case "G1-12":
+                case ETag.Pattern_G1_CrouchBurst:
                     steps(InPattern, step(EPatternTargeting.EachPlayer, HitArea.Circle(3.0f), 1.5f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f));
                     break;
-                case "G1-13":
+                case ETag.Pattern_G1_SonicCharge:
                     var dash = step(EPatternTargeting.BossTowardAggro, HitArea.Rect(14.0f, 3.0f), 1.2f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f);
                     dash.BossMoveDistance = 12.0f;
                     steps(InPattern, dash);
                     InPattern.MaxRange = 14.0f;
                     break;
-                case "G1-14":
+                case ETag.Pattern_G1_LineGrab:
                     steps(InPattern, step(EPatternTargeting.BossTowardAggro, HitArea.Rect(12.0f, 2.5f), 1.2f, EDamageTier.Big, status: ETag.State_Grabbed, statusTime: 2.0f));
                     InPattern.MaxRange = 12.0f;
                     break;
-                case "G1-15":
+                case ETag.Pattern_G1_BladeThrow:
                     steps(InPattern,
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(10.0f, 30.0f), 1.0f, EDamageTier.Normal),
                         step(EPatternTargeting.BossForward, HitArea.Donut(3.0f, 10.0f), 0.8f, EDamageTier.Normal));
                     InPattern.MaxRange = 10.0f;
                     break;
-                case "G1-16":
+                case ETag.Pattern_G1_SpinSlashOmen:
                     // 기운 색에 따른 4가지 변형(결빙/단타/다단/충격파)은 무작위 변형 기능이 없어 '붉은 단타' 하나만 둔다.
                     steps(InPattern,
                         step(EPatternTargeting.BossForward, HitArea.Circle(4.0f), 0.8f, EDamageTier.Normal),
                         step(EPatternTargeting.EachPlayer, HitArea.Circle(3.0f), 1.2f, EDamageTier.Big));
                     break;
-                case "G1-17":
+                case ETag.Pattern_G1_GravityZone:
                     steps(InPattern, step(EPatternTargeting.RandomPlayer, HitArea.Circle(5.0f), 3.0f, EDamageTier.Normal, track: true, lockBefore: 0.4f, status: ETag.Debuff_Slow, statusTime: 3.0f));
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G1-18":
+                case ETag.Pattern_G1_FreezeTrap:
                     steps(InPattern, step(EPatternTargeting.EachPlayer, HitArea.Circle(2.5f), 2.0f, EDamageTier.Weak, status: ETag.State_Frozen, statusTime: 2.0f));
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G1-19":
+                case ETag.Pattern_G1_ExplosiveTrap:
                     steps(InPattern, step(EPatternTargeting.BossForward, HitArea.Circle(8.0f), 3.0f, EDamageTier.Big));
                     break;
-                case "G1-20":
+                case ETag.Pattern_G1_DetonateProjectile:
                     steps(InPattern,
                         step(EPatternTargeting.RandomPlayer, HitArea.Circle(2.5f), 0.7f, EDamageTier.Normal),
                         step(EPatternTargeting.RandomPlayer, HitArea.Circle(2.5f), 0.5f, EDamageTier.Normal),
                         step(EPatternTargeting.RandomPlayer, HitArea.Circle(2.5f), 0.5f, EDamageTier.Normal));
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G1-21":
+                case ETag.Pattern_G1_RandomLaunchField:
                     steps(InPattern, step(EPatternTargeting.RandomPlayer, HitArea.Circle(3.0f), 1.2f, EDamageTier.Normal, status: ETag.State_Airborne, statusTime: 1.0f));
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G1-22":
+                case ETag.Pattern_G1_StaggerFailChain:
                     steps(InPattern,
                         step(EPatternTargeting.BossForward, HitArea.Circle(6.0f), 1.0f, EDamageTier.Big),
                         step(EPatternTargeting.EachPlayer, HitArea.Circle(3.0f), 1.0f, EDamageTier.Big),
@@ -142,14 +142,14 @@ namespace DemoLA.Content
                     break;
 
                 // ------------------------------------------------------------ Gate 2
-                case "G2-01":
-                case "G2-02":
-                case "G2-05":
-                case "G2-06":
+                case ETag.Pattern_G2_ArmorBreak:
+                case ETag.Pattern_G2_WardOrb:
+                case ETag.Pattern_G2_TerrainBreakHalf:
+                case ETag.Pattern_G2_TerrainBreakCenter:
                     // 컴포넌트 기믹 (ArmorStack / DeathWardOrb / TerrainCollapse). 패턴 정의는 기록용.
                     noSteps(InPattern);
                     break;
-                case "G2-03":
+                case ETag.Pattern_G2_LethalFieldDouble:
                     var first = step(EPatternTargeting.ArenaCenter, HitArea.Global(), 3.0f, EDamageTier.Lethal);
                     first.ConsumesDeathWard = true;
                     // 첫 타격 순간 맵의 기둥 · 벽이 모두 무너진다.
@@ -160,20 +160,20 @@ namespace DemoLA.Content
                     steps(InPattern, first, second);
                     InPattern.RandomSelectable = false;
                     break;
-                case "G2-04":
+                case ETag.Pattern_G2_ChasingLethalField:
                     steps(InPattern, step(EPatternTargeting.RandomPlayer, HitArea.Fan(12.0f, 40.0f), 3.0f, EDamageTier.Lethal, track: true, lockBefore: 0.8f));
                     InPattern.MaxRange = 40.0f;
                     InPattern.Cooldown = 30.0f;
                     InPattern.Weight = 0.5f;
                     break;
-                case "G2-07":
+                case ETag.Pattern_G2_CounterCharge:
                     var charge = step(EPatternTargeting.BossTowardAggro, HitArea.Rect(14.0f, 4.0f), 1.8f, EDamageTier.Lethal, status: ETag.State_Grabbed, statusTime: 2.0f);
                     charge.BossMoveDistance = 12.0f;
                     counter(charge, 0.6f, 1.7f);
                     steps(InPattern, charge);
                     InPattern.RandomSelectable = false;
                     break;
-                case "G2-08":
+                case ETag.Pattern_G2_TripleCounter:
                     var tripleCounter = step(EPatternTargeting.BossForward, HitArea.Circle(7.0f), 1.5f, EDamageTier.Big);
                     counter(tripleCounter, 0.7f, 1.45f);
                     steps(InPattern, tripleCounter);
@@ -183,7 +183,7 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 40.0f;
                     InPattern.MaxRange = 7.0f;
                     break;
-                case "G2-09":
+                case ETag.Pattern_G2_FootFieldBarrage:
                     var list = new List<PatternStep>();
                     list.Add(step(EPatternTargeting.BossForward, HitArea.Circle(6.0f), 1.2f, EDamageTier.Big));
                     for (int i = 0; i < 5; ++i)
@@ -194,7 +194,7 @@ namespace DemoLA.Content
                     steps(InPattern, list.ToArray());
                     InPattern.RandomSelectable = false;
                     break;
-                case "G2-11":
+                case ETag.Pattern_G2_Charge:
                     // 전조 2.0초: 1.7초 동안 어그로 대상을 따라 방향을 틀고, 마지막 0.3초는 고정 → 바로 0.55초 동안 14m 돌진.
                     var bossCharge = step(EPatternTargeting.BossTowardAggro, HitArea.Rect(16.0f, 3.5f), 2.0f, EDamageTier.Normal,
                         track: true, lockBefore: 0.3f, status: ETag.State_Airborne, statusTime: 1.0f);
@@ -207,9 +207,9 @@ namespace DemoLA.Content
                     InPattern.MaxRange = 16.0f;
                     InPattern.Weight = 2.0f;
                     // 돌진 뒤에는 (그로기로 끝나도) 도약 십자 + 추적 휠윈드. (외곽 이탈 도약 G2-28 은 삭제 — 보스가 구석에 머물러 공격이 끊겼다)
-                    InPattern.FollowUpPatternIds = new List<string> { "G2-23" };
+                    InPattern.FollowUpPatternTags = new List<ETag> { ETag.Pattern_G2_LeapSmashWhirlwind };
                     break;
-                case "G2-24":
+                case ETag.Pattern_G2_AxeChopCounter:
                     // 도끼 찍기 3연: 앞(찍은 곳 원형) → 뒤(같은 공격) → 앞 강타. 마지막 타격만 카운터 가능.
                     var frontSlam = step(EPatternTargeting.BossTowardAggro, HitArea.Circle(3.5f), 1.0f, EDamageTier.Normal);
                     frontSlam.Label = "앞 찍기";
@@ -233,7 +233,7 @@ namespace DemoLA.Content
                     InPattern.Weight = 1.5f;
                     InPattern.RandomSelectable = true;
                     break;
-                case "G2-25":
+                case ETag.Pattern_G2_Skyfall:
                     // 부위파괴 반격 (갑옷 1중첩이 깨질 때마다 ArmorStackGimmick 이 바로 쓴다).
                     // 0초: 경기장 중앙으로 10초 도약 시작 → 1~8초: 1초마다 모든 플레이어 발밑 폭발 → 10초: 착지와 함께
                     // 외곽 띠(캐릭터 크기 1.5배 ≈ 1.5m)를 뺀 맵 전체 즉사 + 큰 충격파. 패턴 내내 외곽 안전지대(파란 도넛) 표시.
@@ -268,7 +268,7 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 0.1f;
                     InPattern.Recovery = 1.0f;
                     break;
-                case "G2-26":
+                case ETag.Pattern_G2_ReLeap:
                     // 135줄 이후 패턴이 끝날 때마다: 어그로 대상 위치로 크게 도약 (Cinemachine 시네마틱) + 착지 충격파.
                     var reLeap = step(EPatternTargeting.AggroTarget, HitArea.Circle(4.0f), 0.7f, EDamageTier.Weak, track: true, lockBefore: 0.3f);
                     reLeap.Label = "재도약";
@@ -284,7 +284,7 @@ namespace DemoLA.Content
                     InPattern.Recovery = 0.5f;
                     InPattern.MaxRange = 99.0f;
                     break;
-                case "G2-27":
+                case ETag.Pattern_G2_PillarCoverDrop:
                     // 135줄 이후: 7초 도약 + 12 · 3 · 6 · 9시 엄폐 기둥 → 착지 충격파(기둥 뒤가 아니면 즉사)
                     // → 무작위 대상을 5초 따라가는 25° 부채꼴 → 정지 0.5초 → 폭발. 부채꼴에 맞은 기둥은 크게 폭발(주변 즉사).
                     var coverLeap = step(EPatternTargeting.ArenaCenter, HitArea.Circle(1.0f), 0.05f, EDamageTier.None, show: false);
@@ -314,7 +314,7 @@ namespace DemoLA.Content
                     InPattern.Recovery = 1.0f;
                     InPattern.MaxRange = 99.0f;
                     break;
-                case "G2-21":
+                case ETag.Pattern_G2_Whirlwind:
                     // 휠윈드: 장판은 처음 1.2초 예고 한 번만 보여 준다. 이후 보스가 계속 돌면서 0.45초마다 4회 더 판정(장판 없음).
                     // 범위에 닿은 외곽 벽이 무너진다.
                     var spinList = new List<PatternStep>();
@@ -333,7 +333,7 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 18.0f;
                     InPattern.Recovery = 1.5f;
                     break;
-                case "G2-22":
+                case ETag.Pattern_G2_TripleSlash:
                     // 3연 베기: 대상을 향한 부채꼴 2회 → 정면 직선 내려베기. 장판 없음 (보스 동작을 보고 피한다).
                     // 범위에 닿은 외곽 벽이 무너진다.
                     var slash1 = step(EPatternTargeting.BossTowardAggro, HitArea.Fan(7.0f, 120.0f), 1.0f, EDamageTier.Normal, track: true, lockBefore: 0.4f, show: false);
@@ -346,7 +346,7 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 14.0f;
                     InPattern.Recovery = 1.5f;
                     break;
-                case "G2-23":
+                case ETag.Pattern_G2_LeapSmashWhirlwind:
                     // 도약 강타 → 추적 휠윈드.
                     // 1) 어그로 대상 위치에 원(5m) + 십자 또는 X(중심에서 20m씩, 전체 40m) 장판. 1.6초 중 마지막 0.5초는 고정.
                     //    보스가 그 중심으로 0.6초 동안 뛰어올라 착지하며 판정 → 맞으면 바깥으로 날아간다.
@@ -395,12 +395,12 @@ namespace DemoLA.Content
                     InPattern.MaxRange = 40.0f;
                     InPattern.Weight = 1.5f;
                     break;
-                case "G2-12":
+                case ETag.Pattern_G2_LeapWedgeVortex:
                     steps(InPattern,
                         step(EPatternTargeting.BossTowardAggro, HitArea.Rect(16.0f, 2.0f), 1.0f, EDamageTier.Normal),
                         step(EPatternTargeting.AggroTarget, HitArea.Circle(2.5f), 4.0f, EDamageTier.Normal, track: true, lockBefore: 0.5f));
                     break;
-                case "G2-13":
+                case ETag.Pattern_G2_SwingSlamBurst:
                     steps(InPattern,
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(6.0f, 150.0f), 0.7f, EDamageTier.Normal),
                         step(EPatternTargeting.BossTowardAggro, HitArea.Fan(6.0f, 150.0f), 0.5f, EDamageTier.Normal),
@@ -408,7 +408,7 @@ namespace DemoLA.Content
                         step(EPatternTargeting.BossForward, HitArea.Circle(7.0f), 0.6f, EDamageTier.Normal),
                         step(EPatternTargeting.BossForward, HitArea.Circle(7.0f), 0.6f, EDamageTier.Normal));
                     break;
-                case "G2-14":
+                case ETag.Pattern_G2_LeapAxeRain:
                     var drops = new List<PatternStep>();
                     for (int i = 0; i < 8; ++i)
                     {
@@ -420,21 +420,21 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 35.0f;
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G2-15":
+                case ETag.Pattern_G2_InOutField:
                     // 안/밖 무작위 변형 미구현 — '안쪽 안전(바깥 판정)' 변형만.
                     steps(InPattern, step(EPatternTargeting.BossForward, HitArea.Donut(3.0f, 12.0f), 1.5f, EDamageTier.Big));
                     break;
-                case "G2-16":
+                case ETag.Pattern_G2_TrackingLaser:
                     steps(InPattern, step(EPatternTargeting.RandomPlayer, HitArea.Fan(14.0f, 35.0f), 2.0f, EDamageTier.Normal, track: true, lockBefore: 0.6f));
                     InPattern.MaxRange = 30.0f;
                     break;
-                case "G2-18":
+                case ETag.Pattern_G2_ChaseFieldSmash:
                     steps(InPattern,
                         step(EPatternTargeting.RandomPlayer, HitArea.Fan(12.0f, 40.0f), 2.0f, EDamageTier.Normal, track: true, lockBefore: 0.6f),
                         step(EPatternTargeting.AggroTarget, HitArea.Circle(4.0f), 0.8f, EDamageTier.Big));
                     InPattern.RandomSelectable = false;
                     break;
-                case "G2-19":
+                case ETag.Pattern_G2_SphereStagger:
                     steps(InPattern, step(EPatternTargeting.BossForward, HitArea.Circle(8.0f), 8.0f, EDamageTier.None));
                     InPattern.StaggerCheck = true;
                     InPattern.StaggerGauge = 1200.0f;
@@ -445,7 +445,7 @@ namespace DemoLA.Content
                     InPattern.Cooldown = 50.0f;
                     InPattern.Weight = 0.4f;
                     break;
-                case "G2-20":
+                case ETag.Pattern_G2_GhostGrab:
                     steps(InPattern, step(EPatternTargeting.BossTowardAggro, HitArea.Fan(8.0f, 120.0f), 1.5f, EDamageTier.Lethal, status: ETag.State_Grabbed, statusTime: 2.0f));
                     InPattern.Cooldown = 25.0f;
                     break;

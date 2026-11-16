@@ -88,7 +88,7 @@ namespace DemoLA.Tests
             var boss = world.Boss("Gate1", Vector3.zero, Vector3.forward);
             float max = player.Stats.Get(EAttr.MaxHealth);
 
-            Assert.IsTrue(boss.TryActivatePattern("G1-11", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G1_SpinKick, player));
             world.Simulate(3.0f);
             float lost = max - player.Stats.Get(EAttr.Health);
             // 등급 비율 × 인원 피해 배율 (PartyBalance — 즉사급이 아니면 적용).
@@ -101,7 +101,7 @@ namespace DemoLA.Tests
         {
             var player = world.Character(ECharacterClass.Slayer, Vector3.forward * 15.0f, false);
             var boss = world.Boss("Gate1", Vector3.zero, Vector3.forward);
-            Assert.IsTrue(boss.TryActivatePattern("G1-11", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G1_SpinKick, player));
             world.Simulate(3.0f);
             Assert.AreEqual(player.Stats.Get(EAttr.MaxHealth), player.Stats.Get(EAttr.Health), 0.1f);
         }
@@ -123,7 +123,7 @@ namespace DemoLA.Tests
 
             Assert.IsNotNull(counterSkill, "인파이터는 카운터 스킬을 가진다");
 
-            Assert.IsTrue(boss.TryActivatePattern("G2-07", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_CounterCharge, player));
             bool used = false;
             world.Simulate(4.0f, 0.05f, InTime =>
             {
@@ -144,7 +144,7 @@ namespace DemoLA.Tests
         {
             var player = world.Character(ECharacterClass.Infighter, Vector3.forward * 2.5f, false);
             var boss = world.Boss("Gate2", Vector3.zero, Vector3.forward);
-            Assert.IsTrue(boss.TryActivatePattern("G2-07", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_CounterCharge, player));
             world.Simulate(4.0f);
             Assert.IsTrue(player.IsDead);
         }
@@ -154,7 +154,7 @@ namespace DemoLA.Tests
         {
             var player = world.Character(ECharacterClass.Infighter, Vector3.forward * 20.0f, false);
             var boss = world.Boss("Gate2", Vector3.zero, Vector3.forward);
-            Assert.IsTrue(boss.TryActivatePattern("G2-19", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_SphereStagger, player));
             world.Simulate(1.0f);
             Assert.IsTrue(boss.HasTag((int)ETag.Boss_StaggerCheck));
             boss.Stats.Set(EAttr.StaggerGauge, 0.0f);
@@ -168,7 +168,7 @@ namespace DemoLA.Tests
         {
             var player = world.Character(ECharacterClass.Infighter, Vector3.forward * 2.5f, true);
             var boss = world.Boss("Gate2", Vector3.zero, Vector3.forward);
-            Assert.IsTrue(boss.TryActivatePattern("G2-19", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_SphereStagger, player));
             world.Simulate(8.5f, 0.05f, InTime =>
             {
                 player.Stats.Set(EAttr.Mana, player.Stats.Get(EAttr.MaxMana));
@@ -188,7 +188,7 @@ namespace DemoLA.Tests
             var player = world.Character(ECharacterClass.Artist, Vector3.forward * 4.0f, false);
             var boss = world.Boss("Gate2", Vector3.zero, Vector3.forward);
             player.ApplyEffect(DemoLA.Effects.GameEffects.DeathWard, boss.Asc);
-            Assert.IsTrue(boss.TryActivatePattern("G2-03", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_LethalFieldDouble, player));
             world.Simulate(3.5f);
             Assert.IsFalse(player.IsDead, "첫 장판은 방어 구슬이 막는다");
             world.Simulate(5.0f);
@@ -211,12 +211,12 @@ namespace DemoLA.Tests
             var db = TestWorld.Database;
             var gate1 = db.GetBoss("Gate1");
             var gate2 = db.GetBoss("Gate2");
-            // xlsx 패턴목록 43개 + 프로젝트 자체 추가 3개 (G2-21 휠윈드 · G2-22 3연 베기 · G2-23 도약 강타 → 추적 휠윈드).
+            // xlsx 패턴목록 43개 + 프로젝트 자체 추가 3개 (Pattern.G2.Whirlwind 휠윈드 · Pattern.G2.TripleSlash 3연 베기 · Pattern.G2.LeapSmashWhirlwind 도약 강타 → 추적 휠윈드).
             Assert.AreEqual(43 + 8, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 8개");
             Assert.AreEqual(5, gate1.Phases.Count);
             Assert.AreEqual(4, gate2.Phases.Count);
-            Assert.AreEqual(EPatternCategory.PartyGimmick, gate1.GetPattern("G1-01").Category);
-            Assert.AreEqual("G2-18", gate2.GetPattern("G2-04").LinkedPatternId);
+            Assert.AreEqual(EPatternCategory.PartyGimmick, gate1.GetPattern(ETag.Pattern_G1_OrbStagger).Category);
+            Assert.AreEqual(ETag.Pattern_G2_ChaseFieldSmash, gate2.GetPattern(ETag.Pattern_G2_ChasingLethalField).LinkedPatternTag);
             foreach (var pattern in gate1.Patterns)
             {
                 Assert.IsFalse(pattern.TimingsMeasured, "xlsx 에 시간 측정값이 없으므로 전부 미측정");

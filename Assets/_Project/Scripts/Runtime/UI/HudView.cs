@@ -516,7 +516,7 @@ namespace DemoLA.UI
 
             if (boss.ActivePattern != null)
             {
-                builder.Append($"   {boss.ActivePattern.Definition.PatternId} {boss.ActivePattern.Definition.DisplayName}");
+                builder.Append($"   {boss.ActivePattern.Definition.TagName} {boss.ActivePattern.Definition.DisplayName}");
             }
 
             bossState.text = builder.ToString();

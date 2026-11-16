@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "TS_G2-28_\uC678\uACFD\uC774\uD0C8_\uC5C6\uC74C"
   m_EditorClassIdentifier: Framework.Testing::Framework.Testing.TestScenarioAsset
   DisplayName: "G2-28 \uC678\uACFD \uC774\uD0C8 \uC5C6\uC74C"
-  Description: "\uBCF4\uC2A4 AI \uB85C 2\uBD84: \uB3CC\uC9C4(G2-11)\uC774 \uC5EC\uB7EC
+  Description: "\uBCF4\uC2A4 AI \uB85C 2\uBD84: \uB3CC\uC9C4(Pattern.G2.Charge)\uC774 \uC5EC\uB7EC
     \uBC88 \uB098\uC640\uB3C4 \uC678\uACFD \uC774\uD0C8 \uB3C4\uC57D(G2-28)\uC740
     \uB098\uC624\uC9C0 \uC54A\uB294\uB2E4 (\uC0AD\uC81C \u2014 \uBCF4\uC2A4\uAC00
     \uC678\uACFD \uAD6C\uC11D\uC5D0 \uBA38\uBB3C\uB7EC \uACF5\uACA9\uC774 \uB04A\uACBC\uB2E4)"
@@ -81,7 +81,7 @@ MonoBehaviour:
         OnEvaluated:
           m_PersistentCalls:
             m_Calls: []
-        EventName: Pattern.Started.G2-11
+        EventName: Pattern.Started.Pattern.G2.Charge
         Aggregate: 0
     - rid: 7158115700374503513
       type: {class: EventExpectation, ns: Framework.Testing, asm: Framework.Testing}

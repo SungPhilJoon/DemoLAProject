@@ -6,14 +6,14 @@ namespace DemoLA.Boss
 {
     public enum ECollapseStage
     {
-        /// <summary>G2-05: 좌/우 중 무작위 절반.</summary>
+        /// <summary>Pattern.G2.TerrainBreakHalf: 좌/우 중 무작위 절반.</summary>
         RandomHalf = 0,
-        /// <summary>G2-06: 중앙 판만 남김.</summary>
+        /// <summary>Pattern.G2.TerrainBreakCenter: 중앙 판만 남김.</summary>
         AllExceptCenter = 1,
     }
 
     /// <summary>
-    /// G2-05 / G2-06 지형 파괴. WarningTime 동안 무너질 구역을 표시한 뒤 ArenaFloor 타일을 무너뜨린다.
+    /// Pattern.G2.TerrainBreakHalf / Pattern.G2.TerrainBreakCenter 지형 파괴. WarningTime 동안 무너질 구역을 표시한 뒤 ArenaFloor 타일을 무너뜨린다.
     /// 무너진 곳 위에 있으면 ArenaFloor 가 낙사 처리한다. 이 구간 보스 피해 감소(S11 단일 출처)는 적용하지 않았다.
     /// </summary>
     public class TerrainCollapseGimmick : BossGimmick

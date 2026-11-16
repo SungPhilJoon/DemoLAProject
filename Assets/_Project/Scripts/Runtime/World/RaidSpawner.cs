@@ -117,8 +117,7 @@ namespace DemoLA.World
 
             if (gimmick != null)
             {
-                gimmick.GimmickId = InSpec.GimmickId;
-                gimmick.PatternId = InSpec.GimmickId;
+                gimmick.GimmickTag = InSpec.GimmickTag;
             }
         }
 

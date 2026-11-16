@@ -8,9 +8,9 @@ using UnityEngine;
 namespace DemoLA.Boss
 {
     /// <summary>
-    /// G1-01 구슬 획득 후 무력화.
+    /// Pattern.G1.OrbStagger 구슬 획득 후 무력화.
     /// 보스 기준 8방향에 붉은/푸른 구슬 생성 → 구슬은 보스 쪽으로 다가온다 → 색을 번갈아 획득 →
-    /// 전부 모으면 무력화 패턴(StaggerPatternId) 시작 → 무력화 성공 = 기믹 성공.
+    /// 전부 모으면 무력화 패턴(StaggerPatternTag) 시작 → 무력화 성공 = 기믹 성공.
     /// 같은 색 연속 = 전멸, 구슬이 보스에 닿음 = 실패(OrbReachOutcome).
     /// </summary>
     public class OrbAlternationGimmick : BossGimmick
@@ -21,9 +21,9 @@ namespace DemoLA.Boss
         public float OrbSpeed = 0.8f;
         public float CurseDuration = 8.0f;
         [Tooltip("모두 모은 뒤 쓰는 무력화 패턴 (BossPatternDefinition.StaggerCheck = true)")]
-        public string StaggerPatternId = "G1-01";
+        [PatternTag] public ETag StaggerPatternTag = ETag.Pattern_G1_OrbStagger;
         [Tooltip("구슬이 보스에 닿았을 때 쓰는 패턴 (비우면 기믹 실패만)")]
-        public string OrbReachChainPatternId = "G1-22";
+        [PatternTag] public ETag OrbReachChainPatternTag = ETag.Pattern_G1_StaggerFailChain;
         public Color RedColor = new Color(1.0f, 0.2f, 0.2f);
         public Color BlueColor = new Color(0.2f, 0.4f, 1.0f);
 
@@ -121,7 +121,7 @@ namespace DemoLA.Boss
             if (result == EOrbPickResult.SameColorTwice)
             {
                 Raid.Message("같은 색 구슬을 연속으로 획득 — 전멸", 3.0f, true);
-                Raid.WipeParty(Boss, PatternId);
+                Raid.WipeParty(Boss, GameTags.ToTagString(GimmickTag));
                 Complete(false);
                 return;
             }
@@ -130,7 +130,7 @@ namespace DemoLA.Boss
             {
                 waitingStagger = true;
                 Boss.RemoveTag((int)ETag.Boss_Channeling);
-                if (Boss.TryActivatePattern(StaggerPatternId, null) == false)
+                if (Boss.TryActivatePattern(StaggerPatternTag, null) == false)
                 {
                     // 무력화 패턴이 없으면 구슬 수집만으로 성공 처리.
                     Complete(true);
@@ -142,7 +142,7 @@ namespace DemoLA.Boss
         {
             rule.OrbReachedBoss();
             Raid.Message("구슬이 보스에 닿았습니다 — 실패", 2.5f, true);
-            Boss.QueuePattern(OrbReachChainPatternId);
+            Boss.QueuePattern(OrbReachChainPatternTag);
             Complete(false);
         }
 
@@ -156,7 +156,7 @@ namespace DemoLA.Boss
 
         private void handlePatternEnded(BossPatternAbility InAbility, bool InCancelled)
         {
-            if (waitingStagger == false || InAbility.Definition.PatternId != StaggerPatternId)
+            if (waitingStagger == false || InAbility.Definition.PatternTag != StaggerPatternTag)
             {
                 return;
             }

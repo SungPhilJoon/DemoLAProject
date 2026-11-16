@@ -79,8 +79,8 @@ namespace DemoLA.Tests
         {
             var boss = world.Boss("Gate2", Vector3.zero, Vector3.forward);
             world.Combatant(DemoLA.Core.ETeam.Player, Vector3.forward * 4.0f, 10000000.0f);
-            var pattern = boss.Definition.GetPattern("G2-24");
-            Assert.IsNotNull(pattern, "G2-24 도끼 앞뒤 찍기 → 카운터 강타");
+            var pattern = boss.Definition.GetPattern(ETag.Pattern_G2_AxeChopCounter);
+            Assert.IsNotNull(pattern, "Pattern.G2.AxeChopCounter 도끼 앞뒤 찍기 → 카운터 강타");
             Assert.AreEqual(3, pattern.Steps.Count);
             Assert.IsFalse(pattern.Steps[0].Counterable, "앞 찍기 카운터 불가");
             Assert.IsFalse(pattern.Steps[1].Counterable, "뒤 찍기 카운터 불가");
@@ -96,7 +96,7 @@ namespace DemoLA.Tests
             float secondHit = hit;
             float lastTelegraph = pattern.StepTiming(2, ref cursor, out hit, out end);
 
-            Assert.IsTrue(boss.TryActivatePattern("G2-24", null));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_AxeChopCounter, null));
             float firstOpen = -1.0f;
             world.Simulate(hit + 0.5f, 0.02f, t =>
             {

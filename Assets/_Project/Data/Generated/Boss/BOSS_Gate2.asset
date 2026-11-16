@@ -32,12 +32,12 @@ MonoBehaviour:
       \uC804\uD22C \uC2DC\uC791 / \uC885\uB8CC: \uCCB4\uB825 128~130\uC904 \uC989\uC0AC
       \uC7A5\uD310 \uCC98\uB9AC \uD6C4"
     EnterAtHpLine: -1
-    PatternIds:
-    - G2-01
-    - G2-02
-    - G2-03
-    - G2-12
-    - G2-14
+    PatternTags:
+    - 251
+    - 252
+    - 253
+    - 262
+    - 264
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -48,16 +48,16 @@ MonoBehaviour:
       15~16\uC904 \uBD80\uADFC \uC5F0\uC18D \uD0C0\uACA9 \uD328\uD134 \uC774\uD6C4
       \uC720\uB839 \uC804\uD658"
     EnterAtHpLine: -1
-    PatternIds:
-    - G2-04
-    - G2-05
-    - G2-06
-    - G2-07
-    - G2-08
-    - G2-09
-    - G2-17
-    - G2-18
-    - G2-19
+    PatternTags:
+    - 254
+    - 255
+    - 256
+    - 257
+    - 258
+    - 259
+    - 267
+    - 268
+    - 269
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -67,9 +67,9 @@ MonoBehaviour:
       15~16\uC904 \uBD80\uADFC \uC720\uB839 \uBC1C\uD0C4\uC73C\uB85C \uC804\uD658
       / \uC885\uB8CC: \uACA9\uD30C"
     EnterAtHpLine: -1
-    PatternIds:
-    - G2-10
-    - G2-20
+    PatternTags:
+    - 260
+    - 270
     ResetHpLines: 40
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -80,15 +80,15 @@ MonoBehaviour:
       \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134 / \uC885\uB8CC:
       \uD574\uB2F9 \uC5C6\uC74C"
     EnterAtHpLine: -1
-    PatternIds:
-    - G2-11
-    - G2-13
-    - G2-15
-    - G2-16
-    - G2-21
-    - G2-22
-    - G2-23
-    - G2-24
+    PatternTags:
+    - 261
+    - 263
+    - 265
+    - 266
+    - 271
+    - 272
+    - 273
+    - 274
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -140,13 +140,13 @@ MonoBehaviour:
     Text: "\uBB34\uB98E \uAFC7\uC5B4\uB77C. \uADF8 \uC790\uB9AC\uAC00 \uB108\uD76C\uC758
       \uBB34\uB364\uC774 \uB420 \uD14C\uB2C8!"
   Gimmicks:
-  - GimmickId: G2-01
+  - GimmickTag: 251
     Kind: 4
-  - GimmickId: G2-02
+  - GimmickTag: 252
     Kind: 1
-  - GimmickId: G2-05
+  - GimmickTag: 255
     Kind: 2
-  - GimmickId: G2-06
+  - GimmickTag: 256
     Kind: 3
   Weaknesses:
   - Element: 7

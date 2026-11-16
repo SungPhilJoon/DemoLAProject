@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DemoLA.Core;
 using Framework.StateTree;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace DemoLA.Boss
         [TextArea] public string EnterConditionText;
         [Tooltip("이 체력 줄 이하가 되면 진입 (-1 = 전투 시작 / 기믹 결과로만 진입)")]
         public float EnterAtHpLine = -1.0f;
-        public List<string> PatternIds = new List<string>();
+        [PatternTag] public List<ETag> PatternTags = new List<ETag>();
         [Tooltip("진입 시 체력 줄을 다시 채운다 (유령 구간: 40줄) — 0 이면 유지")]
         public int ResetHpLines;
         public float TransitionTime;
@@ -34,7 +35,8 @@ namespace DemoLA.Boss
     [Serializable]
     public class GimmickSpec
     {
-        public string GimmickId = "G1-01";
+        [Tooltip("기믹 ID = 그 기믹을 다루는 패턴 태그 (Pattern.G1.OrbStagger)")]
+        [PatternTag] public ETag GimmickTag = ETag.Pattern_G1_OrbStagger;
         public EGimmickKind Kind;
     }
 
@@ -119,11 +121,16 @@ namespace DemoLA.Boss
             return 1.0f;
         }
 
-        public BossPatternDefinition GetPattern(string InPatternId)
+        public BossPatternDefinition GetPattern(ETag InPatternTag)
         {
+            if (InPatternTag == ETag.None)
+            {
+                return null;
+            }
+
             for (int i = 0; i < Patterns.Count; ++i)
             {
-                if (Patterns[i] != null && Patterns[i].PatternId == InPatternId)
+                if (Patterns[i] != null && Patterns[i].PatternTag == InPatternTag)
                 {
                     return Patterns[i];
                 }

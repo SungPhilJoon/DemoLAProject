@@ -17,7 +17,7 @@ namespace DemoLA.World
         LifePillar = 0,
         /// <summary>외곽 벽 (직육면체). 보스의 휠윈드 · 3연 베기 범위에 닿으면 부서진다. 구슬 없음.</summary>
         Wall = 1,
-        /// <summary>엄폐 기둥 (패턴이 솟아나게 하는 임시 기둥, G2-27). 뒤에 숨으면 충격파를 막는다. 부채꼴에 맞으면 폭발.</summary>
+        /// <summary>엄폐 기둥 (패턴이 솟아나게 하는 임시 기둥, Pattern.G2.PillarCoverDrop). 뒤에 숨으면 충격파를 막는다. 부채꼴에 맞으면 폭발.</summary>
         Cover = 2,
     }
 

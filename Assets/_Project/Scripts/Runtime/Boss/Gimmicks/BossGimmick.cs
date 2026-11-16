@@ -1,3 +1,4 @@
+using DemoLA.Core;
 using Framework;
 using UnityEngine;
 
@@ -12,28 +13,21 @@ namespace DemoLA.Boss
     }
 
     /// <summary>
-    /// 보스 기믹 (xlsx 분류 '기믹'/'파티 기믹'). 보스 오브젝트에 컴포넌트로 붙이고 GimmickId 로 StateTree 에서 시작한다.
+    /// 보스 기믹 (xlsx 분류 '기믹'/'파티 기믹'). 보스 오브젝트에 컴포넌트로 붙이고 GimmickTag(그 기믹 패턴의 태그)로 StateTree 에서 시작한다.
     /// 수치(시간, 개수, 반경)는 인스펙터에서 바꾸는 자리 표시 값이다.
     /// </summary>
     public abstract class BossGimmick : BaseBehaviour
     {
-        [SerializeField] private string gimmickId;
-        [SerializeField] private string patternId;
+        [SerializeField, PatternTag] private ETag gimmickTag;
 
         public EGimmickState State { get; private set; }
         public BossActor Boss { get; private set; }
 
-        public string GimmickId
+        /// <summary>기믹 ID = 이 기믹을 다루는 패턴 태그 (예: Pattern_G1_OrbStagger).</summary>
+        public ETag GimmickTag
         {
-            get { return gimmickId; }
-            set { gimmickId = value; }
-        }
-
-        /// <summary>xlsx 패턴 ID (예: G1-01).</summary>
-        public string PatternId
-        {
-            get { return patternId; }
-            set { patternId = value; }
+            get { return gimmickTag; }
+            set { gimmickTag = value; }
         }
 
         /// <summary>HUD 에 띄울 진행 상황 한 줄.</summary>

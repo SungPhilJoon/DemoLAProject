@@ -18,7 +18,7 @@ namespace DemoLA.AI
 
     /// <summary>
     /// 대상 선택 규칙(PatternTargetSelector)으로 플레이어 1명을 골라 다음 패턴 대상 또는 보스 어그로로 지정한다.
-    /// 예: [패턴 공격] 상태 Tasks = SelectTargetTask(Farthest) → UsePatternTask(G2-11 돌진).
+    /// 예: [패턴 공격] 상태 Tasks = SelectTargetTask(Farthest) → UsePatternTask(Pattern.G2.Charge 돌진).
     /// 도발 중에는 고른 대상과 상관없이 도발한 대상을 노린다.
     /// </summary>
     [Serializable]
@@ -138,30 +138,30 @@ namespace DemoLA.AI
         }
     }
 
-    /// <summary>마지막으로 끝난 패턴이 PatternId 인가 (Invert 로 "아닌가"). 아직 끝난 패턴이 없으면 false (Invert 면 RequireAnyPattern 에 따라).</summary>
+    /// <summary>마지막으로 끝난 패턴이 PatternTag 이거나 그 하위 태그인가 (GameplayTag MatchesTag — Pattern.G2 를 넣으면 2관문 패턴 전체). Invert 로 "아닌가". 아직 끝난 패턴이 없으면 false (Invert 면 RequireAnyPattern 에 따라).</summary>
     [Serializable]
     [StateTreeNodeInfo("DemoLA/Boss", "마지막으로 끝난 패턴 비교 (재도약처럼 패턴이 끝날 때마다 끼워 넣기)")]
     public class LastPatternCondition : StateTreeCondition
     {
-        [DemoLA.Boss.PatternId] public string PatternId = "G2-26";
+        [PatternTag] public ETag PatternTag = ETag.Pattern_G2_ReLeap;
         [Tooltip("끝난 패턴이 하나도 없으면 false (전투 시작 직후 제외)")]
         public bool RequireAnyPattern = true;
 
         protected override bool Test(StateTreeContext InContext)
         {
             var boss = AIContext.Boss(InContext);
-            if (boss == null || string.IsNullOrEmpty(boss.LastEndedPatternId) == true)
+            if (boss == null || boss.LastEndedPatternTag == ETag.None)
             {
                 // Invert 가 결과를 뒤집으므로, "끝난 패턴 없음" 을 항상 거짓으로 만들려면 Invert 를 미리 반영한다.
                 return RequireAnyPattern == true ? Invert : false;
             }
 
-            return boss.LastEndedPatternId == PatternId;
+            return GameTags.Matches(boss.LastEndedPatternTag, PatternTag);
         }
 
         public override string Describe()
         {
-            return $"Last pattern {(Invert ? "!=" : "==")} {PatternId}";
+            return $"Last pattern {(Invert ? "!=" : "==")} {GameTags.ToTagString(PatternTag)}";
         }
     }
 }

@@ -3,7 +3,7 @@ using Framework;
 
 namespace DemoLA.Data
 {
-    /// <summary>xlsx 페이즈 시트 한 행. PatternIds 는 '|' 구분.</summary>
+    /// <summary>xlsx 페이즈 시트 한 행. PatternTags 는 '|' 구분.</summary>
     [Serializable]
     public class BossPhaseRow : ITableRow
     {
@@ -11,7 +11,7 @@ namespace DemoLA.Data
         public string PhaseId;
         public string Name;
         public string EnterCondition;
-        public string[] PatternIds;
+        public string[] PatternTags;
         public string EndCondition;
         public string Notes;
 

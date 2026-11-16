@@ -187,7 +187,7 @@ namespace DemoLA.Network
             BossImpactFx.Play(InPosition, InRadius, InStrength);
         }
 
-        // 엄폐 기둥 (G2-27): 솟아남 · 사라짐. 폭발(파괴)은 StructureBrokenRpc 가 이름으로 처리한다.
+        // 엄폐 기둥 (Pattern.G2.PillarCoverDrop): 솟아남 · 사라짐. 폭발(파괴)은 StructureBrokenRpc 가 이름으로 처리한다.
         private void serverCoverSpawned(Vector3[] InPositions)
         {
             CoverSpawnedRpc(InPositions);

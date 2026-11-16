@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DemoLA.Boss;
+using DemoLA.Core;
 using DemoLA.Data;
 using UnityEditor;
 using UnityEngine;
@@ -37,12 +38,12 @@ namespace DemoLA.Editor.Gas
         }
 
         /// <summary>다른 툴(StateTree Editor 의 패턴 ID 칸 · 컨텍스트 패널)에서 특정 보스 패턴을 열 때.</summary>
-        public static void OpenPattern(string InPatternId)
+        public static void OpenPattern(ETag InPatternTag)
         {
             Open();
             var window = GetWindow<GasToolWindow>();
             window.Tab = 0;
-            window.SelectedPatternId = InPatternId;
+            window.SelectedPatternTag = InPatternTag;
             window.SelectedSkill = null;
             window.Focus();
         }
@@ -62,7 +63,7 @@ namespace DemoLA.Editor.Gas
             var pattern = InCommand.context as BossPatternDefinition;
             if (pattern != null)
             {
-                OpenPattern(pattern.PatternId);
+                OpenPattern(pattern.PatternTag);
             }
         }
 
@@ -199,13 +200,13 @@ namespace DemoLA.Editor.Gas
             EditorGUILayout.LabelField(InText, EditorStyles.miniBoldLabel);
         }
 
-        /// <summary>InPatternId 를 가진 보스 · 페이즈 이름들.</summary>
-        private List<string> patternOwners(string InPatternId)
+        /// <summary>InPatternTag 를 가진 보스 · 페이즈 이름들.</summary>
+        private List<string> patternOwners(ETag InPatternTag)
         {
             var owners = new List<string>();
             foreach (var boss in Database.Bosses)
             {
-                if (boss == null || boss.GetPattern(InPatternId) == null)
+                if (boss == null || boss.GetPattern(InPatternTag) == null)
                 {
                     continue;
                 }
@@ -213,7 +214,7 @@ namespace DemoLA.Editor.Gas
                 var phases = new List<string>();
                 foreach (var phase in boss.Phases)
                 {
-                    if (phase.PatternIds.Contains(InPatternId) == true)
+                    if (phase.PatternTags.Contains(InPatternTag) == true)
                     {
                         phases.Add(phase.PhaseId);
                     }

@@ -32,8 +32,8 @@ MonoBehaviour:
       / \uC9C4\uC785: \uC804\uD22C \uC2DC\uC791 / \uC885\uB8CC: \uBCF4\uC2A4 \uBD84\uC5F4(\uCCB4\uB825
       46\uC904 \uBD80\uADFC)"
     EnterAtHpLine: -1
-    PatternIds:
-    - G1-05
+    PatternTags:
+    - 215
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -43,12 +43,12 @@ MonoBehaviour:
       \uBCF4\uC2A4 \uBD84\uC5F4 \uC644\uB8CC / \uC885\uB8CC: \uCCB4\uB825 30\uC904
       \uAD6C\uC2AC \uAE30\uBBF9 \uBB34\uB825\uD654 \uC131\uACF5"
     EnterAtHpLine: -1
-    PatternIds:
-    - G1-01
-    - G1-02
-    - G1-03
-    - G1-09
-    - G1-23
+    PatternTags:
+    - 211
+    - 212
+    - 213
+    - 219
+    - 233
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -59,8 +59,8 @@ MonoBehaviour:
       \uCCB4\uB825 15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9 \uC774\uD6C4
       \uD569\uCCB4"
     EnterAtHpLine: -1
-    PatternIds:
-    - G1-01
+    PatternTags:
+    - 211
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -70,8 +70,8 @@ MonoBehaviour:
       / \uC9C4\uC785: 15~17\uC904 \uBD80\uADFC \uAD6C\uC2AC \uAE30\uBBF9 \uC774\uD6C4
       \uD569\uCCB4 / \uC885\uB8CC: \uACA9\uD30C"
     EnterAtHpLine: -1
-    PatternIds:
-    - G1-04
+    PatternTags:
+    - 214
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -82,24 +82,24 @@ MonoBehaviour:
       \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134 / \uC885\uB8CC:
       \uD574\uB2F9 \uC5C6\uC74C"
     EnterAtHpLine: -1
-    PatternIds:
-    - G1-01
-    - G1-06
-    - G1-07
-    - G1-08
-    - G1-10
-    - G1-11
-    - G1-12
-    - G1-13
-    - G1-14
-    - G1-15
-    - G1-16
-    - G1-17
-    - G1-18
-    - G1-19
-    - G1-20
-    - G1-21
-    - G1-22
+    PatternTags:
+    - 211
+    - 216
+    - 217
+    - 218
+    - 220
+    - 221
+    - 222
+    - 223
+    - 224
+    - 225
+    - 226
+    - 227
+    - 228
+    - 229
+    - 230
+    - 231
+    - 232
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
     Text: "\uB3CC\uC544\uAC08 \uAE38\uC740 \uC5C6\uB2E4. \uC5EC\uAE30\uC11C \uC7AC\uAC00
       \uB418\uC5B4\uB77C!"
   Gimmicks:
-  - GimmickId: G1-01
+  - GimmickTag: 211
     Kind: 0
   Weaknesses:
   - Element: 7

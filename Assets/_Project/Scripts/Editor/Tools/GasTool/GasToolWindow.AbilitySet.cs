@@ -1,5 +1,6 @@
 using System.Linq;
 using DemoLA.Boss;
+using DemoLA.Core;
 using DemoLA.Character;
 using UnityEditor;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace DemoLA.Editor.Gas
 {
     /// <summary>
     /// [Ability Set] 탭: 보스가 가진 패턴 목록(BossDefinition.Patterns) · 직업이 가진 스킬 목록 — 언리얼 Lyra 의 AbilitySet 대응.
-    /// 보스는 생성 시 이 순서대로 패턴 어빌리티를 부여(GiveAbility)한다. 페이즈 칸 = 랜덤 패턴 공격이 고르는 후보 (BossPhaseDefinition.PatternIds).
+    /// 보스는 생성 시 이 순서대로 패턴 어빌리티를 부여(GiveAbility)한다. 페이즈 칸 = 랜덤 패턴 공격이 고르는 후보 (BossPhaseDefinition.PatternTags).
     /// AI 가 언제 어떤 패턴을 쓰는지는 StateTree Editor 에서 정한다.
     /// </summary>
     public partial class GasToolWindow
@@ -98,32 +99,32 @@ namespace DemoLA.Editor.Gas
             }
 
             BossPatternDefinition remove = null;
-            foreach (var pattern in InBoss.Patterns.Where(p => p != null).OrderBy(p => p.PatternId))
+            foreach (var pattern in InBoss.Patterns.Where(p => p != null).OrderBy(p => p.PatternTag))
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    string label = $"[{pattern.PatternId}] {pattern.DisplayName}{(pattern.IsCounterable ? " ◆" : string.Empty)}";
+                    string label = $"[{pattern.TagName}] {pattern.DisplayName}{(pattern.IsCounterable ? " ◆" : string.Empty)}";
                     if (GUILayout.Button(new GUIContent(label, "GAS Tool Ability 탭에서 열기"), EditorStyles.label, GUILayout.Width(300)) == true)
                     {
                         Tab = 0;
-                        SelectedPatternId = pattern.PatternId;
+                        SelectedPatternTag = pattern.PatternTag;
                         SelectedSkill = null;
                     }
 
                     foreach (var phase in InBoss.Phases)
                     {
-                        bool on = phase.PatternIds.Contains(pattern.PatternId);
+                        bool on = phase.PatternTags.Contains(pattern.PatternTag);
                         bool next = EditorGUILayout.Toggle(on, GUILayout.Width(70));
                         if (next != on)
                         {
                             Undo.RecordObject(InBoss, "페이즈 패턴 목록");
                             if (next == true)
                             {
-                                phase.PatternIds.Add(pattern.PatternId);
+                                phase.PatternTags.Add(pattern.PatternTag);
                             }
                             else
                             {
-                                phase.PatternIds.Remove(pattern.PatternId);
+                                phase.PatternTags.Remove(pattern.PatternTag);
                             }
 
                             EditorUtility.SetDirty(InBoss);
@@ -137,13 +138,13 @@ namespace DemoLA.Editor.Gas
                 }
             }
 
-            if (remove != null && EditorUtility.DisplayDialog("GAS Tool", $"{remove.PatternId} 을(를) {InBoss.DisplayName} 에서 빼고 에셋을 지울까요?", "지우기", "취소") == true)
+            if (remove != null && EditorUtility.DisplayDialog("GAS Tool", $"{remove.TagName} 을(를) {InBoss.DisplayName} 에서 빼고 에셋을 지울까요?", "지우기", "취소") == true)
             {
                 Undo.RecordObject(InBoss, "패턴 제거");
                 InBoss.Patterns.Remove(remove);
                 foreach (var phase in InBoss.Phases)
                 {
-                    phase.PatternIds.Remove(remove.PatternId);
+                    phase.PatternTags.Remove(remove.PatternTag);
                 }
 
                 EditorUtility.SetDirty(InBoss);

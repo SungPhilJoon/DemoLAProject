@@ -47,7 +47,7 @@ MonoBehaviour:
     - rid: 7158115530749248051
     Transitions: []
   - Id: 4
-    Name: "G1-05 \uBD84\uC5F4 (46\uC904)"
+    Name: "Pattern.G1.Split \uBD84\uC5F4 (46\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
     - rid: 7158115530749248056
     Transitions: []
   - Id: 5
-    Name: "G1-01 \uAD6C\uC2AC \uBB34\uB825\uD654 (30\uC904)"
+    Name: "Pattern.G1.OrbStagger \uAD6C\uC2AC \uBB34\uB825\uD654 (30\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -86,7 +86,7 @@ MonoBehaviour:
     - rid: 7158115530749248063
     Transitions: []
   - Id: 7
-    Name: "G1-01 \uAD6C\uC2AC \uBB34\uB825\uD654 (16\uC904)"
+    Name: "Pattern.G1.OrbStagger \uAD6C\uC2AC \uBB34\uB825\uD654 (16\uC904)"
     ParentId: 1
     Enabled: 1
     Selection: 0
@@ -214,7 +214,7 @@ MonoBehaviour:
       type: {class: UsePatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternId: G1-05
+        PatternTag: 215
         WaitForEnd: 1
     - rid: 7158115530749248057
       type: {class: HpLineCondition, ns: DemoLA.AI, asm: DemoLA.Runtime}
@@ -242,7 +242,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G1-01
+        GimmickTag: 211
         WaitForCompletion: 1
         ResetFirst: 1
     - rid: 7158115530749248061
@@ -291,7 +291,7 @@ MonoBehaviour:
       type: {class: StartGimmickTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        GimmickId: G1-01
+        GimmickTag: 211
         WaitForCompletion: 1
         ResetFirst: 1
     - rid: 7158115530749248068
@@ -318,7 +318,7 @@ MonoBehaviour:
       type: {class: UseRandomPatternTask, ns: DemoLA.AI, asm: DemoLA.Runtime}
       data:
         Enabled: 1
-        PatternIds: []
+        PatternTags: []
         CommonPhaseId: "G1-\uACF5\uD1B5"
         ExcludeCharges: 0
     - rid: 7158115530749248072
@@ -344,6 +344,6 @@ MonoBehaviour:
         Enabled: 1
         Operand: 0
         Invert: 0
-        PatternIds: []
+        PatternTags: []
         CommonPhaseId: "G1-\uACF5\uD1B5"
         ExcludeCharges: 0

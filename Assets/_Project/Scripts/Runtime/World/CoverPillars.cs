@@ -7,7 +7,7 @@ using UnityEngine.AI;
 namespace DemoLA.World
 {
     /// <summary>
-    /// 엄폐 기둥 (G2-27 기둥 엄폐 낙하): 경기장 중심 기준 12 · 3 · 6 · 9시 방향에 솟아나는 임시 기둥 4개.
+    /// 엄폐 기둥 (Pattern.G2.PillarCoverDrop 기둥 엄폐 낙하): 경기장 중심 기준 12 · 3 · 6 · 9시 방향에 솟아나는 임시 기둥 4개.
     ///  - 충격파(PatternStep.BlockedByCover)는 원점 → 대상 선분이 기둥을 지나면 막힌다 = 기둥 "뒤" 에 있으면 안전.
     ///  - 부채꼴(PatternStep.ExplodesCover)에 맞은 기둥은 크게 폭발한다 (주변 즉사).
     ///  - 패턴이 끝나면 땅속으로 들어가 사라진다.

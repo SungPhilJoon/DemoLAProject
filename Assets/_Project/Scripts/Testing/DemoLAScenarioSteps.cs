@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DemoLA.Character;
+using DemoLA.Core;
 using Framework.Testing;
 using UnityEngine;
 
@@ -101,7 +102,7 @@ namespace DemoLA.Testing
     [Serializable]
     public class ActivatePatternStep : DemoLAStep
     {
-        public string PatternId = "G2-11";
+        [DemoLA.Boss.PatternTag] public ETag PatternTag = ETag.Pattern_G2_Charge;
         [Tooltip("패턴 대상 파티원 번호")]
         public int TargetMember;
         public bool ClearCooldowns = true;
@@ -118,9 +119,9 @@ namespace DemoLA.Testing
                 yield break;
             }
 
-            if (boss.GetPattern(PatternId) == null)
+            if (boss.GetPattern(PatternTag) == null)
             {
-                Fail(InContext, $"보스에 패턴 '{PatternId}' 없음");
+                Fail(InContext, $"보스에 패턴 '{PatternTag}' 없음");
                 yield break;
             }
 
@@ -130,7 +131,7 @@ namespace DemoLA.Testing
             }
 
             Framework.Ability.EActivateFailReason reason;
-            if (boss.TryActivatePattern(PatternId, host.Member(TargetMember), out reason) == false)
+            if (boss.TryActivatePattern(PatternTag, host.Member(TargetMember), out reason) == false)
             {
                 var tags = new List<string>();
                 foreach (var tag in new[] { DemoLA.Core.ETag.State_Groggy, DemoLA.Core.ETag.Boss_PatternBusy, DemoLA.Core.ETag.Boss_Untargetable, DemoLA.Core.ETag.State_Casting, DemoLA.Core.ETag.Boss_Channeling })
@@ -141,7 +142,7 @@ namespace DemoLA.Testing
                     }
                 }
 
-                Fail(InContext, $"패턴 '{PatternId}' 발동 실패 (이유 {reason}, 보스 상태 [{string.Join(",", tags)}], 활성 패턴 {(boss.ActivePattern != null ? boss.ActivePattern.Definition.PatternId : "-")})");
+                Fail(InContext, $"패턴 '{PatternTag}' 발동 실패 (이유 {reason}, 보스 상태 [{string.Join(",", tags)}], 활성 패턴 {(boss.ActivePattern != null ? boss.ActivePattern.Definition.PatternTag : "-")})");
                 yield break;
             }
 
@@ -150,13 +151,13 @@ namespace DemoLA.Testing
                 yield break;
             }
 
-            string endEvent = $"Pattern.Ended.{PatternId}";
+            string endEvent = $"Pattern.Ended.{PatternTag}";
             float end = InContext.Elapsed + Timeout;
             while (InContext.Recorder.Count(endEvent) == 0)
             {
                 if (InContext.Elapsed >= end)
                 {
-                    Fail(InContext, $"패턴 '{PatternId}' 이 {Timeout:0.#}초 안에 끝나지 않음");
+                    Fail(InContext, $"패턴 '{PatternTag}' 이 {Timeout:0.#}초 안에 끝나지 않음");
                     yield break;
                 }
 
@@ -166,7 +167,7 @@ namespace DemoLA.Testing
 
         public override string Describe()
         {
-            return string.IsNullOrEmpty(Label) ? $"패턴 {PatternId} 발동" : Label;
+            return string.IsNullOrEmpty(Label) ? $"패턴 {PatternTag} 발동" : Label;
         }
     }
 

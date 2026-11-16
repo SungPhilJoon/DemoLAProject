@@ -98,8 +98,8 @@ namespace DemoLA.Editor.Pipeline
                 boss = boss.Definition.DisplayName,
                 hpLines = boss.HpLinesExact,
                 phase = boss.CurrentPhaseId,
-                pattern = boss.ActivePattern != null ? boss.ActivePattern.Definition.PatternId : null,
-                gimmick = boss.ActiveGimmick != null ? boss.ActiveGimmick.GimmickId : null,
+                pattern = boss.ActivePattern != null ? boss.ActivePattern.Definition.TagName : null,
+                gimmick = boss.ActiveGimmick != null ? DemoLA.Core.GameTags.ToTagString(boss.ActiveGimmick.GimmickTag) : null,
                 party,
             };
         }

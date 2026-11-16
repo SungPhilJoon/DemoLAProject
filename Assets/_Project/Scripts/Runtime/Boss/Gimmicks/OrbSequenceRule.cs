@@ -9,14 +9,14 @@ namespace DemoLA.Boss
     public enum EOrbPickResult
     {
         Accepted = 0,
-        /// <summary>같은 색을 연속으로 획득 → 전멸 (xlsx G1-01).</summary>
+        /// <summary>같은 색을 연속으로 획득 → 전멸 (xlsx Pattern.G1.OrbStagger).</summary>
         SameColorTwice = 1,
         /// <summary>이미 끝난 기믹.</summary>
         Ignored = 2,
     }
 
     /// <summary>
-    /// 구슬 기믹(G1-01) 규칙 — 순수 로직 (테스트 대상).
+    /// 구슬 기믹(Pattern.G1.OrbStagger) 규칙 — 순수 로직 (테스트 대상).
     /// "서로 다른 색을 번갈아 획득해야 하며 같은 색을 연속으로 먹으면 전멸."
     /// 파티 전체에서 직전에 먹은 색과 비교한다 (개인 단위인지 파티 단위인지 원문 불명 → 구현 보류 사항.md).
     /// </summary>

@@ -15,7 +15,7 @@ namespace Framework.Testing
     /// <summary>
     /// 시나리오 동안 일어난 이벤트를 이름별로 모은다. 프로젝트 어댑터(IScenarioHost)가 게임 이벤트를 여기에 넣고,
     /// 검증(ScenarioExpectation)은 이름으로 개수 · 합 · 최대 · 최소 · 평균 · 마지막 값을 읽는다.
-    /// 이름은 "Pattern.Started", "Pattern.Started.G2-23" 처럼 점으로 세분해 둘 다 기록하는 것을 권장한다.
+    /// 이름은 "Pattern.Started", "Pattern.Started.Pattern.G2.LeapSmashWhirlwind" 처럼 점으로 세분해 둘 다 기록하는 것을 권장한다.
     /// </summary>
     public class ScenarioRecorder
     {

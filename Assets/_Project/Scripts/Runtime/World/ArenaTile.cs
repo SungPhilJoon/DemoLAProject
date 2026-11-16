@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DemoLA.World
 {
-    /// <summary>지형 파괴 기믹(G2-05/06)에서 함께 무너지는 바닥 묶음.</summary>
+    /// <summary>지형 파괴 기믹(Pattern.G2.TerrainBreakHalf/06)에서 함께 무너지는 바닥 묶음.</summary>
     public enum ETileGroup
     {
         /// <summary>끝까지 남는 중앙 판.</summary>

@@ -3,6 +3,7 @@ using System.IO;
 using DemoLA.Boss;
 using DemoLA.Character;
 using DemoLA.Content;
+using DemoLA.Core;
 using DemoLA.Data;
 using DemoLA.Testing;
 using Framework.Testing;
@@ -53,7 +54,7 @@ namespace DemoLA.Editor
                         continue;
                     }
 
-                    save(patternScenario(boss, pattern), $"{Root}/Patterns/{boss.BossId}", $"TS_{pattern.PatternId}", InOverwrite, ref created, ref skipped);
+                    save(patternScenario(boss, pattern), $"{Root}/Patterns/{boss.BossId}", $"TS_{GameTags.PatternAssetName(pattern.PatternTag)}", InOverwrite, ref created, ref skipped);
                 }
             }
 
@@ -73,15 +74,15 @@ namespace DemoLA.Editor
 
         private static TestScenarioAsset patternScenario(BossDefinition InBoss, BossPatternDefinition InPattern)
         {
-            var scenario = make($"{InPattern.PatternId} {InPattern.DisplayName}", $"보스 패턴 {InPattern.PatternId} 단독 확인 (자동 생성)", "Pattern." + InBoss.BossId);
+            var scenario = make($"{InPattern.TagName} {InPattern.DisplayName}", $"보스 패턴 {InPattern.TagName} 단독 확인 (자동 생성)", "Pattern." + InBoss.BossId);
             float timeout = estimateDuration(InPattern) + 10.0f;
             scenario.Timeout = timeout + 10.0f;
             scenario.Steps.Add(new SpawnBossStep { BossId = InBoss.BossId, Position = new Vector3(0.0f, 0.0f, 6.0f), FaceTowards = new Vector3(0.0f, 0.0f, -6.0f) });
             scenario.Steps.Add(dummyParty());
-            scenario.Steps.Add(new ActivatePatternStep { PatternId = InPattern.PatternId, Timeout = timeout });
+            scenario.Steps.Add(new ActivatePatternStep { PatternTag = InPattern.PatternTag, Timeout = timeout });
 
-            scenario.Expectations.Add(new EventExpectation { Label = "패턴 시작", EventName = $"Pattern.Started.{InPattern.PatternId}", Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
-            scenario.Expectations.Add(new EventExpectation { Label = "패턴 끝남", EventName = $"Pattern.Ended.{InPattern.PatternId}", Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
+            scenario.Expectations.Add(new EventExpectation { Label = "패턴 시작", EventName = $"Pattern.Started.{InPattern.TagName}", Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
+            scenario.Expectations.Add(new EventExpectation { Label = "패턴 끝남", EventName = $"Pattern.Ended.{InPattern.TagName}", Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
             bool anyTelegraph = false;
             for (int i = 0; i < InPattern.Steps.Count; ++i)
             {
@@ -95,7 +96,7 @@ namespace DemoLA.Editor
 
             scenario.Expectations.Add(new EventExpectation { Label = "파티가 받은 피해", EventName = "Damage.ToParty", Aggregate = EScenarioAggregate.Sum, ReportOnly = true });
             scenario.Expectations.Add(new EventExpectation { Label = "넉백 횟수", EventName = "Knockback", ReportOnly = true });
-            scenario.Expectations.Add(new EventExpectation { Label = "취소됨(1)", EventName = $"Pattern.Ended.{InPattern.PatternId}", Aggregate = EScenarioAggregate.Last, ReportOnly = true });
+            scenario.Expectations.Add(new EventExpectation { Label = "취소됨(1)", EventName = $"Pattern.Ended.{InPattern.TagName}", Aggregate = EScenarioAggregate.Last, ReportOnly = true });
             return scenario;
         }
 
@@ -137,7 +138,7 @@ namespace DemoLA.Editor
             s.Timeout = 40.0f;
             s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = new Vector3(0.0f, 0.0f, 8.0f), FaceTowards = Vector3.zero });
             s.Steps.Add(dummyParty());
-            s.Steps.Add(new ActivatePatternStep { PatternId = "G2-23", Timeout = 25.0f });
+            s.Steps.Add(new ActivatePatternStep { PatternTag = ETag.Pattern_G2_LeapSmashWhirlwind, Timeout = 25.0f });
             s.Expectations.Add(new ProbeExpectation { Label = "동시 장판 수", Probe = "Telegraph.Visible", Moment = EProbeMoment.MaxDuring, Compare = EScenarioCompare.GreaterOrEqual, Value = 5 });
             s.Expectations.Add(new ProbeExpectation { Label = "보스 이동 거리", Probe = "Boss.Moved", Moment = EProbeMoment.MaxDuring, Compare = EScenarioCompare.GreaterOrEqual, Value = 3 });
             s.Expectations.Add(new EventExpectation { Label = "넉백", EventName = "Knockback", Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
@@ -154,7 +155,7 @@ namespace DemoLA.Editor
             var party = new SpawnPartyStep { Label = "기둥 너머 대상 1명" };
             party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(14.5f, 0.0f, 14.5f) });
             s.Steps.Add(party);
-            s.Steps.Add(new ActivatePatternStep { PatternId = "G2-11", Timeout = 10.0f });
+            s.Steps.Add(new ActivatePatternStep { PatternTag = ETag.Pattern_G2_Charge, Timeout = 10.0f });
             s.Steps.Add(new WaitSecondsStep { Seconds = 1.0f });
             s.Expectations.Add(new EventExpectation { Label = "기둥 파괴", EventName = "Structure.Broken.Pillar", Compare = EScenarioCompare.Equal, Value = 1 });
             s.Expectations.Add(new ProbeExpectation { Label = "생명 구슬", Probe = "Pickups", Moment = EProbeMoment.MaxDuring, Compare = EScenarioCompare.GreaterOrEqual, Value = 2 });
@@ -164,11 +165,11 @@ namespace DemoLA.Editor
 
         private static TestScenarioAsset firstWipeBreaksAll()
         {
-            var s = make("첫 즉사기 → 기둥 · 벽 전부 파괴", "G2-03 첫 타격에 남은 기둥 4 + 벽 10 이 모두 무너지는지", "Mechanics");
+            var s = make("첫 즉사기 → 기둥 · 벽 전부 파괴", "Pattern.G2.LethalFieldDouble 첫 타격에 남은 기둥 4 + 벽 10 이 모두 무너지는지", "Mechanics");
             s.Timeout = 30.0f;
             s.Steps.Add(new SpawnBossStep { BossId = "Gate2" });
             s.Steps.Add(dummyParty());
-            s.Steps.Add(new ActivatePatternStep { PatternId = "G2-03", Timeout = 15.0f });
+            s.Steps.Add(new ActivatePatternStep { PatternTag = ETag.Pattern_G2_LethalFieldDouble, Timeout = 15.0f });
             s.Expectations.Add(new ProbeExpectation { Label = "무너진 구조물", Probe = "Structures.Destroyed", Compare = EScenarioCompare.GreaterOrEqual, Value = 14 });
             s.Expectations.Add(new EventExpectation { Label = "파티 사망 (즉사기)", EventName = "Died.Party", ReportOnly = true });
             return s;
@@ -207,7 +208,7 @@ namespace DemoLA.Editor
         /// <summary>2관문 보스 AI 를 2분 돌린다: 돌진은 여러 번, 외곽 이탈 도약(G2-28, 삭제)은 한 번도 없다.</summary>
         private static TestScenarioAsset edgeExitOnlyOnce()
         {
-            var s = make("G2-28 외곽 이탈 없음", "보스 AI 로 2분: 돌진(G2-11)이 여러 번 나와도 외곽 이탈 도약(G2-28)은 나오지 않는다 (삭제 — 보스가 외곽 구석에 머물러 공격이 끊겼다)", "Mechanics");
+            var s = make("G2-28 외곽 이탈 없음", "보스 AI 로 2분: 돌진(Pattern.G2.Charge)이 여러 번 나와도 외곽 이탈 도약(G2-28)은 나오지 않는다 (삭제 — 보스가 외곽 구석에 머물러 공격이 끊겼다)", "Mechanics");
             s.Timeout = 140.0f;
             s.TimeScale = 3.0f;
             s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = new Vector3(0.0f, 0.0f, 6.0f), FaceTowards = new Vector3(0.0f, 0.0f, -6.0f), EnableAI = true });
@@ -216,7 +217,7 @@ namespace DemoLA.Editor
             party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Artist, Position = new Vector3(2.0f, 0.0f, -6.0f), Invulnerable = true });
             s.Steps.Add(party);
             s.Steps.Add(new WaitSecondsStep { Seconds = 120.0f });
-            s.Expectations.Add(new EventExpectation { Label = "돌진 여러 번", EventName = "Pattern.Started.G2-11", Compare = EScenarioCompare.GreaterOrEqual, Value = 2 });
+            s.Expectations.Add(new EventExpectation { Label = "돌진 여러 번", EventName = "Pattern.Started.Pattern.G2.Charge", Compare = EScenarioCompare.GreaterOrEqual, Value = 2 });
             s.Expectations.Add(new EventExpectation { Label = "외곽 이탈 도약 없음", EventName = "Pattern.Started.G2-28", Compare = EScenarioCompare.Equal, Value = 0 });
             s.Expectations.Add(new EventExpectation { Label = "패턴 수", EventName = "Pattern.Started", ReportOnly = true });
             return s;

@@ -1,5 +1,6 @@
 using DemoLA.Boss;
 using DemoLA.Content;
+using DemoLA.Core;
 using DemoLA.Data;
 using UnityEditor;
 using UnityEngine;
@@ -37,19 +38,20 @@ namespace DemoLA.Editor
 
             foreach (var row in tables.BossPattern.All)
             {
-                var boss = row.PatternId.StartsWith("G1") ? database.GetBoss("Gate1") : database.GetBoss("Gate2");
+                var fresh = BossPatternCsv.CreatePattern(row);
+                string bossId = GameTags.PatternBossId(fresh.PatternTag);
+                var boss = bossId != null ? database.GetBoss(bossId) : null;
                 if (boss == null)
                 {
                     continue;
                 }
 
-                var fresh = BossPatternCsv.CreatePattern(row);
                 PatternPresets.Apply(fresh);
                 BossPatternCsv.ApplyMeasured(fresh, row);
-                var existing = boss.GetPattern(row.PatternId);
+                var existing = boss.GetPattern(fresh.PatternTag);
                 if (existing == null)
                 {
-                    AssetDatabase.CreateAsset(fresh, $"{folder}/PT_{row.PatternId}.asset");
+                    AssetDatabase.CreateAsset(fresh, $"{folder}/{fresh.name}.asset");
                     boss.Patterns.Add(fresh);
                     EditorUtility.SetDirty(boss);
                     created += 1;
@@ -98,7 +100,7 @@ namespace DemoLA.Editor
             InTo.Category = InFrom.Category;
             InTo.Response = InFrom.Response;
             InTo.ShapeText = InFrom.ShapeText;
-            InTo.LinkedPatternId = InFrom.LinkedPatternId;
+            InTo.LinkedPatternTag = InFrom.LinkedPatternTag;
             InTo.Confidence = InFrom.Confidence;
             InTo.DamageTier = InFrom.DamageTier;
             InTo.Notes = InFrom.Notes;

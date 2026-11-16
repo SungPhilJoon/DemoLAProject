@@ -161,7 +161,7 @@ sys.exit(1 if fails or not s else 0)
     dir="$ROOT/Builds/NetTest"; rm -rf "$dir"; mkdir -p "$dir"
     port=$((7700 + RANDOM % 200))
     # 기본 스크립트: 카운터 패턴 · 구조물 파괴 · 지형 붕괴가 테스트 시간 안에 반드시 일어나게 한다 (NET_SCRIPT 로 바꿀 수 있다).
-    if [[ "$gate" == "Gate2" ]]; then default_script="6:pattern:G2-24;14:pattern:G2-21;22:pattern:G2-07;30:gimmick:G2-05;42:pattern:G2-24;50:pattern:G2-11"; else default_script="8:pattern:G1-06;20:pattern:G1-11"; fi
+    if [[ "$gate" == "Gate2" ]]; then default_script="6:pattern:Pattern.G2.AxeChopCounter;14:pattern:Pattern.G2.Whirlwind;22:pattern:Pattern.G2.CounterCharge;30:gimmick:Pattern.G2.TerrainBreakHalf;42:pattern:Pattern.G2.AxeChopCounter;50:pattern:Pattern.G2.Charge"; else default_script="8:pattern:Pattern.G1.BlinkDoubleClaw;20:pattern:Pattern.G1.SpinKick"; fi
     common=(-batchmode -nographics -demolaPort "$port" -demolaAutopilot -demolaProbe "$dir")
     "$exe" "${common[@]}" -logFile "$dir/host.log" -demolaNet host -demolaGate "$gate" -demolaStartWhen $((clients + 1)) -demolaGodMode -demolaQuitAfter "$secs" -demolaScript "${NET_SCRIPT:-$default_script}" &
     pids=($!)

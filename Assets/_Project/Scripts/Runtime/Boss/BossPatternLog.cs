@@ -19,7 +19,7 @@ namespace DemoLA.Boss
             }
 
             string target = InTarget != null ? $"{InTarget.GetName()} {fmt(InTarget.Position)} 거리 {Vector3.Distance(Flat(InBoss.Position), Flat(InTarget.Position)):0.0}m" : "없음";
-            Debug.Log($"[BossPattern] ▶ {InDefinition.PatternId} '{InDefinition.DisplayName}' ({InDefinition.Category}) t={Time.time:0.0}s · 보스 {fmt(InBoss.Position)} · 대상 {target}");
+            Debug.Log($"[BossPattern] ▶ {InDefinition.TagName} '{InDefinition.DisplayName}' ({InDefinition.Category}) t={Time.time:0.0}s · 보스 {fmt(InBoss.Position)} · 대상 {target}");
         }
 
         public static void Ended(BossActor InBoss, BossPatternDefinition InDefinition, bool InCancelled)
@@ -29,7 +29,7 @@ namespace DemoLA.Boss
                 return;
             }
 
-            Debug.Log($"[BossPattern] ■ {InDefinition.PatternId} '{InDefinition.DisplayName}' {(InCancelled ? "취소됨" : "종료")} t={Time.time:0.0}s · 보스 {fmt(InBoss.Position)}");
+            Debug.Log($"[BossPattern] ■ {InDefinition.TagName} '{InDefinition.DisplayName}' {(InCancelled ? "취소됨" : "종료")} t={Time.time:0.0}s · 보스 {fmt(InBoss.Position)}");
         }
 
         public static void Leap(BossActor InBoss, BossPatternDefinition InDefinition, int InStep, EPatternTargeting InTargeting, Vector3 InDestination)
@@ -39,7 +39,7 @@ namespace DemoLA.Boss
                 return;
             }
 
-            Debug.Log($"[BossPattern]   ↗ {InDefinition.PatternId} 단계 {InStep} 도약 ({InTargeting}) {fmt(InBoss.Position)} → {fmt(InDestination)}");
+            Debug.Log($"[BossPattern]   ↗ {InDefinition.TagName} 단계 {InStep} 도약 ({InTargeting}) {fmt(InBoss.Position)} → {fmt(InDestination)}");
         }
 
         public static void Message(string InText)

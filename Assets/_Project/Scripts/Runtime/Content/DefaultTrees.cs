@@ -20,16 +20,16 @@ namespace DemoLA.Content
             var root = tree.AddState("Boss", 0);
             addCommonBossStates(tree, root.Id);
 
-            var split = gimmickState(tree, root.Id, "G1-05 분열 (46줄)", 46.0f, EAIBlackboard.Flag1);
+            var split = gimmickState(tree, root.Id, "Pattern.G1.Split 분열 (46줄)", 46.0f, EAIBlackboard.Flag1);
             split.Tasks.Add(new SetPhaseTask { PhaseId = "G1-P1", CompleteImmediately = false });
-            split.Tasks.Add(new UsePatternTask { PatternId = "G1-05" });
+            split.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G1_Split });
 
-            var orb30 = gimmickState(tree, root.Id, "G1-01 구슬 무력화 (30줄)", 30.0f, EAIBlackboard.Flag2);
-            orb30.Tasks.Add(new StartGimmickTask { GimmickId = "G1-01" });
+            var orb30 = gimmickState(tree, root.Id, "Pattern.G1.OrbStagger 구슬 무력화 (30줄)", 30.0f, EAIBlackboard.Flag2);
+            orb30.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G1_OrbStagger });
             phaseState(tree, root.Id, "→ G1-P2 루카스 구간", EAIBlackboard.Flag2, "G1-P1", "G1-P2");
 
-            var orb16 = gimmickState(tree, root.Id, "G1-01 구슬 무력화 (16줄)", 16.0f, EAIBlackboard.Flag3);
-            orb16.Tasks.Add(new StartGimmickTask { GimmickId = "G1-01" });
+            var orb16 = gimmickState(tree, root.Id, "Pattern.G1.OrbStagger 구슬 무력화 (16줄)", 16.0f, EAIBlackboard.Flag3);
+            orb16.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G1_OrbStagger });
             phaseState(tree, root.Id, "→ G1-P3 합체 구간", EAIBlackboard.Flag3, "G1-P2", "G1-P3");
 
             addAttackStates(tree, root.Id, "G1-공통");
@@ -42,29 +42,29 @@ namespace DemoLA.Content
             var root = tree.AddState("Boss", 0);
             addCommonBossStates(tree, root.Id);
 
-            var armor = tree.AddState("G2-01 갑옷 시작", root.Id);
+            var armor = tree.AddState("Pattern.G2.ArmorBreak 갑옷 시작", root.Id);
             armor.EnterConditions.Add(new FlagCondition { Key = EAIBlackboard.Flag1, Invert = true });
             armor.Tasks.Add(new SetFlagTask { Key = EAIBlackboard.Flag1, CompleteImmediately = true });
-            armor.Tasks.Add(new StartGimmickTask { GimmickId = "G2-01", WaitForCompletion = false });
+            armor.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G2_ArmorBreak, WaitForCompletion = false });
 
-            var ward = gimmickState(tree, root.Id, "G2-02 방어 구슬 (131줄)", 131.0f, EAIBlackboard.Flag2);
-            ward.Tasks.Add(new StartGimmickTask { GimmickId = "G2-02" });
+            var ward = gimmickState(tree, root.Id, "Pattern.G2.WardOrb 방어 구슬 (131줄)", 131.0f, EAIBlackboard.Flag2);
+            ward.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G2_WardOrb });
 
-            var lethal = gimmickState(tree, root.Id, "G2-03 즉사 장판 2연속 (130줄)", 130.0f, EAIBlackboard.Flag3);
-            lethal.Tasks.Add(new UsePatternTask { PatternId = "G2-03" });
+            var lethal = gimmickState(tree, root.Id, "Pattern.G2.LethalFieldDouble 즉사 장판 2연속 (130줄)", 130.0f, EAIBlackboard.Flag3);
+            lethal.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_LethalFieldDouble });
             phaseState(tree, root.Id, "→ G2-P2 지형 파괴 구간", EAIBlackboard.Flag3, "G2-P1", "G2-P2");
 
-            var collapse1 = gimmickState(tree, root.Id, "G2-05 지형 파괴 1차 (88줄)", 88.0f, EAIBlackboard.Flag4);
-            collapse1.Tasks.Add(new StartGimmickTask { GimmickId = "G2-05" });
+            var collapse1 = gimmickState(tree, root.Id, "Pattern.G2.TerrainBreakHalf 지형 파괴 1차 (88줄)", 88.0f, EAIBlackboard.Flag4);
+            collapse1.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G2_TerrainBreakHalf });
 
-            var counter = gimmickState(tree, root.Id, "G2-07 카운터 돌진 (65줄)", 65.0f, EAIBlackboard.Flag5);
-            counter.Tasks.Add(new UsePatternTask { PatternId = "G2-07" });
+            var counter = gimmickState(tree, root.Id, "Pattern.G2.CounterCharge 카운터 돌진 (65줄)", 65.0f, EAIBlackboard.Flag5);
+            counter.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_CounterCharge });
 
-            var collapse2 = gimmickState(tree, root.Id, "G2-06 지형 파괴 2차 (30줄)", 30.0f, EAIBlackboard.Flag6);
-            collapse2.Tasks.Add(new StartGimmickTask { GimmickId = "G2-06" });
+            var collapse2 = gimmickState(tree, root.Id, "Pattern.G2.TerrainBreakCenter 지형 파괴 2차 (30줄)", 30.0f, EAIBlackboard.Flag6);
+            collapse2.Tasks.Add(new StartGimmickTask { GimmickTag = ETag.Pattern_G2_TerrainBreakCenter });
 
-            var chain = gimmickState(tree, root.Id, "G2-09 연속 타격 (16줄)", 16.0f, EAIBlackboard.Flag7);
-            chain.Tasks.Add(new UsePatternTask { PatternId = "G2-09" });
+            var chain = gimmickState(tree, root.Id, "Pattern.G2.FootFieldBarrage 연속 타격 (16줄)", 16.0f, EAIBlackboard.Flag7);
+            chain.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_FootFieldBarrage });
             phaseState(tree, root.Id, "→ G2-P3 유령 구간 (40줄)", EAIBlackboard.Flag7, "G2-P2", "G2-P3");
 
             addGate2ChargeRules(tree, root.Id);
@@ -96,29 +96,29 @@ namespace DemoLA.Content
 
         /// <summary>
         /// 2관문 대상 선택 (SelectTargetTask · TargetRuleCondition). 기믹 상태 뒤 · 일반 패턴 공격 앞에 둔다.
-        ///  - 레이저 견제: 위협 2위(탱커가 아닌 사람)에게 G2-16 추적 레이저 (40%)
+        ///  - 레이저 견제: 위협 2위(탱커가 아닌 사람)에게 Pattern.G2.TrackingLaser 추적 레이저 (40%)
         ///  - 약자 사냥: 유령 구간(G2-P3)에서 25% 확률로 체력 비율 최저인 사람을 8초 동안 어그로로 고정한 뒤 일반 패턴
         /// 확률 조건은 패턴을 고를 때마다 다시 굴린다 (패턴 사이 간격 PatternGap 2.5초).
         /// </summary>
         /// <summary>
         /// 2관문 돌진 규칙 (135줄 기준):
-        ///  - 135줄 이후: 패턴이 끝날 때마다 재도약(G2-26, Cinemachine 시네마틱) — 재도약 자신 뒤에는 하지 않는다.
-        ///  - 135줄 전 돌진(G2-11): 조우 직후 · 부위파괴 반격(G2-25) 착지 후 · 다른 패턴 3개 뒤. 가장 먼 대상에게.
-        ///  - 135줄 이후 돌진: 무조건 카운터 가능한 돌진(G2-07). 같은 순서 규칙(다른 패턴 3개 뒤).
+        ///  - 135줄 이후: 패턴이 끝날 때마다 재도약(Pattern.G2.ReLeap, Cinemachine 시네마틱) — 재도약 자신 뒤에는 하지 않는다.
+        ///  - 135줄 전 돌진(Pattern.G2.Charge): 조우 직후 · 부위파괴 반격(Pattern.G2.Skyfall) 착지 후 · 다른 패턴 3개 뒤. 가장 먼 대상에게.
+        ///  - 135줄 이후 돌진: 무조건 카운터 가능한 돌진(Pattern.G2.CounterCharge). 같은 순서 규칙(다른 패턴 3개 뒤).
         /// 랜덤 패턴 공격은 돌진을 고르지 않는다 (ExcludeCharges). 부위파괴 반격은 ArmorStackGimmick 이 직접 쓴다.
         /// </summary>
         private static void addGate2ChargeRules(StateTreeAsset InTree, int InRootId)
         {
             // 조우: 무조건 휠윈드부터 (1회).
-            var opening = InTree.AddState("조우 휠윈드 (G2-21, 1회)", InRootId);
+            var opening = InTree.AddState("조우 휠윈드 (Pattern.G2.Whirlwind, 1회)", InRootId);
             opening.Color = new Color(0.55f, 0.25f, 0.2f);
             opening.EnterConditions.Add(new FlagCondition { Key = EAIBlackboard.Flag8, Invert = true });
-            opening.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-21" });
+            opening.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_Whirlwind });
             opening.Tasks.Add(new SetFlagTask { Key = EAIBlackboard.Flag8, CompleteImmediately = false });
-            opening.Tasks.Add(new UsePatternTask { PatternId = "G2-21" });
+            opening.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_Whirlwind });
 
-            // 이어질 패턴: 돌진 → 도약 십자 + 추적 휠윈드(G2-23). 그로기가 풀린 뒤에도 이어진다.
-            var followUp = InTree.AddState("연결 패턴 (돌진 → G2-23)", InRootId);
+            // 이어질 패턴: 돌진 → 도약 십자 + 추적 휠윈드(Pattern.G2.LeapSmashWhirlwind). 그로기가 풀린 뒤에도 이어진다.
+            var followUp = InTree.AddState("연결 패턴 (돌진 → Pattern.G2.LeapSmashWhirlwind)", InRootId);
             followUp.Color = new Color(0.55f, 0.35f, 0.2f);
             followUp.EnterConditions.Add(new HasQueuedPatternCondition());
             followUp.Tasks.Add(new UseQueuedPatternTask());
@@ -126,41 +126,41 @@ namespace DemoLA.Content
             var leap = InTree.AddState("재도약 (135줄 이후 · 패턴 끝날 때마다)", InRootId);
             leap.Color = new Color(0.45f, 0.3f, 0.65f);
             leap.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 135.0f });
-            leap.EnterConditions.Add(new LastPatternCondition { PatternId = "G2-26", Invert = true });
-            leap.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-26" });
-            leap.Tasks.Add(new UsePatternTask { PatternId = "G2-26" });
+            leap.EnterConditions.Add(new LastPatternCondition { PatternTag = ETag.Pattern_G2_ReLeap, Invert = true });
+            leap.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_ReLeap });
+            leap.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_ReLeap });
 
             var charge = InTree.AddState("돌진 (135줄 전: 조우 휠윈드 뒤 · 착지 후 · 패턴 3개마다 → 무작위 대상)", InRootId);
             charge.Color = new Color(0.25f, 0.35f, 0.65f);
             charge.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.Greater, Line = 135.0f });
             charge.EnterConditions.Add(new ChargeDueCondition { Patterns = 3 });
-            charge.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-11" });
+            charge.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_Charge });
             charge.Tasks.Add(new SelectTargetTask { Selector = new RandomSelector(), ApplyTo = ETargetApply.NextPattern });
-            charge.Tasks.Add(new UsePatternTask { PatternId = "G2-11" });
+            charge.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_Charge });
 
-            var counterCharge = InTree.AddState("카운터 돌진 (135줄 이후: 패턴 3개마다 G2-07)", InRootId);
+            var counterCharge = InTree.AddState("카운터 돌진 (135줄 이후: 패턴 3개마다 Pattern.G2.CounterCharge)", InRootId);
             counterCharge.Color = new Color(0.25f, 0.45f, 0.75f);
             counterCharge.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 135.0f });
             counterCharge.EnterConditions.Add(new ChargeDueCondition { Patterns = 3 });
-            counterCharge.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-07" });
-            counterCharge.Tasks.Add(new UsePatternTask { PatternId = "G2-07" });
+            counterCharge.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_CounterCharge });
+            counterCharge.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_CounterCharge });
 
-            var cover = InTree.AddState("기둥 엄폐 낙하 (135줄 이후 G2-27)", InRootId);
+            var cover = InTree.AddState("기둥 엄폐 낙하 (135줄 이후 Pattern.G2.PillarCoverDrop)", InRootId);
             cover.Color = new Color(0.6f, 0.5f, 0.25f);
             cover.EnterConditions.Add(new HpLineCondition { Op = ECompareOp.LessOrEqual, Line = 135.0f });
-            cover.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-27" });
-            cover.Tasks.Add(new UsePatternTask { PatternId = "G2-27" });
+            cover.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_PillarCoverDrop });
+            cover.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_PillarCoverDrop });
         }
 
         private static void addGate2TargetingStates(StateTreeAsset InTree, int InRootId)
         {
-            var laser = InTree.AddState("레이저 견제 (G2-16 → 위협 2위)", InRootId);
+            var laser = InTree.AddState("레이저 견제 (Pattern.G2.TrackingLaser → 위협 2위)", InRootId);
             laser.Color = new Color(0.25f, 0.35f, 0.65f);
-            laser.EnterConditions.Add(new PatternReadyCondition { PatternId = "G2-16" });
+            laser.EnterConditions.Add(new PatternReadyCondition { PatternTag = ETag.Pattern_G2_TrackingLaser });
             laser.EnterConditions.Add(new TargetRuleCondition { Selector = new HighestThreatSelector { Rank = 2 }, CompareDistance = false });
             laser.EnterConditions.Add(new RandomChanceCondition { Chance = 0.4f });
             laser.Tasks.Add(new SelectTargetTask { Selector = new HighestThreatSelector { Rank = 2 }, ApplyTo = ETargetApply.NextPattern });
-            laser.Tasks.Add(new UsePatternTask { PatternId = "G2-16" });
+            laser.Tasks.Add(new UsePatternTask { PatternTag = ETag.Pattern_G2_TrackingLaser });
 
             var hunt = InTree.AddState("약자 사냥 (G2-P3 · 체력 비율 최저 어그로 8초)", InRootId);
             hunt.Color = new Color(0.25f, 0.35f, 0.65f);

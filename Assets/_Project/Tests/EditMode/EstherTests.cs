@@ -69,7 +69,7 @@ namespace DemoLA.Tests
         [Test]
         public void Break_CountersDuringCounterWindow()
         {
-            Assert.IsTrue(boss.TryActivatePattern("G2-24", player));
+            Assert.IsTrue(boss.TryActivatePattern(ETag.Pattern_G2_AxeChopCounter, player));
             float elapsed = 0.0f;
             while (boss.HasTag((int)ETag.Boss_CounterWindow) == false && elapsed < 6.0f)
             {

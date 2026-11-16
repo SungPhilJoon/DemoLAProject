@@ -71,6 +71,12 @@ namespace DemoLA.Boss
             Definition = InDefinition;
             AbilityId = InAbilityId;
             AbilityTags.Add((int)ETag.Ability_BossPattern);
+            // 언리얼처럼 어빌리티가 자기 패턴 태그를 가진다 → 태그(또는 상위 Pattern.G2)로 취소 · 조회할 수 있다.
+            if (InDefinition.PatternTag != ETag.None)
+            {
+                AbilityTags.Add((int)InDefinition.PatternTag);
+            }
+
             ActivationOwnedTags.Add((int)ETag.Boss_PatternBusy);
             if (InDefinition.SuperArmor == true)
             {
@@ -953,7 +959,7 @@ namespace DemoLA.Boss
                     break;
                 case EStaggerFailOutcome.ChainPattern:
                     Raid.Message("무력화 실패 — 연쇄 공격", 2.0f, true);
-                    boss.QueuePattern(Definition.StaggerFailChainPatternId);
+                    boss.QueuePattern(Definition.StaggerFailChainPatternTag);
                     break;
             }
 

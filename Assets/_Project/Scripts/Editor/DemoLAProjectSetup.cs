@@ -420,6 +420,9 @@ namespace DemoLA.Editor
             serialized.FindProperty("controls").objectReferenceValue = InControls;
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
+            // 하늘 · 안개 · 주변광 · 태양 (발탄 레이드풍 핏빛 하늘).
+            RaidAtmosphere.Apply();
+
             ensureFolder(SceneRoot);
             EditorSceneManager.SaveScene(scene, ScenePath);
             addToBuildSettings(ScenePath);

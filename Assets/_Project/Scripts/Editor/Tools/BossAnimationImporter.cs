@@ -8,14 +8,14 @@ namespace DemoLA.Editor
     /// 보스 애니메이션 폴더(Assets/_Project/Animation/Boss/{관문}/{모델}/)의 FBX 임포트 규칙.
     ///  - 폴더 이름 = 모델 이름 (Assets/Models/{모델}.fbx). Humanoid 아바타는 각 파일에서 만든다 (아래 OnPreprocessModel 참고)
     ///  - 애니메이션 전용: 머티리얼 · 블렌드셰이프 임포트 안 함, 단위 변환 켬
-    ///  - 클립 이름에 Idle · Walk · Run · Loop 가 있으면 루프
+    ///  - 클립 이름에 Idle · Stance · Walk · Run · Loop 가 있으면 루프
     /// Blender 쪽 내보내기: BlenderSource/scripts/export_unity_anims_ironhorn.py
     /// </summary>
     public class BossAnimationImporter : AssetPostprocessor
     {
         public const string Root = "Assets/_Project/Animation/Boss/";
         public const string ModelRoot = "Assets/Models/";
-        private static readonly string[] LoopKeywords = { "Idle", "Walk", "Run", "Loop" };
+        private static readonly string[] LoopKeywords = { "Idle", "Stance", "Walk", "Run", "Loop" };
 
         /// <summary>InAssetPath 가 보스 애니메이션이면 대상 모델 경로 (Assets/Models/{폴더 이름}.fbx), 아니면 null.</summary>
         public static string ModelPathFor(string InAssetPath)
@@ -84,7 +84,9 @@ namespace DemoLA.Editor
                 clips[i].lockRootHeightY = true;
                 clips[i].lockRootPositionXZ = true;
                 clips[i].keepOriginalOrientation = true;
-                clips[i].keepOriginalPositionY = true;
+                // 루프(이동 · 대기)는 발 기준 높이 → 달리기에서 몸이 뜨지 않는다. 그 밖(공격 · 점프 · 사망)은 원래 높이 그대로.
+                clips[i].keepOriginalPositionY = loop == false;
+                clips[i].heightFromFeet = loop;
                 clips[i].keepOriginalPositionXZ = true;
             }
 

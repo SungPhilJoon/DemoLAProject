@@ -16,8 +16,13 @@ SKELETON = "IronhornWarlord_Skeleton"
 PREFIX = "IronhornWarlord@"
 
 
+GUID = re.compile(r"^_?[0-9a-fA-F]{8}[_-][0-9a-fA-F]{4}[_-]")
+
+
 def clean_name(InName):
-    """파일 이름: 영문 · 숫자 · _ 만 (공백 → _)."""
+    """파일 이름: 영문 · 숫자 · _ 만 (공백 → _). 이름이 GUID 로 남은 Action 은 Unnamed_<앞 8자리>."""
+    if GUID.match(InName):
+        return "Unnamed_" + InName.strip("_")[:8]
     name = re.sub(r"[^A-Za-z0-9_]+", "_", InName).strip("_")
     return name or "Action"
 

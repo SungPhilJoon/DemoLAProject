@@ -32,6 +32,7 @@ namespace DemoLA.Editor.SkillTool
         private AnimationClipPlayable clipPlayable;
         private Material lineMaterial;
         private Mesh overlayMesh;
+        private float modelScale = 1.0f;
 
         private Vector2 orbit = new Vector2(150.0f, 15.0f);
         private float distance = 5.0f;
@@ -70,14 +71,27 @@ namespace DemoLA.Editor.SkillTool
             }
         }
 
-        /// <summary>미리보기 모델을 바꾼다 (같은 프리팹이면 그대로).</summary>
-        public void SetModel(GameObject InPrefab)
+        /// <summary>격자 반경 (m). 보스처럼 판정이 큰 경우 늘린다.</summary>
+        public int GridExtent = 10;
+        /// <summary>모델 크기 대비 카메라 거리 (모델을 바꿀 때 적용).</summary>
+        public float DistanceFactor = 1.15f;
+
+        /// <summary>카메라 기본 각도 (InYaw: 0 = 뒤에서, 180 = 정면에서 / InPitch: 위에서 내려다보는 각).</summary>
+        public void SetView(float InYaw, float InPitch)
+        {
+            orbit = new Vector2(InYaw, InPitch);
+        }
+
+        /// <summary>미리보기 모델을 바꾼다 (같은 프리팹 · 배율이면 그대로).</summary>
+        public void SetModel(GameObject InPrefab, float InScale = 1.0f)
         {
             ensurePreview();
-            if (InPrefab == sourcePrefab && instance != null)
+            if (InPrefab == sourcePrefab && instance != null && Mathf.Approximately(modelScale, InScale) == true)
             {
                 return;
             }
+
+            modelScale = InScale;
 
             destroyGraph();
             if (instance != null)
@@ -114,8 +128,12 @@ namespace DemoLA.Editor.SkillTool
                 animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
             }
 
+            // 스킨 메시 bounds 는 그려지기 전엔 갱신되지 않으므로, 배율 1 에서 재고 배율은 직접 곱한다.
             modelBounds = computeBounds(instance);
-            distance = Mathf.Clamp(modelBounds.size.magnitude * 1.15f, 1.5f, 30.0f);
+            float scale = Mathf.Max(0.01f, InScale);
+            instance.transform.localScale = InPrefab.transform.localScale * scale;
+            modelBounds = new Bounds(modelBounds.center * scale, modelBounds.size * scale);
+            distance = Mathf.Clamp(modelBounds.size.magnitude * DistanceFactor, 1.5f, 60.0f);
             height = 0.0f;
         }
 
@@ -128,21 +146,31 @@ namespace DemoLA.Editor.SkillTool
             }
 
             var clip = InSkill != null ? InSkill.CastAnimation : null;
-            if (clip != sourceClip)
+            float forward = InSkill != null ? ForwardOffsetAt(InSkill, InSkillTime) : 0.0f;
+            SampleClip(clip, ClipTimeAt(InSkill, InSkillTime), FollowRoot == true ? Vector3.forward * forward : Vector3.zero);
+        }
+
+        /// <summary>InClip 을 InClipTime(초)에서 샘플링하고 모델 루트를 InRootPosition 에 둔다. 클립이 없으면 바인드 포즈.</summary>
+        public void SampleClip(AnimationClip InClip, double InClipTime, Vector3 InRootPosition)
+        {
+            if (instance == null || animator == null)
             {
-                buildGraph(clip);
+                return;
             }
 
-            float forward = InSkill != null ? ForwardOffsetAt(InSkill, InSkillTime) : 0.0f;
-            instance.transform.position = FollowRoot == true ? Vector3.forward * forward : Vector3.zero;
+            if (InClip != sourceClip)
+            {
+                buildGraph(InClip);
+            }
+
+            instance.transform.position = InRootPosition;
             if (graph.IsValid() == false)
             {
                 return;
             }
 
-            double clipTime = ClipTimeAt(InSkill, InSkillTime);
-            clipPlayable.SetTime(clipTime);
-            clipPlayable.SetTime(clipTime);
+            clipPlayable.SetTime(InClipTime);
+            clipPlayable.SetTime(InClipTime);
             graph.Evaluate(0.0f);
         }
 
@@ -184,6 +212,15 @@ namespace DemoLA.Editor.SkillTool
 
         public void Draw(Rect InRect, SkillDefinition InSkill, float InSkillTime)
         {
+            float follow = InSkill != null && FollowRoot == true ? ForwardOffsetAt(InSkill, InSkillTime) : 0.0f;
+            Draw(InRect, follow * 0.5f, () => skillOverlay(InSkill, InSkillTime));
+        }
+
+        /// <summary>
+        /// 일반 그리기: 카메라는 (0, 모델 중심, InFollowZ) 를 본다. InOverlay 안에서 DrawArea · DrawLine 으로 바닥 표시를 추가한다.
+        /// </summary>
+        public void Draw(Rect InRect, float InFollowZ, Action InOverlay)
+        {
             ensurePreview();
             handleInput(InRect);
             if (Event.current.type != EventType.Repaint)
@@ -194,8 +231,7 @@ namespace DemoLA.Editor.SkillTool
             preview.BeginPreview(InRect, GUIStyle.none);
             var camera = preview.camera;
             var rotation = Quaternion.Euler(orbit.y, orbit.x, 0.0f);
-            float follow = InSkill != null && FollowRoot == true ? ForwardOffsetAt(InSkill, InSkillTime) : 0.0f;
-            var target = new Vector3(0.0f, modelBounds.center.y + height, follow * 0.5f);
+            var target = new Vector3(0.0f, modelBounds.center.y + height, InFollowZ);
             camera.transform.SetPositionAndRotation(target - rotation * Vector3.forward * distance, rotation);
             camera.nearClipPlane = 0.05f;
             camera.farClipPlane = 200.0f;
@@ -208,7 +244,9 @@ namespace DemoLA.Editor.SkillTool
             preview.lights[1].intensity = 0.6f;
             preview.ambientColor = new Color(0.35f, 0.35f, 0.38f);
 
-            buildOverlay(InSkill, InSkillTime);
+            buildGrid();
+            InOverlay?.Invoke();
+            Ov.Matrix = Matrix4x4.identity;
             if (Ov.ToMesh(ref overlayMesh) == true)
             {
                 var material = overlayMaterial();
@@ -225,20 +263,22 @@ namespace DemoLA.Editor.SkillTool
             }
         }
 
-        /// <summary>격자 · 판정 범위를 메시로 모은다 (미리보기 씬에서 모델과 깊이 비교되도록 카메라가 함께 그린다).</summary>
-        private void buildOverlay(SkillDefinition InSkill, float InSkillTime)
+        /// <summary>격자 (메시로 모아 미리보기 씬에서 모델과 깊이 비교되도록 카메라가 함께 그린다).</summary>
+        private void buildGrid()
         {
             Ov.Reset();
+            Ov.Matrix = Matrix4x4.identity;
             if (ShowGrid == true)
             {
+                int n = Mathf.Max(1, GridExtent);
                 Ov.Begin(Ov.LINES);
                 Ov.SetColor(GridColor);
-                for (int i = -10; i <= 10; ++i)
+                for (int i = -n; i <= n; ++i)
                 {
-                    Ov.Vertex3(i, 0.002f, -10.0f);
-                    Ov.Vertex3(i, 0.002f, 10.0f);
-                    Ov.Vertex3(-10.0f, 0.002f, i);
-                    Ov.Vertex3(10.0f, 0.002f, i);
+                    Ov.Vertex3(i, 0.002f, -n);
+                    Ov.Vertex3(i, 0.002f, n);
+                    Ov.Vertex3(-n, 0.002f, i);
+                    Ov.Vertex3(n, 0.002f, i);
                 }
 
                 // 정면(+Z) 방향 표시
@@ -247,7 +287,34 @@ namespace DemoLA.Editor.SkillTool
                 Ov.Vertex3(0.0f, 0.004f, 1.5f);
                 Ov.End();
             }
+        }
 
+        /// <summary>판정 범위 하나를 InOrigin 에서 InYaw(도, 0 = +Z) 방향으로 그린다 (Draw 의 InOverlay 안에서).</summary>
+        public static void DrawArea(HitArea InArea, Vector3 InOrigin, float InYaw, Color InColor)
+        {
+            Ov.Matrix = Matrix4x4.TRS(InOrigin, Quaternion.Euler(0.0f, InYaw, 0.0f), Vector3.one);
+            drawArea(InArea, Vector3.zero, InColor);
+            Ov.Matrix = Matrix4x4.identity;
+        }
+
+        /// <summary>바닥 선 (Draw 의 InOverlay 안에서).</summary>
+        public static void DrawLine(Vector3 InFrom, Vector3 InTo, Color InColor)
+        {
+            Ov.Matrix = Matrix4x4.identity;
+            Ov.Begin(Ov.LINES);
+            Ov.SetColor(InColor);
+            Ov.Vertex(InFrom);
+            Ov.Vertex(InTo);
+            Ov.End();
+        }
+
+        public static Color HitColor(float InActive)
+        {
+            return Color.Lerp(FaintHitColor, ActiveHitColor, InActive);
+        }
+
+        private void skillOverlay(SkillDefinition InSkill, float InSkillTime)
+        {
             if (InSkill != null)
             {
                 for (int i = 0; i < InSkill.Hits.Count; ++i)
@@ -400,6 +467,8 @@ namespace DemoLA.Editor.SkillTool
             private static readonly System.Collections.Generic.List<int> lines = new System.Collections.Generic.List<int>();
             private static int mode;
             private static Color color = Color.white;
+            /// <summary>Vertex 에 적용하는 변환 (DrawArea 가 위치 · 방향을 넣는다).</summary>
+            public static Matrix4x4 Matrix = Matrix4x4.identity;
 
             public static void Reset()
             {
@@ -431,7 +500,7 @@ namespace DemoLA.Editor.SkillTool
             public static void Vertex(Vector3 InPosition)
             {
                 (mode == TRIANGLES ? triangles : lines).Add(vertices.Count);
-                vertices.Add(InPosition);
+                vertices.Add(Matrix.MultiplyPoint3x4(InPosition));
                 colors.Add(color);
             }
 

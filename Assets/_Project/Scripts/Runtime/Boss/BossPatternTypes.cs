@@ -115,6 +115,16 @@ namespace DemoLA.Boss
         public string Label = "Hit";
         [Tooltip("이전 단계 종료 후 대기 (초)")]
         public float StartDelay;
+
+        [Header("애니메이션 (툴: DemoLA/Tools/Boss Skill Tool)")]
+        [Tooltip("이 단계의 보스 동작 클립 (Humanoid 권장). 전조 시작(+ AnimationDelay)에 재생한다. 비우면 앞 단계 동작 · 대기 그대로")]
+        public AnimationClip Animation;
+        [Tooltip("클립 재생 배율")]
+        public float AnimationSpeed = 1.0f;
+        [Tooltip("클립 시작 위치 (초)")]
+        public float AnimationStartTime;
+        [Tooltip("전조 시작부터 클립을 늦게 시작 (초)")]
+        public float AnimationDelay;
         public EPatternTargeting Targeting = EPatternTargeting.BossTowardAggro;
         public HitArea Area = HitArea.Circle(4.0f);
         [Tooltip("판정 원점을 정면 방향으로 옮긴다 (m). 도끼 찍기처럼 '찍은 곳' 에 범위를 만들 때. 음수 = 뒤쪽")]

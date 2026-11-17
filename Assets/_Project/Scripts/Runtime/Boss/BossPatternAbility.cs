@@ -182,12 +182,37 @@ namespace DemoLA.Boss
             var boss = Boss;
             if (boss != null)
             {
+                BossAnimation.Stop(boss, Definition.AnimationBlendOut, true);
                 BossPatternLog.Ended(boss, Definition, InWasCancelled);
                 boss.NotifyPatternEnded(this, InWasCancelled);
             }
         }
 
         // ------------------------------------------------------------------ steps
+
+        /// <summary>단계 동작: 전조 시작 + AnimationDelay 에 재생 (Boss Skill Tool 에서 정한 클립).</summary>
+        private void playStepAnimation(BossActor InBoss, PatternStep InStep, int InStepIndex)
+        {
+            if (InStep.Animation == null)
+            {
+                return;
+            }
+
+            if (InStep.AnimationDelay > 0.0f)
+            {
+                AddTask(new WaitDelayTask(InStep.AnimationDelay, () =>
+                {
+                    if (IsActive == true)
+                    {
+                        BossAnimation.PlayStep(InBoss, Definition, InStepIndex, true);
+                    }
+                }));
+            }
+            else
+            {
+                BossAnimation.PlayStep(InBoss, Definition, InStepIndex, true);
+            }
+        }
 
         private void runRepeat()
         {
@@ -237,6 +262,8 @@ namespace DemoLA.Boss
             {
                 return;
             }
+
+            playStepAnimation(boss, InStep, stepIndex);
 
             despawnViews();
             trackedTargets.Clear();

@@ -39,6 +39,12 @@ namespace DemoLA.Network
 
             BossId.OnValueChanged += (a, b) => build();
             tags.OnValueChanged += handleTags;
+            if (IsServer == true)
+            {
+                BossAnimation.StepPlayed += serverStepAnimation;
+                BossAnimation.Stopped += serverStopAnimation;
+                BossAnimation.DeathPlayed += serverDeathAnimation;
+            }
             phase.OnValueChanged += (a, b) =>
             {
                 if (IsServer == false && Boss != null)
@@ -47,6 +53,59 @@ namespace DemoLA.Network
                 }
             };
             build();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            BossAnimation.StepPlayed -= serverStepAnimation;
+            BossAnimation.Stopped -= serverStopAnimation;
+            BossAnimation.DeathPlayed -= serverDeathAnimation;
+            base.OnNetworkDespawn();
+        }
+
+        // ------------------------------------------------------------------ 보스 동작 (서버 → 클라이언트, 연출만)
+
+        private void serverStepAnimation(BossActor InBoss, DemoLA.Core.ETag InPattern, int InStep)
+        {
+            if (InBoss == Boss)
+            {
+                StepAnimationRpc((int)InPattern, InStep);
+            }
+        }
+
+        private void serverStopAnimation(BossActor InBoss, float InBlendOut)
+        {
+            if (InBoss == Boss)
+            {
+                StopAnimationRpc(InBlendOut);
+            }
+        }
+
+        private void serverDeathAnimation(BossActor InBoss)
+        {
+            if (InBoss == Boss)
+            {
+                DeathAnimationRpc();
+            }
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void StepAnimationRpc(int InPattern, int InStep)
+        {
+            var pattern = Boss != null && Boss.Definition != null ? Boss.Definition.GetPattern((DemoLA.Core.ETag)InPattern) : null;
+            BossAnimation.PlayStep(Boss, pattern, InStep, false);
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void StopAnimationRpc(float InBlendOut)
+        {
+            BossAnimation.Stop(Boss, InBlendOut, false);
+        }
+
+        [Rpc(SendTo.NotServer)]
+        private void DeathAnimationRpc()
+        {
+            BossAnimation.PlayDeath(Boss, false);
         }
 
         public void ServerInit(string InBossId, int InPartySize)

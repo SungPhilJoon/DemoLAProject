@@ -49,6 +49,10 @@ namespace DemoLA.Boss
         [Header("실행")]
         public List<PatternStep> Steps = new List<PatternStep>();
         public float Recovery = 1.0f;
+        [Tooltip("이동/대기 → 패턴 동작 블렌드 (초)")]
+        public float AnimationBlendIn = 0.12f;
+        [Tooltip("패턴 동작 → 이동/대기 블렌드 (초). 패턴이 끝날 때 시작")]
+        public float AnimationBlendOut = 0.25f;
         public bool SuperArmor = true;
         public bool UntargetableDuring;
         [Tooltip("패턴 동안 경기장 중앙 기준 도넛 안전지대(파란색)를 보여 준다 (SafeZoneInner ~ SafeZoneOuter m)")]

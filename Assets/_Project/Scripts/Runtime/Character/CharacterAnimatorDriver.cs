@@ -75,8 +75,9 @@ namespace DemoLA.Character
         /// 동작 클립을 이동 애니메이션 위에 섞어 재생한다. 진행 중인 동작은 바로 바꾼다.
         /// InSpeed = 클립 재생 배율, InStartTime = 클립 시작 위치(초).
         /// 루프가 아닌 클립은 끝나기 InBlendOut 초 전부터 이동으로 돌아간다. 루프 클립은 StopAction 까지 계속.
+        /// InHold = true 면 클립이 끝나도 마지막 자세를 유지한다 (보스 패턴 단계 · 사망 — StopAction 으로 끝낸다).
         /// </summary>
-        public void PlayAction(AnimationClip InClip, float InSpeed = 1.0f, float InStartTime = 0.0f, float InBlendIn = 0.08f, float InBlendOut = 0.15f)
+        public void PlayAction(AnimationClip InClip, float InSpeed = 1.0f, float InStartTime = 0.0f, float InBlendIn = 0.08f, float InBlendOut = 0.15f, bool InHold = false)
         {
             buildGraph();
             if (InClip == null || graph.IsValid() == false)
@@ -97,7 +98,7 @@ namespace DemoLA.Character
             actionTarget = 1.0f;
             fadeRate = InBlendIn > 0.0f ? 1.0f / InBlendIn : float.MaxValue;
             actionBlendOut = Mathf.Max(0.0f, InBlendOut);
-            actionEndTime = InClip.isLooping == true ? float.MaxValue : Mathf.Max(InStartTime, InClip.length - actionBlendOut * speedScale);
+            actionEndTime = InClip.isLooping == true || InHold == true ? float.MaxValue : Mathf.Max(InStartTime, InClip.length - actionBlendOut * speedScale);
             if (InBlendIn <= 0.0f)
             {
                 actionWeight = 1.0f;

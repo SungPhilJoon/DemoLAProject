@@ -62,11 +62,20 @@ namespace DemoLA.World
         {
             float scale = InDefinition.Radius;
             var go = InRoot;
-            addBody(go.transform, PrimitiveType.Capsule, InDefinition.BodyColor, new Vector3(scale, scale * 1.2f, scale), scale * 1.2f);
-            // 앞뒤 구분용 머리/뿔 (백어택 · 헤드어택 판정 방향을 눈으로 확인).
-            addNose(go.transform, new Vector3(0.0f, scale * 2.2f, scale * 0.55f), new Vector3(scale * 0.8f, scale * 0.6f, scale * 0.8f), InDefinition.BodyColor * 1.4f);
-            addNose(go.transform, new Vector3(-scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
-            addNose(go.transform, new Vector3(scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
+            if (InDefinition.ModelPrefab != null)
+            {
+                // 모델 (Boss Skill Tool → 모델). 대기/이동은 컨트롤러, 패턴 동작은 BossAnimation.
+                addModel(go, InDefinition.ModelPrefab, InDefinition.ModelScale);
+            }
+            else
+            {
+                addBody(go.transform, PrimitiveType.Capsule, InDefinition.BodyColor, new Vector3(scale, scale * 1.2f, scale), scale * 1.2f);
+                // 앞뒤 구분용 머리/뿔 (백어택 · 헤드어택 판정 방향을 눈으로 확인).
+                addNose(go.transform, new Vector3(0.0f, scale * 2.2f, scale * 0.55f), new Vector3(scale * 0.8f, scale * 0.6f, scale * 0.8f), InDefinition.BodyColor * 1.4f);
+                addNose(go.transform, new Vector3(-scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
+                addNose(go.transform, new Vector3(scale * 0.35f, scale * 2.7f, scale * 0.7f), new Vector3(0.15f, 0.5f, 0.15f) * scale, Color.white);
+            }
+
             // 카운터 가능 구간에 몸이 파랗게 빛난다 (발밑 표시보다 먼저 모아 몸 렌더러만 넘긴다).
             go.AddComponent<CounterGlowView>().Bind(go.GetComponentsInChildren<Renderer>());
             addAgent(go, InDefinition.Radius * 0.8f, scale * 2.4f, true);
@@ -81,6 +90,11 @@ namespace DemoLA.World
 
             var boss = go.AddComponent<BossActor>();
             boss.SetName(InDefinition.DisplayName);
+            if (InDefinition.DeathAnimation != null)
+            {
+                boss.OnActorDied += InDead => BossAnimation.PlayDeath(InDead as BossActor, true);
+            }
+
             boss.Initialize(InDefinition, InPartySize > 0 ? InPartySize : InDefinition.DesignPartySize);
             // 관문마다 에스더 게이지를 새로 모은다 (그 관문에서 쓸 수 있는 에스더만).
             DemoLA.Character.EstherSystem.Reset(InDefinition.BossId);
@@ -140,12 +154,13 @@ namespace DemoLA.World
         /// 직업 모델 프리팹을 "Body" 로 붙인다 (ActorMotor 의 도약/넉백 연출이 "Body" 자식을 올린다).
         /// 루트 모션은 쓰지 않는다 — 이동은 NavMeshAgent / ActorMotor 가 하고, Animator 에는 속도만 넘긴다.
         /// </summary>
-        private static void addModel(GameObject InRoot, GameObject InPrefab)
+        private static void addModel(GameObject InRoot, GameObject InPrefab, float InScale = 1.0f)
         {
             var body = Object.Instantiate(InPrefab, InRoot.transform, false);
             body.name = "Body";
             body.transform.localPosition = Vector3.zero;
             body.transform.localRotation = Quaternion.identity;
+            body.transform.localScale = InPrefab.transform.localScale * Mathf.Max(0.01f, InScale);
             var animator = body.GetComponentInChildren<Animator>();
             if (animator != null)
             {

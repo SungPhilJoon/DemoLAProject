@@ -95,6 +95,20 @@ namespace DemoLA.Boss
         public List<BossPhaseDefinition> Phases = new List<BossPhaseDefinition>();
         public List<BossPatternDefinition> Patterns = new List<BossPatternDefinition>();
 
+        [Header("모델 · 기본 애니메이션 (툴: DemoLA/Tools/Boss Skill Tool → 모델)")]
+        [Tooltip("원본 모델 (FBX, Humanoid). Boss Skill Tool 의 '프리팹 만들기' 가 이것으로 ModelPrefab 을 만든다")]
+        public GameObject SourceModel;
+        [Tooltip("보스 모델 프리팹 (Animator + Idle/Move 컨트롤러). 비우면 캡슐로 그린다")]
+        public GameObject ModelPrefab;
+        [Tooltip("모델 크기 배율 (판정 반경 Radius 와 별개로 보이는 크기)")]
+        public float ModelScale = 1.0f;
+        [Tooltip("대기 (루프) — 컨트롤러 Idle 상태")]
+        public AnimationClip IdleAnimation;
+        [Tooltip("이동 (루프) — 컨트롤러 Run 상태 (Speed > 0.1)")]
+        public AnimationClip MoveAnimation;
+        [Tooltip("사망 — 마지막 프레임에서 멈춘다")]
+        public AnimationClip DeathAnimation;
+
         [Header("진입 시네마틱 (BossIntroCinematic)")]
         [Tooltip("레이드에 들어올 때 보스 등장 연출 (Cinemachine 샷 3개 + 대사 자막). 연출 동안 보스 · 파티 AI 와 입력이 멈춘다")]
         public bool PlayIntro = true;

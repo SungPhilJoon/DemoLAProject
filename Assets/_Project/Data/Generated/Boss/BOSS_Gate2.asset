@@ -32,12 +32,7 @@ MonoBehaviour:
       \uC804\uD22C \uC2DC\uC791 / \uC885\uB8CC: \uCCB4\uB825 128~130\uC904 \uC989\uC0AC
       \uC7A5\uD310 \uCC98\uB9AC \uD6C4"
     EnterAtHpLine: -1
-    PatternTags:
-    - 251
-    - 252
-    - 253
-    - 262
-    - 264
+    PatternTags: fb000000fc000000fd0000000601000008010000
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -48,16 +43,7 @@ MonoBehaviour:
       15~16\uC904 \uBD80\uADFC \uC5F0\uC18D \uD0C0\uACA9 \uD328\uD134 \uC774\uD6C4
       \uC720\uB839 \uC804\uD658"
     EnterAtHpLine: -1
-    PatternTags:
-    - 254
-    - 255
-    - 256
-    - 257
-    - 258
-    - 259
-    - 267
-    - 268
-    - 269
+    PatternTags: fe000000ff000000000100000101000002010000030100000b0100000c0100000d010000
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -67,9 +53,7 @@ MonoBehaviour:
       15~16\uC904 \uBD80\uADFC \uC720\uB839 \uBC1C\uD0C4\uC73C\uB85C \uC804\uD658
       / \uC885\uB8CC: \uACA9\uD30C"
     EnterAtHpLine: -1
-    PatternTags:
-    - 260
-    - 270
+    PatternTags: 040100000e010000
     ResetHpLines: 40
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -80,15 +64,7 @@ MonoBehaviour:
       \uAD6C\uAC04\uC744 \uD2B9\uC815\uD558\uC9C0 \uC54A\uC740 \uD328\uD134 / \uC885\uB8CC:
       \uD574\uB2F9 \uC5C6\uC74C"
     EnterAtHpLine: -1
-    PatternTags:
-    - 261
-    - 263
-    - 265
-    - 266
-    - 271
-    - 272
-    - 273
-    - 274
+    PatternTags: 0501000007010000090100000a0100000f010000100100001101000012010000
     ResetHpLines: 0
     TransitionTime: 0
     InvulnerableDuringTransition: 0
@@ -120,6 +96,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6dbff1efa5c25da40b6f76dee4be78ea, type: 2}
   - {fileID: 11400000, guid: 04831ea890b36224982b7cc4e2f56923, type: 2}
   - {fileID: 11400000, guid: 3b0fa23ce17558e4fa73c07113c37651, type: 2}
+  SourceModel: {fileID: 919132149155446097, guid: 31d90fb5376655a4bac14d9b21362008, type: 3}
+  ModelPrefab: {fileID: 2071495225928053196, guid: 3d8b11fc00e463a4283c7c83bfa69473, type: 3}
+  ModelScale: 2.6
+  IdleAnimation: {fileID: -623603649343465320, guid: 1af013a6bd988b142a4b8d3ec203cc92, type: 3}
+  MoveAnimation: {fileID: -623603649343465320, guid: d8b7114fae81b844fa4498b6af5d4c33, type: 3}
+  DeathAnimation: {fileID: -623603649343465320, guid: ef8af0e92d63cbb4c902c143d572d195, type: 3}
   PlayIntro: 1
   IntroDuration: 9.5
   IntroSubtitle: "2\uAD00\uBB38 \u2014 \uBB34\uB108\uC9C0\uB294 \uC131\uCC44"

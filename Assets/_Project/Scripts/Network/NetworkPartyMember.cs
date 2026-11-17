@@ -252,7 +252,7 @@ namespace DemoLA.Network
                 buildData = session.GetBuild(cls.Class).Clone();
             }
 
-            gameObject.name = DisplayName.Value.ToString();
+            gameObject.name = $"NetPlayer_{OwnerClientId}_{cls.Class}";
             Character = RaidSpawner.AttachCharacter(gameObject, cls, buildData, db);
             Character.SetName(DisplayName.Value.ToString());
             if (IsServer == false)

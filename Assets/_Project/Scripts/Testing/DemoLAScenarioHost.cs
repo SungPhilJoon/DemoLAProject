@@ -187,6 +187,7 @@ namespace DemoLA.Testing
             }
 
             var member = RaidSpawner.SpawnCharacter(cls, DefaultContent.CreateDefaultBuild(Database, InClass), Database, InPosition, $"{(InAutoAttack ? "딜러" : "더미")} {cls.DisplayName} {Party.Count}");
+            member.gameObject.name = $"{(InAutoAttack ? "Dealer" : "Dummy")}_{cls.Class}_{Party.Count}";
             if (InAutoAttack == true)
             {
                 member.gameObject.AddComponent<ScenarioAutoAttacker>();

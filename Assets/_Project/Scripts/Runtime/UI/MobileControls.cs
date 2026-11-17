@@ -13,11 +13,12 @@ namespace DemoLA.UI
     /// </summary>
     public class MobileControls : BaseBehaviour
     {
-        private static readonly (string Label, string Path)[] SkillButtons =
+        /// <summary>Id = 오브젝트 이름(영문), Label = 버튼에 보이는 글자.</summary>
+        private static readonly (string Id, string Label, string Path)[] SkillButtons =
         {
-            ("Q", "<Gamepad>/buttonWest"), ("W", "<Gamepad>/buttonNorth"), ("E", "<Gamepad>/buttonSouth"), ("R", "<Gamepad>/rightShoulder"),
-            ("A", "<Gamepad>/leftShoulder"), ("S", "<Gamepad>/rightTrigger"), ("D", "<Gamepad>/leftTrigger"), ("F", "<Gamepad>/dpad/up"),
-            ("각성", "<Gamepad>/dpad/down"), ("고유", "<Gamepad>/rightStickPress"), ("물약", "<Gamepad>/dpad/left"), ("시정", "<Gamepad>/dpad/right"),
+            ("Q", "Q", "<Gamepad>/buttonWest"), ("W", "W", "<Gamepad>/buttonNorth"), ("E", "E", "<Gamepad>/buttonSouth"), ("R", "R", "<Gamepad>/rightShoulder"),
+            ("A", "A", "<Gamepad>/leftShoulder"), ("S", "S", "<Gamepad>/rightTrigger"), ("D", "D", "<Gamepad>/leftTrigger"), ("F", "F", "<Gamepad>/dpad/up"),
+            ("Awakening", "각성", "<Gamepad>/dpad/down"), ("Identity", "고유", "<Gamepad>/rightStickPress"), ("Potion", "물약", "<Gamepad>/dpad/left"), ("Esther", "시정", "<Gamepad>/dpad/right"),
         };
 
         private Canvas canvas;
@@ -52,7 +53,7 @@ namespace DemoLA.UI
             {
                 int column = i % 4;
                 int row = i / 4;
-                var rect = UIKit.Anchored(root, $"Btn_{SkillButtons[i].Label}", new Vector2(1.0f, 1.0f), new Vector2(-30.0f - (3 - column) * 104.0f, -150.0f - row * 104.0f), new Vector2(92.0f, 92.0f));
+                var rect = UIKit.Anchored(root, $"Btn_{SkillButtons[i].Id}", new Vector2(1.0f, 1.0f), new Vector2(-30.0f - (3 - column) * 104.0f, -150.0f - row * 104.0f), new Vector2(92.0f, 92.0f));
                 rect.pivot = new Vector2(1.0f, 1.0f);
                 UIKit.Image(rect, new Color(0.2f, 0.25f, 0.35f, 0.75f), true);
                 UIKit.Label(rect, SkillButtons[i].Label, 24, TextAnchor.MiddleCenter, Color.white);

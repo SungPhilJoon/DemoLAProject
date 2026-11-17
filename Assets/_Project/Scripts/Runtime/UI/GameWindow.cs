@@ -27,10 +27,11 @@ namespace DemoLA.UI
             get { return gameObject.activeSelf == true; }
         }
 
-        public static GameWindow Create(Transform InCanvas, string InTitle, string InHotkey, EIconKind InIcon, Vector2 InSize, Vector2 InPosition,
+        /// <summary>InId = 오브젝트 이름용 영문 식별자 (Window_{InId}), InTitle = 창 제목(화면 표시).</summary>
+        public static GameWindow Create(Transform InCanvas, string InId, string InTitle, string InHotkey, EIconKind InIcon, Vector2 InSize, Vector2 InPosition,
             Action<GameWindow> InDrawer, Action InOnApply, Action InOnOpened)
         {
-            var root = UIKit.Anchored(InCanvas, $"Window_{InTitle}", new Vector2(0.5f, 0.5f), InPosition, InSize);
+            var root = UIKit.Anchored(InCanvas, $"Window_{InId}", new Vector2(0.5f, 0.5f), InPosition, InSize);
             root.pivot = new Vector2(0.5f, 0.5f);
             UIKit.Image(root, UIKit.PanelColor, true);
             var outline = root.gameObject.AddComponent<Outline>();

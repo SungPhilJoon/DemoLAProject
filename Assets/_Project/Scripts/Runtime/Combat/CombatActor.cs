@@ -17,6 +17,27 @@ namespace DemoLA.Combat
 
         [SerializeField] private ETeam team = ETeam.Player;
         [SerializeField] private float radius = 0.5f;
+        [Tooltip("화면 표시 이름 (한글 가능). 비우면 GameObject 이름. GameObject 이름은 영문 식별자로 둔다")]
+        [SerializeField] private string displayName;
+
+        /// <summary>화면 · 메시지에 쓰는 이름 (예: "플레이어 (슬레이어)"). GameObject 이름(영문 식별자)과 별개.</summary>
+        public string DisplayName
+        {
+            get { return string.IsNullOrEmpty(displayName) == true ? gameObject.name : displayName; }
+            set { displayName = value; }
+        }
+
+        /// <summary>표시 이름을 바꾼다 (GameObject 이름은 그대로).</summary>
+        public override void SetName(string InName)
+        {
+            displayName = InName;
+        }
+
+        /// <summary>표시 이름 (HUD 파티 목록 · 딜 미터 · 레이드 메시지).</summary>
+        public override string GetName()
+        {
+            return DisplayName;
+        }
 
         public CombatAttributeSet Stats { get; private set; }
 

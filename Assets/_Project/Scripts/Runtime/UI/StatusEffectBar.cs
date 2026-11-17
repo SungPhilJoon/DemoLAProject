@@ -243,7 +243,7 @@ namespace DemoLA.UI
             entry.Stacks = InEffect.StackCount;
             entry.Remaining = infinite ? 0.0f : InEffect.Remaining;
             entry.Duration = infinite ? 0.0f : (spec.DurationOverride >= 0.0f ? spec.DurationOverride : def.Duration);
-            entry.Source = source != null ? source.name : string.Empty;
+            entry.Source = source != null ? source.GetName() : string.Empty;
 
             for (int m = 0; m < def.Modifiers.Length; ++m)
             {

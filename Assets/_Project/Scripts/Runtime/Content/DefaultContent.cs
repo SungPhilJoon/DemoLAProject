@@ -313,32 +313,34 @@ namespace DemoLA.Content
         /// </summary>
         private static void addStandardTripods(SkillDefinition InSkill)
         {
+            // 에셋 이름은 영문 (GE_SK101_QuickPrep). 화면 표시 이름은 한글 그대로.
+            string prefix = $"SK{InSkill.SkillId}_";
             var tier1 = new TripodTier { UnlockSkillLevel = 4 };
-            tier1.Options.Add(tripod("빠른 준비", "재사용 대기시간 -10% (레벨당 -2%)", ETripodTiming.SkillParameter,
+            tier1.Options.Add(tripod(prefix + "QuickPrep", "빠른 준비", "재사용 대기시간 -10% (레벨당 -2%)", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillPercent(ESkillAttr.CooldownPercent, -10.0f).Build(), 0.2f));
-            tier1.Options.Add(tripod("넓은 범위", "범위 +20% (레벨당 +4%)", ETripodTiming.SkillParameter,
+            tier1.Options.Add(tripod(prefix + "WideArea", "넓은 범위", "범위 +20% (레벨당 +4%)", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillPercent(ESkillAttr.RangePercent, 20.0f).Build(), 0.2f));
-            tier1.Options.Add(tripod("마나 절약", "마나 소모 -30%", ETripodTiming.SkillParameter,
+            tier1.Options.Add(tripod(prefix + "ManaSaving", "마나 절약", "마나 소모 -30%", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillPercent(ESkillAttr.ManaCostPercent, -30.0f).Build(), 0.0f));
 
             var tier2 = new TripodTier { UnlockSkillLevel = 7 };
-            tier2.Options.Add(tripod("약점 포착", "피해 +15% (레벨당 +3%)", ETripodTiming.SkillParameter,
+            tier2.Options.Add(tripod(prefix + "WeakPoint", "약점 포착", "피해 +15% (레벨당 +3%)", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillPercent(ESkillAttr.DamagePercent, 15.0f).Build(), 0.2f));
-            tier2.Options.Add(tripod("정신 집중", "치명타 적중률 +10%", ETripodTiming.SkillParameter,
+            tier2.Options.Add(tripod(prefix + "Focus", "정신 집중", "치명타 적중률 +10%", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillAdd(ESkillAttr.CritRateAdd, 10.0f).Build(), 0.1f));
-            var armor = tripod("강인함", "시전 중 슈퍼아머 · 무력화 +20%", ETripodTiming.SkillParameter,
+            var armor = tripod(prefix + "Toughness", "강인함", "시전 중 슈퍼아머 · 무력화 +20%", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillPercent(ESkillAttr.StaggerPercent, 20.0f).Build(), 0.0f);
             armor.GrantsSuperArmor = true;
             tier2.Options.Add(armor);
 
             var tier3 = new TripodTier { UnlockSkillLevel = 10 };
-            tier3.Options.Add(tripod("연속 타격", "마지막 타격 1회 추가", ETripodTiming.SkillParameter,
+            tier3.Options.Add(tripod(prefix + "ComboStrike", "연속 타격", "마지막 타격 1회 추가", ETripodTiming.SkillParameter,
                 EffectBuilder.Infinite().SkillAdd(ESkillAttr.ExtraHits, 1.0f).Build(), 0.0f));
-            tier3.Options.Add(tripod("약화 표식", "적중 대상 받는 피해 +6% (6초)", ETripodTiming.TargetOnHit,
+            tier3.Options.Add(tripod(prefix + "WeakenMark", "약화 표식", "적중 대상 받는 피해 +6% (6초)", ETripodTiming.TargetOnHit,
                 EffectBuilder.Timed(6.0f).Add(EAttr.IncomingDamageAmplify, 6.0f).Stack(EStackPolicy.Refresh, 1).Build(), 0.0f));
-            tier3.Options.Add(tripod("투지", "시전 시 자신 피해 +8% (5초)", ETripodTiming.OwnerOnActivate,
+            tier3.Options.Add(tripod(prefix + "FightingSpirit", "투지", "시전 시 자신 피해 +8% (5초)", ETripodTiming.OwnerOnActivate,
                 EffectBuilder.Timed(5.0f).Add(EAttr.DamageIncrease, 8.0f).Stack(EStackPolicy.Refresh, 1).Build(), 0.0f));
-            tier3.Options.Add(tripod("숙련", "선택 시 상시 치명타 피해 +10%", ETripodTiming.OwnerWhileSelected,
+            tier3.Options.Add(tripod(prefix + "Mastery", "숙련", "선택 시 상시 치명타 피해 +10%", ETripodTiming.OwnerWhileSelected,
                 EffectBuilder.Infinite().Add(EAttr.CritDamage, 10.0f).Build(), 0.0f));
 
             InSkill.Tiers.Add(tier1);
@@ -346,7 +348,8 @@ namespace DemoLA.Content
             InSkill.Tiers.Add(tier3);
         }
 
-        private static TripodOption tripod(string InName, string InDescription, ETripodTiming InTiming, GameplayEffectDef InDef, float InPerLevel)
+        /// <summary>InAssetName = 이펙트 에셋 이름(영문, GE_ 접두사 없이), InName = 화면 표시 이름.</summary>
+        private static TripodOption tripod(string InAssetName, string InName, string InDescription, ETripodTiming InTiming, GameplayEffectDef InDef, float InPerLevel)
         {
             var option = new TripodOption();
             option.Name = InName;
@@ -354,7 +357,7 @@ namespace DemoLA.Content
             var effect = new TripodEffect();
             effect.Timing = InTiming;
             effect.RuntimeDef = InDef;
-            effect.Effect = asAsset(InDef, InName, InTiming == ETripodTiming.SkillParameter);
+            effect.Effect = asAsset(InDef, InAssetName, InTiming == ETripodTiming.SkillParameter);
             effect.BaseScale = 1.0f;
             effect.PerLevelScale = InPerLevel;
             option.Effects.Add(effect);
@@ -459,8 +462,8 @@ namespace DemoLA.Content
         {
             var cls = createClass(ECharacterClass.Artist, "도화가", ECombatRole.Support, new Color(0.6f, 1.0f, 0.6f), 7.0f, false);
             cls.BaseMaxHealth = 150000.0f;
-            var buff = asAsset(EffectBuilder.Timed(8.0f).Add(EAttr.DamageIncrease, 10.0f).Stack(EStackPolicy.Refresh, 1).Build(), "아군 공격력 강화");
-            var brand = asAsset(EffectBuilder.Timed(10.0f).Add(EAttr.IncomingDamageAmplify, 10.0f).Stack(EStackPolicy.Refresh, 1).Build(), "낙인");
+            var buff = asAsset(EffectBuilder.Timed(8.0f).Add(EAttr.DamageIncrease, 10.0f).Stack(EStackPolicy.Refresh, 1).Build(), "AllyDamageBuff");
+            var brand = asAsset(EffectBuilder.Timed(10.0f).Add(EAttr.IncomingDamageAmplify, 10.0f).Stack(EStackPolicy.Refresh, 1).Build(), "Brand");
 
             skill(cls, 0, "붓 휘두르기", 4.0f, 20.0f, hit(HitArea.Fan(5.0f, 90.0f), 1.2f, 0.25f, 6.0f));
             var mark = skill(cls, 1, "먹물 낙인", 10.0f, 60.0f, hit(HitArea.Circle(4.0f, 6.0f), 1.5f, 0.4f, 10.0f));
@@ -604,6 +607,7 @@ namespace DemoLA.Content
 
         // ================================================================== util
 
+        /// <summary>InName = 에셋 이름(영문). 에셋 · 파일 이름은 GE_{InName}.</summary>
         private static GameplayEffectAsset asAsset(GameplayEffectDef InDef, string InName, bool InIsSkillAttribute = false)
         {
             var asset = track(ScriptableObject.CreateInstance<GameplayEffectAsset>(), "GE_" + InName);

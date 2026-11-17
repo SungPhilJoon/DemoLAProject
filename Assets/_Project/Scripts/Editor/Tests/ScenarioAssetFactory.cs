@@ -58,14 +58,14 @@ namespace DemoLA.Editor
                 }
             }
 
-            save(leapCrossChase(), $"{Root}/Mechanics", "TS_G2-23_도약십자추적", InOverwrite, ref created, ref skipped);
-            save(chargeIntoPillar(), $"{Root}/Mechanics", "TS_G2-11_돌진기둥충돌", InOverwrite, ref created, ref skipped);
-            save(firstWipeBreaksAll(), $"{Root}/Mechanics", "TS_G2-03_구조물전부파괴", InOverwrite, ref created, ref skipped);
-            save(knockbackFall(), $"{Root}/Mechanics", "TS_낙사_넉백_지형파괴후", InOverwrite, ref created, ref skipped);
-            save(knockbackRescuedBeforeCollapse(), $"{Root}/Mechanics", "TS_낙사_넉백_벽구간구출", InOverwrite, ref created, ref skipped);
-            save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_낙사_넉백없으면구출", InOverwrite, ref created, ref skipped);
-            save(edgeExitOnlyOnce(), $"{Root}/Mechanics", "TS_G2-28_외곽이탈_없음", InOverwrite, ref created, ref skipped);
-            save(balanceGate("Gate1", 15.0f), $"{Root}/Balance", "TS_밸런스_Gate1_15초", InOverwrite, ref created, ref skipped);
+            save(leapCrossChase(), $"{Root}/Mechanics", "TS_G2_LeapSmashWhirlwind_CrossChase", InOverwrite, ref created, ref skipped);
+            save(chargeIntoPillar(), $"{Root}/Mechanics", "TS_G2_Charge_PillarCrash", InOverwrite, ref created, ref skipped);
+            save(firstWipeBreaksAll(), $"{Root}/Mechanics", "TS_G2_LethalFieldDouble_BreakAllStructures", InOverwrite, ref created, ref skipped);
+            save(knockbackFall(), $"{Root}/Mechanics", "TS_Fall_KnockbackAfterCollapse", InOverwrite, ref created, ref skipped);
+            save(knockbackRescuedBeforeCollapse(), $"{Root}/Mechanics", "TS_Fall_KnockbackRescuedAtWall", InOverwrite, ref created, ref skipped);
+            save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_Fall_RescueWithoutKnockback", InOverwrite, ref created, ref skipped);
+            save(edgeExitOnlyOnce(), $"{Root}/Mechanics", "TS_EdgeExitLeap_Removed", InOverwrite, ref created, ref skipped);
+            save(balanceGate("Gate1", 15.0f), $"{Root}/Balance", "TS_Balance_Gate1_15s", InOverwrite, ref created, ref skipped);
             AssetDatabase.SaveAssets();
             return $"시나리오 생성 {created}개, 건너뜀 {skipped}개 → {Root}";
         }

@@ -175,7 +175,7 @@ namespace DemoLA.UI
                 var s = pair.Value;
                 // 열 때마다 겹치지 않게 조금씩 비켜 놓는다.
                 var position = new Vector2(-120.0f + 40.0f * index, 40.0f - 26.0f * index);
-                windows[kind] = GameWindow.Create(canvas.transform, s.Title, s.HotkeyLabel, s.Icon, s.Size, position, s.Draw,
+                windows[kind] = GameWindow.Create(canvas.transform, kind.ToString(), s.Title, s.HotkeyLabel, s.Icon, s.Size, position, s.Draw,
                     kind == EWindow.Keys ? (Action)null : () => apply(windows[kind]), null);
                 index += 1;
             }

@@ -20,9 +20,12 @@ namespace DemoLA.World
         /// <summary>플레이어 캐릭터를 만든다 (조작은 PlayerController / 네트워크 명령 — 아군 AI 없음).</summary>
         public static PartyCharacter SpawnCharacter(CharacterClassDefinition InClass, CharacterBuildData InBuild, GameDatabase InDatabase, Vector3 InPosition, string InName)
         {
-            var go = new GameObject(InName);
+            // GameObject 이름은 영문 식별자, InName 은 화면 표시 이름.
+            var go = new GameObject($"Player_{InClass.Class}");
             go.transform.position = InPosition;
-            return AttachCharacter(go, InClass, InBuild, InDatabase);
+            var character = AttachCharacter(go, InClass, InBuild, InDatabase);
+            character.SetName(InName);
+            return character;
         }
 
         /// <summary>이미 있는 오브젝트(네트워크 프리팹 등)에 파티원 몸 · 이동 · 전투 컴포넌트를 붙인다.</summary>
@@ -49,7 +52,7 @@ namespace DemoLA.World
 
         public static BossActor SpawnBoss(BossDefinition InDefinition, Vector3 InPosition, Quaternion InRotation, int InPartySize = 0)
         {
-            var go = new GameObject(InDefinition.DisplayName);
+            var go = new GameObject($"Boss_{InDefinition.BossId}");
             go.transform.SetPositionAndRotation(InPosition, InRotation);
             return AttachBoss(go, InDefinition, InPartySize, true);
         }
@@ -77,6 +80,7 @@ namespace DemoLA.World
             }
 
             var boss = go.AddComponent<BossActor>();
+            boss.SetName(InDefinition.DisplayName);
             boss.Initialize(InDefinition, InPartySize > 0 ? InPartySize : InDefinition.DesignPartySize);
             // 관문마다 에스더 게이지를 새로 모은다 (그 관문에서 쓸 수 있는 에스더만).
             DemoLA.Character.EstherSystem.Reset(InDefinition.BossId);

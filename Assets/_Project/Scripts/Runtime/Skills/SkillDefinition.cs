@@ -80,6 +80,14 @@ namespace DemoLA.Skills
         [Tooltip("시전 클립 → 이동 애니메이션 블렌드 (초). 클립이 끝나기 이만큼 전, 또는 스킬이 끝날 때 시작")]
         public float AnimationBlendOut = 0.15f;
 
+        [Header("Gameplay Cue")]
+        [Tooltip("시전 전: 캐릭터를 중심으로 펼쳐지는 아우라 (시전 시작 → 첫 타격). 셰이더: Art/Shaders/SkillCue/PreCast")]
+        public SkillCueSlot PreCastCue = new SkillCueSlot();
+        [Tooltip("시전 중: 무기 궤적을 따라가는 잔상 (첫 타격 직전 → 마지막 타격). 셰이더: Art/Shaders/SkillCue/Casting")]
+        public SkillCueSlot CastingCue = new SkillCueSlot();
+        [Tooltip("시전 후: 마지막 타격 때 무기에서 뿜어지는 빛. 셰이더: Art/Shaders/SkillCue/PostCast")]
+        public SkillCueSlot PostCastCue = new SkillCueSlot();
+
         [Header("Combat")]
         public List<SkillHit> Hits = new List<SkillHit>();
         public ESkillPositionalType Positional;
@@ -123,6 +131,17 @@ namespace DemoLA.Skills
                 }
 
                 return range + DashDistance;
+            }
+        }
+
+        /// <summary>시전 전 · 중 · 후 큐가 하나라도 있는가.</summary>
+        public bool HasCastCues
+        {
+            get
+            {
+                return (PreCastCue != null && PreCastCue.IsSet == true)
+                       || (CastingCue != null && CastingCue.IsSet == true)
+                       || (PostCastCue != null && PostCastCue.IsSet == true);
             }
         }
 

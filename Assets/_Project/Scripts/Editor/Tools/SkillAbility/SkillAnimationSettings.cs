@@ -7,7 +7,7 @@ namespace DemoLA.Editor.SkillTool
 {
     /// <summary>
     /// 스킬 시전 애니메이션 설정 보존. 스킬 에셋(Data/Generated/Skills)은 전체 셋업 때 코드(DefaultContent)로 다시 만들어지지만,
-    /// Skill Ability Tool 에서 넣은 애니메이션(클립 · 속도 · 시작 · 블렌드)은 코드에 없으므로 SkillId 별로 옮겨 붙인다.
+    /// Skill Ability Tool 에서 넣은 애니메이션(클립 · 속도 · 시작 · 블렌드)과 GameplayCue 슬롯(시전 전 · 중 · 후)은 코드에 없으므로 SkillId 별로 옮겨 붙인다.
     /// </summary>
     public static class SkillAnimationSettings
     {
@@ -18,6 +18,9 @@ namespace DemoLA.Editor.SkillTool
             public float StartTime;
             public float BlendIn;
             public float BlendOut;
+            public SkillCueSlot PreCastCue;
+            public SkillCueSlot CastingCue;
+            public SkillCueSlot PostCastCue;
         }
 
         /// <summary>(SkillId, 각성기 여부) 키.</summary>
@@ -37,7 +40,7 @@ namespace DemoLA.Editor.SkillTool
             foreach (var guid in AssetDatabase.FindAssets("t:SkillDefinition", new[] { InFolder }))
             {
                 var skill = AssetDatabase.LoadAssetAtPath<SkillDefinition>(AssetDatabase.GUIDToAssetPath(guid));
-                if (skill == null || skill.CastAnimation == null)
+                if (skill == null || (skill.CastAnimation == null && skill.HasCastCues == false))
                 {
                     continue;
                 }
@@ -49,6 +52,9 @@ namespace DemoLA.Editor.SkillTool
                     StartTime = skill.AnimationStartTime,
                     BlendIn = skill.AnimationBlendIn,
                     BlendOut = skill.AnimationBlendOut,
+                    PreCastCue = skill.PreCastCue != null ? skill.PreCastCue.Clone() : null,
+                    CastingCue = skill.CastingCue != null ? skill.CastingCue.Clone() : null,
+                    PostCastCue = skill.PostCastCue != null ? skill.PostCastCue.Clone() : null,
                 };
             }
 
@@ -70,7 +76,7 @@ namespace DemoLA.Editor.SkillTool
 
             if (restored > 0)
             {
-                Debug.Log($"[DemoLA] 스킬 시전 애니메이션 {restored}개를 새 스킬 에셋에 다시 넣었습니다");
+                Debug.Log($"[DemoLA] 스킬 시전 애니메이션 · 큐 {restored}개를 새 스킬 에셋에 다시 넣었습니다");
             }
 
             return restored;
@@ -78,11 +84,29 @@ namespace DemoLA.Editor.SkillTool
 
         public static void Apply(SkillDefinition InSkill, Entry InEntry)
         {
-            InSkill.CastAnimation = InEntry.Clip;
-            InSkill.AnimationSpeed = InEntry.Speed;
-            InSkill.AnimationStartTime = InEntry.StartTime;
-            InSkill.AnimationBlendIn = InEntry.BlendIn;
-            InSkill.AnimationBlendOut = InEntry.BlendOut;
+            if (InEntry.Clip != null)
+            {
+                InSkill.CastAnimation = InEntry.Clip;
+                InSkill.AnimationSpeed = InEntry.Speed;
+                InSkill.AnimationStartTime = InEntry.StartTime;
+                InSkill.AnimationBlendIn = InEntry.BlendIn;
+                InSkill.AnimationBlendOut = InEntry.BlendOut;
+            }
+
+            if (InEntry.PreCastCue != null)
+            {
+                InSkill.PreCastCue = InEntry.PreCastCue.Clone();
+            }
+
+            if (InEntry.CastingCue != null)
+            {
+                InSkill.CastingCue = InEntry.CastingCue.Clone();
+            }
+
+            if (InEntry.PostCastCue != null)
+            {
+                InSkill.PostCastCue = InEntry.PostCastCue.Clone();
+            }
         }
     }
 }

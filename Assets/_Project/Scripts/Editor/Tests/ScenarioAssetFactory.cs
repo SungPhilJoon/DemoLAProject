@@ -66,6 +66,7 @@ namespace DemoLA.Editor
             save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_Fall_RescueWithoutKnockback", InOverwrite, ref created, ref skipped);
             save(edgeExitOnlyOnce(), $"{Root}/Mechanics", "TS_EdgeExitLeap_Removed", InOverwrite, ref created, ref skipped);
             save(balanceGate("Gate1", 15.0f), $"{Root}/Balance", "TS_Balance_Gate1_15s", InOverwrite, ref created, ref skipped);
+            save(skillCuePhases(), $"{Root}/SkillCue", "TS_SkillCue_Slayer_CastPhases", InOverwrite, ref created, ref skipped);
             AssetDatabase.SaveAssets();
             return $"시나리오 생성 {created}개, 건너뜀 {skipped}개 → {Root}";
         }
@@ -263,6 +264,45 @@ namespace DemoLA.Editor
         }
 
         // ------------------------------------------------------------------ util
+
+        // ------------------------------------------------------------------ 스킬 GameplayCue
+
+        /// <summary>
+        /// 슬레이어 첫 스킬에 시전 전(마법진) · 중(천상 궤적) · 후(방사 광선) 셰이더 큐를 끼우고 시전한다.
+        /// 프레임워크 GameplayCueManager → ShaderGameplayCueNotify 경로로 Active/Removed/Executed 가 순서대로 한 번씩 오고, 뷰가 겹쳐 그려졌다가 모두 정리되는지.
+        /// </summary>
+        private static TestScenarioAsset skillCuePhases()
+        {
+            var s = make("스킬 큐 시전 전 · 중 · 후", "슬레이어 Q 스킬: 시전 전 아우라 → 시전 중 무기 궤적 → 마지막 타격 무기 분출 큐가 순서대로 재생되고 끝나면 정리되는지", "SkillCue");
+            s.TimeScale = 1.0f;
+            s.Timeout = 20.0f;
+            s.Steps.Add(new SpawnPartyStep { Members = new List<PartyMemberSpec> { new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = Vector3.zero, Invulnerable = true } } });
+            s.Steps.Add(new AssignSkillCueStep { Phase = DemoLA.Skills.ESkillCuePhase.PreCast, ShaderName = "DemoLA/SkillCue/PreCast/AuraRuneCircle" });
+            s.Steps.Add(new AssignSkillCueStep { Phase = DemoLA.Skills.ESkillCuePhase.Casting, ShaderName = "DemoLA/SkillCue/Casting/TrailCelestial" });
+            s.Steps.Add(new AssignSkillCueStep { Phase = DemoLA.Skills.ESkillCuePhase.PostCast, ShaderName = "DemoLA/SkillCue/PostCast/BurstRadiantRays" });
+            s.Steps.Add(new WaitSecondsStep { Seconds = 0.3f });
+            s.Steps.Add(new CastSkillStep { SkillSlot = 0 });
+            // 시전 후 큐(약 0.7초) · 꺼짐 페이드가 끝날 때까지.
+            s.Steps.Add(new WaitSecondsStep { Seconds = 1.5f });
+
+            const string pre = "Cue.PreCast.";
+            const string casting = "Cue.Casting.";
+            const string post = "Cue.PostCast.";
+            s.Expectations.Add(new EventExpectation { Label = "시전 1회", EventName = "Skill.Cast", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventExpectation { Label = "시전 전 켜짐", EventName = pre + "Active", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventExpectation { Label = "시전 전 꺼짐", EventName = pre + "Removed", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventExpectation { Label = "시전 중 켜짐", EventName = casting + "Active", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventExpectation { Label = "시전 중 꺼짐", EventName = casting + "Removed", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventExpectation { Label = "시전 후 분출", EventName = post + "Executed", Compare = EScenarioCompare.Equal, Value = 1 });
+            s.Expectations.Add(new EventIntervalExpectation { Label = "아우라 → 궤적 순서", FromEvent = pre + "Active", ToEvent = casting + "Active", Compare = EScenarioCompare.GreaterOrEqual, Value = 0 });
+            s.Expectations.Add(new EventIntervalExpectation { Label = "궤적 → 분출 순서", FromEvent = casting + "Active", ToEvent = post + "Executed", Compare = EScenarioCompare.Greater, Value = 0 });
+            s.Expectations.Add(new EventIntervalExpectation { Label = "분출 → 스킬 끝 (분출이 시전 안에)", FromEvent = post + "Executed", ToEvent = "Skill.Ended", Compare = EScenarioCompare.GreaterOrEqual, Value = 0 });
+            s.Expectations.Add(new ProbeExpectation { Label = "동시에 그려진 큐", Probe = "Cue.Views", Moment = EProbeMoment.MaxDuring, Compare = EScenarioCompare.GreaterOrEqual, Value = 1 });
+            s.Expectations.Add(new ProbeExpectation { Label = "끝나면 정리됨", Probe = "Cue.Views", Moment = EProbeMoment.AtEnd, Compare = EScenarioCompare.Equal, Value = 0 });
+            s.Expectations.Add(new EventIntervalExpectation { Label = "시전 → 분출 시간", FromEvent = "Skill.Cast", ToEvent = post + "Executed", ReportOnly = true });
+            s.Expectations.Add(new EventExpectation { Label = "큐 호출 수", EventName = "Cue", ReportOnly = true });
+            return s;
+        }
 
         private static TestScenarioAsset make(string InTitle, string InDescription, string InCategory)
         {

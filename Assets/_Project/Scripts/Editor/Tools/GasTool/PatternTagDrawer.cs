@@ -41,7 +41,7 @@ namespace DemoLA.Editor.Gas
             {
                 if (GUI.Button(buttonRect, new GUIContent("GAS", "GAS Tool 에서 이 패턴 어빌리티 열기 (단계 · 카운터 · 대상)"), EditorStyles.miniButton) == true)
                 {
-                    GasToolWindow.OpenPattern(current);
+                    DemoLAGasTool.OpenPattern(current);
                 }
             }
 

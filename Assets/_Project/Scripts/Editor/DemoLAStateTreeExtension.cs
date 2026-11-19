@@ -123,7 +123,7 @@ namespace DemoLA.Editor
                     EditorGUILayout.LabelField($"보스: {boss.DisplayName} — 패턴 {boss.Patterns.Count} (◆ 카운터 {counters})", EditorStyles.boldLabel);
                     if (GUILayout.Button("GAS Tool: Ability Set", GUILayout.Width(150)) == true)
                     {
-                        Gas.GasToolWindow.OpenAbilitySet(boss);
+                        Gas.DemoLAGasTool.OpenAbilitySet(boss);
                     }
                 }
 
@@ -145,7 +145,7 @@ namespace DemoLA.Editor
                             EditorGUILayout.LabelField($"  {GameTags.ToTagString(use.PatternTag)}", summary, EditorStyles.miniLabel);
                             if (pattern != null && GUILayout.Button("GAS", EditorStyles.miniButton, GUILayout.Width(44)) == true)
                             {
-                                Gas.GasToolWindow.OpenPattern(use.PatternTag);
+                                Gas.DemoLAGasTool.OpenPattern(use.PatternTag);
                             }
                         }
                     }

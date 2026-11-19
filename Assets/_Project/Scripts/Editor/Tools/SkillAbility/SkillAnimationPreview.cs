@@ -15,7 +15,7 @@ namespace DemoLA.Editor.SkillTool
     ///  - 바닥에 1m 격자, 타격 시점 앞뒤로 그 타격의 판정 범위(HitArea)를 그리고, 돌진 · 타격 전진 거리만큼 모델을 앞으로 옮긴다.
     ///  - 마우스: 왼쪽 드래그 = 회전, 휠 = 줌, 오른쪽/가운데 드래그 = 위아래 이동.
     /// </summary>
-    public class SkillAnimationPreview : IDisposable
+    public partial class SkillAnimationPreview : IDisposable
     {
         private const int PreviewLayer = 31;
         private static readonly Color ActiveHitColor = new Color(1.0f, 0.3f, 0.25f, 0.45f);
@@ -48,6 +48,7 @@ namespace DemoLA.Editor.SkillTool
 
         public void Dispose()
         {
+            disposeCues();
             destroyGraph();
             if (instance != null)
             {
@@ -213,7 +214,11 @@ namespace DemoLA.Editor.SkillTool
         public void Draw(Rect InRect, SkillDefinition InSkill, float InSkillTime)
         {
             float follow = InSkill != null && FollowRoot == true ? ForwardOffsetAt(InSkill, InSkillTime) : 0.0f;
-            Draw(InRect, follow * 0.5f, () => skillOverlay(InSkill, InSkillTime));
+            Draw(InRect, follow * 0.5f, () =>
+            {
+                skillOverlay(InSkill, InSkillTime);
+                drawCues(InSkill, InSkillTime);
+            });
         }
 
         /// <summary>

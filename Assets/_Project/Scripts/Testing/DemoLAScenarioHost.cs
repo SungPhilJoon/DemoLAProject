@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DemoLA.Attributes;
@@ -14,6 +15,7 @@ using Framework;
 using Framework.Ability;
 using Framework.Testing;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DemoLA.Testing
 {
@@ -24,13 +26,17 @@ namespace DemoLA.Testing
     /// 기록하는 이벤트 (Recorder):
     ///   Damage.ToParty / Damage.ToBoss (값 = 피해) · Hit.Party / Hit.PartyCrit · Pattern.Started(.ID) · Pattern.Ended(.ID) (값 1 = 취소)
     ///   Telegraph (값 = 범위 길이) · Knockback (값 = 거리) · Structure.Broken(.Pillar/.Wall) · Died.Party / Died.Boss · Message
+    ///   Cue · Cue.{이름표}.{Active|Removed|Executed} (프레임워크 GameplayCueManager.OnCueInvoked, 값 = Magnitude. 이름표 = LabelCue 로 붙인 이름, 없으면 큐 태그 이름)
+    ///   Skill.Cast / Skill.Ended (CastSkillStep)
     /// 관측값 (Probe):
     ///   Boss.HpLines · Boss.HpPercent · Boss.Moved · Boss.Groggy · Party.Alive · Party.MinHpPercent · Party.KnockedBack ·
-    ///   Party.CritRate · Party0.DistanceFromCenter · Telegraph.Visible · Structures.Destroyed · Pickups
+    ///   Party.CritRate · Party0.DistanceFromCenter · Telegraph.Visible · Structures.Destroyed · Pickups · Cue.Views (재생 중인 셰이더 GameplayCue 뷰 수)
     /// </summary>
     public class DemoLAScenarioHost : IScenarioHost
     {
         private readonly List<GameObject> spawned = new List<GameObject>();
+        private readonly List<Action> cleanups = new List<Action>();
+        private readonly Dictionary<int, string> cueLabels = new Dictionary<int, string>();
         private ScenarioContext context;
         private bool builtArena;
         private int hits;
@@ -41,6 +47,21 @@ namespace DemoLA.Testing
         public ArenaFloor Arena { get; private set; }
         public BossActor Boss { get; private set; }
         public readonly List<PartyCharacter> Party = new List<PartyCharacter>();
+
+        /// <summary>GameplayCue id 에 기록용 이름표를 붙인다 (예: 스킬 구간 "PreCast" → 이벤트 Cue.PreCast.Active).</summary>
+        public void LabelCue(int InCueId, string InLabel)
+        {
+            cueLabels[InCueId] = InLabel;
+        }
+
+        /// <summary>TearDown 때 되돌릴 일 (단계가 데이터를 잠깐 바꿀 때 — 역순으로 실행).</summary>
+        public void AddCleanup(Action InCleanup)
+        {
+            if (InCleanup != null)
+            {
+                cleanups.Add(InCleanup);
+            }
+        }
 
         public PartyCharacter Member(int InIndex)
         {
@@ -102,6 +123,20 @@ namespace DemoLA.Testing
         public void TearDown(ScenarioContext InContext)
         {
             unsubscribe();
+            for (int i = cleanups.Count - 1; i >= 0; --i)
+            {
+                try
+                {
+                    cleanups[i]();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            }
+
+            cleanups.Clear();
+            cueLabels.Clear();
             for (int i = 0; i < spawned.Count; ++i)
             {
                 if (spawned[i] != null)
@@ -208,6 +243,7 @@ namespace DemoLA.Testing
             BossPatternAbility.TelegraphStarted += handleTelegraph;
             ActorMotor.Knockbacked += handleKnockback;
             ArenaStructure.Broken += handleBroken;
+            GameplayCueManager.OnCueInvoked += handleCue;
         }
 
         private void unsubscribe()
@@ -218,6 +254,7 @@ namespace DemoLA.Testing
             BossPatternAbility.TelegraphStarted -= handleTelegraph;
             ActorMotor.Knockbacked -= handleKnockback;
             ArenaStructure.Broken -= handleBroken;
+            GameplayCueManager.OnCueInvoked -= handleCue;
             if (Boss != null && Boss.Asc != null)
             {
                 Boss.Asc.OnAbilityActivated -= handleBossAbility;
@@ -279,6 +316,19 @@ namespace DemoLA.Testing
         {
             context.Recorder.Record("Structure.Broken", 1.0f);
             context.Recorder.Record(InStructure.Kind == EStructureKind.Wall ? "Structure.Broken.Wall" : "Structure.Broken.Pillar", 1.0f);
+        }
+
+        private void handleCue(int InCueId, EGameplayCueEvent InEvent, GameplayCueParams InParams)
+        {
+            var source = InParams.Source != null ? InParams.Source.OwnerActor : null;
+            string label;
+            if (cueLabels.TryGetValue(InCueId, out label) == false)
+            {
+                label = GameplayTagRegistry.GetName(InCueId);
+            }
+
+            context.Recorder.Record("Cue", InParams.Magnitude, label);
+            context.Recorder.Record($"Cue.{label}.{InEvent}", InParams.Magnitude, source != null ? source.name : null);
         }
 
         private void handleBossAbility(GameplayAbility InAbility)
@@ -384,6 +434,7 @@ namespace DemoLA.Testing
                 return destroyed;
             });
             InContext.RegisterProbe("Pickups", () => Object.FindObjectsByType<RaidPickup>(FindObjectsSortMode.None).Length);
+            InContext.RegisterProbe("Cue.Views", () => GameplayCueView.ActiveCount);
         }
     }
 }

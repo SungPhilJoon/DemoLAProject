@@ -295,7 +295,8 @@ namespace DemoLA.Skills
         private void playCastAnimation(CombatActor InActor)
         {
             castAnimationPlaying = false;
-            if (Definition.CastAnimation == null)
+            // 애니메이션이 없어도 GameplayCue(시전 전 · 중 · 후 셰이더 연출)가 있으면 같은 경로로 재생 · 복제한다.
+            if (Definition.CastAnimation == null && Definition.HasCastCues == false)
             {
                 return;
             }
@@ -306,9 +307,16 @@ namespace DemoLA.Skills
             CastAnimationPlayed?.Invoke(InActor, Definition, speed);
         }
 
-        /// <summary>InActor 모델에서 스킬 시전 클립을 재생한다 (네트워크 클라이언트도 이것으로 재생).</summary>
+        /// <summary>InActor 모델에서 스킬 시전 클립과 시전 큐(SkillCuePlayer)를 재생한다 (네트워크 클라이언트도 이것으로 재생).</summary>
         public static void PlayCastAnimation(CombatActor InActor, SkillDefinition InDefinition, float InSpeed)
         {
+            if (InDefinition != null && InDefinition.HasCastCues == true)
+            {
+                // InSpeed = AnimationSpeed / 시전 시간 배율 → 시간 배율 = AnimationSpeed / InSpeed.
+                float timeScale = Mathf.Max(0.01f, InDefinition.AnimationSpeed) / Mathf.Max(0.01f, InSpeed);
+                SkillCuePlayer.Play(InActor, InDefinition, timeScale);
+            }
+
             var driver = InActor != null ? InActor.GetComponent<DemoLA.Character.CharacterAnimatorDriver>() : null;
             if (driver != null && InDefinition != null && InDefinition.CastAnimation != null)
             {
@@ -318,6 +326,7 @@ namespace DemoLA.Skills
 
         public static void StopCastAnimation(CombatActor InActor, float InBlendOut = -1.0f)
         {
+            SkillCuePlayer.Stop(InActor);
             var driver = InActor != null ? InActor.GetComponent<DemoLA.Character.CharacterAnimatorDriver>() : null;
             if (driver != null)
             {

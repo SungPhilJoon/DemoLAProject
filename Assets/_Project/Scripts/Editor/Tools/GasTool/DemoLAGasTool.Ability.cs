@@ -17,7 +17,7 @@ namespace DemoLA.Editor.Gas
     ///  플레이어 스킬: 기본 + 모든 필드 (SkillDefinition)
     /// 패턴을 이 탭에서 고치면 ToolEdited 가 켜져 CSV 재가져오기 · 전체 셋업이 실행 데이터를 덮어쓰지 않는다.
     /// </summary>
-    public partial class GasToolWindow
+    public partial class DemoLAGasTool
     {
         private const float TimelineHeight = 58.0f;
         private static readonly Color TelegraphColor = new Color(0.95f, 0.6f, 0.2f, 0.55f);
@@ -32,7 +32,7 @@ namespace DemoLA.Editor.Gas
 
         // ------------------------------------------------------------------ list
 
-        private void drawAbilityList()
+        internal void drawAbilityList()
         {
             foreach (var boss in Database.Bosses)
             {
@@ -87,7 +87,7 @@ namespace DemoLA.Editor.Gas
         }
 
         /// <summary>목록 아래 "새 Ability" 버튼 → 별도 창(CreateAbilityWindow)에서 템플릿 · 이름을 고른다.</summary>
-        private void drawCreateAbility()
+        internal void drawCreateAbility()
         {
             if (GUILayout.Button("+ 새 Ability…", GUILayout.Height(28.0f)) == true)
             {
@@ -118,7 +118,7 @@ namespace DemoLA.Editor.Gas
 
         // ------------------------------------------------------------------ editor
 
-        private void drawAbilityEditor()
+        internal void drawAbilityEditor()
         {
             if (SelectedSkill != null)
             {
@@ -529,7 +529,7 @@ namespace DemoLA.Editor.Gas
 
             if (EditorApplication.isPlaying == true)
             {
-                var live = FindAnyObjectByType<BossActor>();
+                var live = UnityEngine.Object.FindAnyObjectByType<BossActor>();
                 if (live != null && live.Definition != null && live.Definition.GetPattern(InPattern.PatternTag) != null)
                 {
                     using (new EditorGUILayout.HorizontalScope())

@@ -8,7 +8,9 @@ namespace DemoLA.Core
     /// 게임 태그 (GameplayTagManager 에 int id 로 등록).
     /// 이름의 '_' 가 계층 구분자다. "State_Dead" 의 부모는 "State" 이며 RegisterAll 이 이름으로 부모를 찾아 연결한다.
     /// 새 태그는 부모 태그 뒤에 추가하기만 하면 된다 (값은 저장 데이터에 쓰이므로 기존 값은 바꾸지 않는다).
+    /// [GameplayTagEnum] → 프레임워크 GAS Tool 의 GameplayTag 탭 · [GameplayTag] 드롭다운에 나타난다.
     /// </summary>
+    [GameplayTagEnum('_')]
     public enum ETag
     {
         None = 0,
@@ -193,49 +195,18 @@ namespace DemoLA.Core
 
     public static class GameTags
     {
-        private static bool Registered;
-
-        /// <summary>모든 ETag 를 이름 기반 계층으로 등록한다. 여러 번 불러도 한 번만 등록한다.</summary>
+        /// <summary>
+        /// 모든 ETag 를 이름 기반 계층으로 프레임워크 GameplayTagRegistry 에 등록한다 (부모 = 마지막 '_' 앞 이름, 표시 이름 "State.Dead").
+        /// 이미 등록돼 있으면 아무것도 하지 않고, GameplayTagManager.Clear 뒤에는 다시 등록한다.
+        /// </summary>
         public static void RegisterAll()
         {
-            if (Registered == true)
-            {
-                return;
-            }
-
-            Registered = true;
-            var byName = new Dictionary<string, int>();
-            foreach (ETag tag in Enum.GetValues(typeof(ETag)))
-            {
-                byName[tag.ToString()] = (int)tag;
-            }
-
-            foreach (var pair in byName)
-            {
-                if (pair.Value == (int)ETag.None)
-                {
-                    continue;
-                }
-
-                int parent = GameplayTagManager.InvalidTag;
-                int split = pair.Key.LastIndexOf('_');
-                if (split > 0)
-                {
-                    int found;
-                    if (byName.TryGetValue(pair.Key.Substring(0, split), out found) == true)
-                    {
-                        parent = found;
-                    }
-                }
-
-                GameplayTagManager.SetParent(pair.Value, parent);
-            }
+            GameplayTagRegistry.RegisterEnum<ETag>('_');
         }
 
-        /// <summary>테스트에서 GameplayTagManager.Clear 를 부른 뒤 다시 등록할 때.</summary>
+        /// <summary>테스트에서 GameplayTagManager.Clear 를 부른 뒤 다시 등록할 때 (Clear 가 이름 표도 비우므로 RegisterAll 과 같다).</summary>
         public static void ForceReregister()
         {
-            Registered = false;
             RegisterAll();
         }
 

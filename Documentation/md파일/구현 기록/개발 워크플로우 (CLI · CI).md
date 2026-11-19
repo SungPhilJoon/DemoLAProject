@@ -124,9 +124,11 @@ IScenarioHost (프로젝트 어댑터)
 |---|---|---|
 | 공통 단계 | `WaitSecondsStep` · `WaitForEventStep` · `WaitForProbeStep` · `InvokeUnityEventStep` · `LogStep` | 대기 · 이벤트/관측값 조건 대기 · 인스펙터에서 연결한 함수 호출 · 로그 |
 | DemoLA 단계 | `SpawnBossStep` · `SpawnPartyStep` · `ActivatePatternStep` · `SetBossHpLinesStep` · `MoveMemberStep` · `KnockbackMemberStep` · `SetBossAIStep` | 보스(AI 끄기 가능) · 파티(더미/AI) · 패턴 즉시 발동 후 끝까지 대기(실패 시 이유 · 보스 상태 기록) · 체력 줄 · 이동 · 넉백 |
+| DemoLA 단계 (4차, 스킬) | `AssignSkillCueStep` · `CastSkillStep` (`Testing/DemoLASkillSteps.cs`) | 파티원 스킬 칸의 시전 전 · 중 · 후 슬롯에 큐를 끼움 — 큐 에셋(프레임워크 `GameplayCueNotify`)을 넣거나, 비우면 `ShaderName` 셰이더로 **실행 중에만 쓰는 `ShaderGameplayCueNotify`** 를 만든다 (에셋 생성 없음, 끝나면 원래 슬롯으로 · 큐 등록 해제) / 실제 `SkillAbility` 경로로 시전 → 끝날 때까지 대기 |
 | 검증 | `EventExpectation` · `ProbeExpectation` · `EventIntervalExpectation` | 비교: = ≠ > ≥ < ≤ 범위. `OnEvaluated(float)` 에 함수를 연결하면 실제 값을 받아 추가 확인 |
-| 이벤트 (DemoLA) | `Damage.ToParty` · `Damage.ToBoss` · `Hit.Party` · `Hit.PartyCrit` · `Pattern.Started(.ID)` · `Pattern.Ended(.ID)` · `Telegraph` · `Knockback` · `Structure.Broken(.Pillar/.Wall)` · `Died.Party/Boss` · `Message` | `DemoLAScenarioHost` 가 EventBus · 정적 이벤트에서 기록 |
-| 관측값 (DemoLA) | `Boss.HpLines` · `Boss.HpPercent` · `Boss.Moved` · `Boss.Groggy` · `Party.Alive` · `Party.MinHpPercent` · `Party.KnockedBack` · `Party.CritRate` · `Party0.DistanceFromCenter` · `Telegraph.Visible` · `Structures.Destroyed` · `Pickups` | |
+| 이벤트 (DemoLA) | `Damage.ToParty` · `Damage.ToBoss` · `Hit.Party` · `Hit.PartyCrit` · `Pattern.Started(.ID)` · `Pattern.Ended(.ID)` · `Telegraph` · `Knockback` · `Structure.Broken(.Pillar/.Wall)` · `Died.Party/Boss` · `Message` · **(4차)** `Cue` · `Cue.{이름표}.{Active/Removed/Executed}` (값 = Magnitude) · `Skill.Cast` · `Skill.Ended` | `DemoLAScenarioHost` 가 EventBus · 정적 이벤트에서 기록. 큐는 프레임워크 `GameplayCueManager.OnCueInvoked` — 이름표는 `LabelCue(id, 이름)` 로 붙인 것(스킬 구간 PreCast 등), 없으면 큐 태그 이름 |
+| 관측값 (DemoLA) | `Boss.HpLines` · `Boss.HpPercent` · `Boss.Moved` · `Boss.Groggy` · `Party.Alive` · `Party.MinHpPercent` · `Party.KnockedBack` · `Party.CritRate` · `Party0.DistanceFromCenter` · `Telegraph.Visible` · `Structures.Destroyed` · `Pickups` · **(4차)** `Cue.Views` (재생 중인 셰이더 GameplayCue 뷰 수 = 프레임워크 `GameplayCueView.ActiveCount`) | |
+| 정리 훅 (4차) | `DemoLAScenarioHost.AddCleanup(Action)` | 단계가 데이터(스킬 정의 등)를 잠깐 바꿨다면 되돌릴 일을 등록 → `TearDown` 에서 역순 실행 |
 | 인스펙터 | `[SubclassSelector]` 드로어 | Steps · Expectations 원소마다 형식 드롭다운 (다른 어셈블리의 단계도 자동 표시). "+" 로 늘린 원소가 앞 원소와 참조를 공유하면 복사본으로 바꾼다 |
 
 ### 6-2. 만들어 둔 시나리오 (`DemoLA/Tests/시나리오 생성`, `dev.sh scenarios`)
@@ -136,6 +138,7 @@ IScenarioHost (프로젝트 어댑터)
 | `Pattern.Gate1` · `Pattern.Gate2` | 20 · 21 | 구현된 패턴마다 자동 생성: 보스(AI 끔) + 더미 4명 → 발동 → 끝날 때까지. 검증 = 시작 · 끝남 · (장판이 있으면) 장판 표시. 측정 = 파티 피해 · 넉백 · 취소 여부 |
 | `Mechanics` | 5 | G2-23 동시 장판 5개 · 보스 이동 · 넉백 / G2-11 기둥 파괴 1 · 구슬 2 · 그로기 / G2-03 구조물 14개 파괴 / 넉백 낙사 / 넉백 없으면 구출 |
 | `Balance` | 1 | AI 파티 4명 60초 (보스 AI 끔): 체력 줄 변화량 범위 · 치명타 비율 범위 + 피해 합 · 타격 수 측정 |
+| `SkillCue` (4차) | 1 | `TS_SkillCue_Slayer_CastPhases`: 무적 슬레이어 1명 → Q 에 마법진(시전 전) · 천상 궤적(시전 중) · 방사 광선(시전 후) 큐 → 시전 → 1.5초. 검증 = 시전 1회 · 큐마다 켜짐/꺼짐 1회 · 분출 1회 · 아우라 → 궤적 → 분출 순서 · 분출이 스킬 끝 전 · 동시에 그려진 큐 ≥ 1 · 끝나면 0. 측정 = 시전 → 분출 시간 · 큐 호출 수 |
 
 생성기는 **이미 있는 에셋을 건너뛴다** (직접 고친 값 보존). 덮어쓰려면 메뉴 "시나리오 다시 생성 (덮어쓰기)".
 
@@ -144,6 +147,7 @@ IScenarioHost (프로젝트 어댑터)
 ```
 Tools/dev.sh test playmode cat:Mechanics      # 분류별
 Tools/dev.sh test playmode cat:Pattern.Gate2
+Tools/dev.sh test playmode cat:SkillCue        # 스킬 GameplayCue (4차, 약 35초)
 Tools/dev.sh test playmode                     # 전부 (시나리오 47 + 기존 3, 약 5~6분)
 ```
 
@@ -157,6 +161,20 @@ Tools/dev.sh test playmode                     # 전부 (시나리오 47 + 기�
 ```
 
 확인 결과 (2026-11-08): 시나리오 47/47 · 기존 PlayMode 3/3 · EditMode 67/67 통과.
+확인 결과 (2026-11-18, 4차): `cat:SkillCue` 1/1 통과 — 리포트 일부:
+
+```
+=== 스킬 큐 시전 전 · 중 · 후 (2.9초) ===
+  [통과] 시전 전 켜짐 (이벤트 'Cue.PreCast.Active' Count) = 1 (기대 = 1)
+  [통과] 시전 중 꺼짐 (이벤트 'Cue.Casting.Removed' Count) = 1 (기대 = 1)
+  [통과] 시전 후 분출 (이벤트 'Cue.PostCast.Executed' Count) = 1 (기대 = 1)
+  [통과] 궤적 → 분출 순서 ('Cue.Casting.Active' → 'Cue.PostCast.Executed' 시간) = 0.252 (기대 > 0)
+  [통과] 분출 → 스킬 끝 (분출이 시전 안에) ('Cue.PostCast.Executed' → 'Skill.Ended' 시간) = 0.522 (기대 ≥ 0)
+  [통과] 동시에 그려진 큐 (관측값 'Cue.Views' MaxDuring) = 3 (기대 ≥ 1)
+  [통과] 끝나면 정리됨 (관측값 'Cue.Views' AtEnd) = 0 (기대 = 0)
+```
+
+통과한 테스트의 리포트는 `test status` 결과에 나오지 않는다 → PlayMode 테스트가 `Debug.Log` 로 남기므로 `unity command console get` 으로 읽는다.
 만드는 과정에서 찾은 문제: 1관문 보스는 생성 직후 AI 가 G1-05(분열)를 먼저 써 다른 패턴이 막혔다 → AI 를 끌 때 진행 중 패턴도 취소. 변화량(Delta) 시작 값을 첫 단계 전에 읽어 NaN → "처음 유효한 표본" 으로 변경.
 
 ### 6-4. 새 시나리오 · 단계 추가
@@ -164,6 +182,8 @@ Tools/dev.sh test playmode                     # 전부 (시나리오 47 + 기�
 - **에셋만으로**: Project 창 → Create → Framework → Testing → Test Scenario → 단계/검증을 드롭다운으로 추가 → 분류를 정해 `Assets/_Project/Tests/Scenarios` 아래에 둔다. 다음 테스트 실행부터 자동 포함.
 - **새 단계 형식**: `ScenarioStep` (DemoLA 는 `DemoLAStep`) 을 상속한 `[Serializable]` 클래스 + `IEnumerator Execute(ScenarioContext)` → 드롭다운에 자동 표시.
 - **새 이벤트 / 관측값**: `DemoLAScenarioHost.subscribe` 에서 `Recorder.Record`, `registerProbes` 에서 `RegisterProbe`.
+- **데이터를 바꾸는 단계**: 공유 데이터(스킬 정의 등)를 바꾸면 `Host.AddCleanup(...)` 으로 되돌릴 일을 등록한다 (예: `AssignSkillCueStep`). 빈 씬 테스트의 DB 는 실행 중 생성본이지만, 게임 안(Raid 씬)에서 돌리면 실제 에셋이므로 반드시 되돌린다.
+- **CLI 로 만들고 돌리는 순서 (4차 예)**: 단계 · 생성기 코드 작성 → `Tools/dev.sh compile` → `Tools/dev.sh scenarios` (없는 에셋만 생성) → `Tools/dev.sh test playmode cat:분류`. 열린 에디터에 명령을 보내므로 에디터를 닫지 않는다 (배치 모드 `ci.ps1` 은 에디터가 열려 있으면 프로젝트 잠금으로 실패).
 - **게임 안에서 밸런스 측정**: 같은 에셋을 `ScenarioRunner.Run` 으로 돌리면 된다 (호스트가 진행 중 레이드를 걷어 내고 끝나면 대기실로 돌려보냄). 결과 리포트는 `OnFinished(통과, 리포트)` 로 받는다.
 
 ### 6-5. 프레임워크(PhilJoon Custom_Unity_Framework) 이전 검토

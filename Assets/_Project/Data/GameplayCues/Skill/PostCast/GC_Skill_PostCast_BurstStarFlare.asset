@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8041ea3e1f6c9449882bb7dcb835e2, type: 3}
+  m_Name: GC_Skill_PostCast_BurstStarFlare
+  m_EditorClassIdentifier: Framework.Runtime::Framework.Ability.ShaderGameplayCueNotify
+  CueTag: GameplayCue.Skill.PostCast.BurstStarFlare
+  CueId: 10009
+  DefaultDuration: 0.7
+  Shape: 2
+  Material: {fileID: 2324465870814143202}
+  FadeIn: 0.02
+  FadeOut: 0.3
+  Size: 2.2
+  Height: 2.2
+  TrailTime: 0.22
+  EmitAlong: 0.85
+  SocketPrefix: WeaponSocket
+--- !u!21 &2324465870814143202
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_GC_Skill_PostCast_BurstStarFlare
+  m_Shader: {fileID: 4800000, guid: 97709b095c6b7e9449564779270f77d3, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _BladeGlow: 1.2
+    - _CueTime: 0
+    - _Fade: 1
+    - _Intensity: 3
+    - _Progress: 0.5
+    - _RayLength: 1
+    - _Rays: 4
+    - _RotateSpeed: 0.4
+    - _Seed: 0
+    m_Colors:
+    - _Color: {r: 3, g: 3, b: 4.5, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

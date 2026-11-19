@@ -12,11 +12,11 @@ namespace DemoLA.Editor.Gas
     /// 보스는 생성 시 이 순서대로 패턴 어빌리티를 부여(GiveAbility)한다. 페이즈 칸 = 랜덤 패턴 공격이 고르는 후보 (BossPhaseDefinition.PatternTags).
     /// AI 가 언제 어떤 패턴을 쓰는지는 StateTree Editor 에서 정한다.
     /// </summary>
-    public partial class GasToolWindow
+    public partial class DemoLAGasTool
     {
         [SerializeField] private ScriptableObject SelectedSetOwner;
 
-        private void drawSetList()
+        internal void drawSetList()
         {
             listHeader("보스");
             foreach (var boss in Database.Bosses.Where(b => b != null))
@@ -41,7 +41,7 @@ namespace DemoLA.Editor.Gas
             }
         }
 
-        private void drawSetEditor()
+        internal void drawSetEditor()
         {
             var boss = SelectedSetOwner as BossDefinition;
             if (boss != null)
@@ -63,7 +63,7 @@ namespace DemoLA.Editor.Gas
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("Ability", EditorStyles.miniButton, GUILayout.Width(60)) == true)
                         {
-                            Tab = 0;
+                            Framework.Editor.GasToolWindow.OpenTab<GasAbilityTab>();
                             SelectedSkill = skill;
                             ShowSkills = true;
                         }
@@ -106,7 +106,7 @@ namespace DemoLA.Editor.Gas
                     string label = $"[{pattern.TagName}] {pattern.DisplayName}{(pattern.IsCounterable ? " ◆" : string.Empty)}";
                     if (GUILayout.Button(new GUIContent(label, "GAS Tool Ability 탭에서 열기"), EditorStyles.label, GUILayout.Width(300)) == true)
                     {
-                        Tab = 0;
+                        Framework.Editor.GasToolWindow.OpenTab<GasAbilityTab>();
                         SelectedPatternTag = pattern.PatternTag;
                         SelectedSkill = null;
                     }

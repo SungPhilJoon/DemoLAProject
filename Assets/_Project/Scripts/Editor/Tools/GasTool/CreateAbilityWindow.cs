@@ -18,11 +18,11 @@ namespace DemoLA.Editor.Gas
     /// </summary>
     public class CreateAbilityWindow : EditorWindow
     {
-        public const string PatternFolder = GasToolWindow.AuthoredRoot + "/Boss/Patterns";
+        public const string PatternFolder = DemoLAGasTool.AuthoredRoot + "/Boss/Patterns";
         public const string GameTagsPath = "Assets/_Project/Scripts/Runtime/Core/GameTags.cs";
         private const string PendingKey = "DemoLA.CreateAbility.Pending";
 
-        private GasToolWindow Owner;
+        private DemoLAGasTool Owner;
         private int BossIndex;
         private AbilityTemplates.EKind Kind = AbilityTemplates.EKind.FrontBackCounterSlam;
         private bool NewTag = true;
@@ -42,7 +42,7 @@ namespace DemoLA.Editor.Gas
             public string PhaseId;
         }
 
-        public static void Open(GasToolWindow InOwner)
+        public static void Open(DemoLAGasTool InOwner)
         {
             var window = GetWindow<CreateAbilityWindow>(true, "새 Ability", true);
             window.Owner = InOwner;
@@ -72,7 +72,7 @@ namespace DemoLA.Editor.Gas
                 }
 
                 var pattern = Create(boss, (AbilityTemplates.EKind)pending.Kind, tag, pending.Name, pending.PhaseId);
-                GasToolWindow.OpenPattern(pattern.PatternTag);
+                DemoLAGasTool.OpenPattern(pattern.PatternTag);
             };
         }
 
@@ -159,7 +159,7 @@ namespace DemoLA.Editor.Gas
                     else
                     {
                         var pattern = Create(boss, Kind, ExistingTag, DisplayName, phaseId);
-                        GasToolWindow.OpenPattern(pattern.PatternTag);
+                        DemoLAGasTool.OpenPattern(pattern.PatternTag);
                     }
 
                     Close();

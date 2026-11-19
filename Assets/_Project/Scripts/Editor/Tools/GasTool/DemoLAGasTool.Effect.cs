@@ -13,7 +13,7 @@ namespace DemoLA.Editor.Gas
     /// [GameplayEffect] 탭: GameplayEffectAsset 편집 (언리얼 UGameplayEffect 의 Duration / Modifiers / Granted Tags / Application Tags / Stacking / Execution).
     /// 새 GE 는 Data/Authored/Effects 에 만든다 (전체 셋업이 지우지 않는 폴더). Data/Generated 의 GE 는 셋업 시 코드 값으로 돌아간다.
     /// </summary>
-    public partial class GasToolWindow
+    public partial class DemoLAGasTool
     {
         public const string AuthoredRoot = "Assets/_Project/Data/Authored";
         public const string EffectAssetFolder = AuthoredRoot + "/Effects";
@@ -37,7 +37,7 @@ namespace DemoLA.Editor.Gas
 
         // ------------------------------------------------------------------ list
 
-        private void drawEffectList()
+        internal void drawEffectList()
         {
             if (EffectCache == null)
             {
@@ -68,7 +68,7 @@ namespace DemoLA.Editor.Gas
             }
         }
 
-        private void drawCreateEffect()
+        internal void drawCreateEffect()
         {
             ShowCreateEffect = EditorGUILayout.Foldout(ShowCreateEffect, "새 GameplayEffect", true);
             if (ShowCreateEffect == false)
@@ -90,7 +90,7 @@ namespace DemoLA.Editor.Gas
         public static GameplayEffectAsset CreateEffect(EffectPreset InPreset, string InName)
         {
             DemoLAProjectSetup.ensureFolder(EffectAssetFolder);
-            var asset = CreateInstance<GameplayEffectAsset>();
+            var asset = ScriptableObject.CreateInstance<GameplayEffectAsset>();
             asset.DurationPolicy = EDurationPolicy.HasDuration;
             switch (InPreset)
             {
@@ -127,7 +127,7 @@ namespace DemoLA.Editor.Gas
 
         // ------------------------------------------------------------------ editor
 
-        private void drawEffectEditor()
+        internal void drawEffectEditor()
         {
             if (SelectedEffect == null)
             {
@@ -183,7 +183,7 @@ namespace DemoLA.Editor.Gas
             InAssign();
             EditorUtility.SetDirty(InEffect);
             AbilitySerialized = null;
-            Repaint();
+            repaint();
         }
     }
 }

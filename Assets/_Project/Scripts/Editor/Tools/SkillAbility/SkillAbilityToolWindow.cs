@@ -14,13 +14,14 @@ namespace DemoLA.Editor.SkillTool
     ///  [미리보기] 직업 모델에 시전 클립을 재생 · 스크럽. 타격 시점에 판정 범위가 바닥에 그려지고, 돌진 · 전진 거리만큼 모델이 움직인다.
     ///            AnimationClip(또는 클립이 든 FBX)을 미리보기나 '애니메이션' 칸에 끌어다 놓으면 바로 들어간다.
     ///  [타임라인] 타격(빨강) · 후딜 끝(회색) · 클립 구간(파랑, 블렌드 인/아웃 경사). 클릭/드래그로 시간 이동.
-    ///  [세부]  애니메이션(클립 · 속도 · 시작 · 블렌드, "타격·후딜 길이에 맞추기") · 기본 · 시간 · 타격 · 전투 · 트라이포드.
+    ///  [세부]  애니메이션(클립 · 속도 · 시작 · 블렌드, "타격·후딜 길이에 맞추기") · GameplayCue(시전 전 · 중 · 후 셰이더) · 기본 · 시간 · 타격 · 전투 · 트라이포드.
     /// 값은 에셋에 바로 기록되고 Undo 된다. 시전 애니메이션은 전체 셋업 뒤에도 SkillId 별로 다시 붙는다 (SkillAnimationSettings).
     /// </summary>
-    public class SkillAbilityToolWindow : EditorWindow
+    public partial class SkillAbilityToolWindow : EditorWindow
     {
         private const float ListWidth = 250.0f;
-        private const float TimelineHeight = 46.0f;
+        private const float TimelineHeight = 62.0f;
+        private const float CueLaneHeight = 16.0f;
         private static readonly float[] PlaybackRates = { 0.1f, 0.25f, 0.5f, 1.0f, 2.0f };
         private static readonly string[] PlaybackLabels = { "0.1×", "0.25×", "0.5×", "1×", "2×" };
         private static readonly Color HitColor = new Color(1.0f, 0.35f, 0.3f);
@@ -80,6 +81,7 @@ namespace DemoLA.Editor.SkillTool
         {
             Undo.undoRedoPerformed -= Repaint;
             EditorApplication.update -= tick;
+            disposeCueEditors();
             Preview?.Dispose();
             Preview = null;
         }
@@ -170,7 +172,7 @@ namespace DemoLA.Editor.SkillTool
             Filter = EditorGUILayout.TextField(Filter, EditorStyles.toolbarSearchField, GUILayout.Width(180.0f));
             if (GUILayout.Button("GAS Tool", EditorStyles.toolbarButton, GUILayout.Width(70.0f)) == true)
             {
-                Gas.GasToolWindow.Open();
+                Gas.DemoLAGasTool.Open();
             }
 
             if (GUILayout.Button("저장", EditorStyles.toolbarButton, GUILayout.Width(50.0f)) == true)
@@ -268,6 +270,7 @@ namespace DemoLA.Editor.SkillTool
             Preview.ShowAllHits = GUILayout.Toggle(Preview.ShowAllHits, "모든 타격 범위", EditorStyles.toolbarButton, GUILayout.Width(90.0f));
             Preview.FollowRoot = GUILayout.Toggle(Preview.FollowRoot, "돌진 · 전진", EditorStyles.toolbarButton, GUILayout.Width(72.0f));
             Preview.ShowGrid = GUILayout.Toggle(Preview.ShowGrid, "격자", EditorStyles.toolbarButton, GUILayout.Width(40.0f));
+            Preview.ShowCues = GUILayout.Toggle(Preview.ShowCues, "큐", EditorStyles.toolbarButton, GUILayout.Width(30.0f));
             GUILayout.FlexibleSpace();
             GUILayout.Label("모델", EditorStyles.miniLabel);
             ModelOverride = (GameObject)EditorGUILayout.ObjectField(ModelOverride, typeof(GameObject), false, GUILayout.Width(170.0f));
@@ -377,7 +380,7 @@ namespace DemoLA.Editor.SkillTool
 
         private static float timelineLength(SkillDefinition InSkill)
         {
-            float length = InSkill.CastDuration;
+            float length = Mathf.Max(InSkill.CastDuration, cueTimelineEnd(InSkill));
             var clip = InSkill.CastAnimation;
             if (clip != null && clip.isLooping == false)
             {
@@ -390,7 +393,7 @@ namespace DemoLA.Editor.SkillTool
         private void drawTimeline(Rect InRect, SkillDefinition InSkill)
         {
             float length = timelineLength(InSkill) * 1.05f;
-            var bar = new Rect(InRect.x + 8.0f, InRect.y + 14.0f, InRect.width - 16.0f, InRect.height - 20.0f);
+            var bar = new Rect(InRect.x + 8.0f, InRect.y + 14.0f, InRect.width - 16.0f, InRect.height - 20.0f - CueLaneHeight);
             EditorGUI.DrawRect(InRect, EditorGUIUtility.isProSkin ? new Color(0.13f, 0.13f, 0.14f) : new Color(0.75f, 0.75f, 0.76f));
             System.Func<float, float> x = t => bar.x + bar.width * Mathf.Clamp01(t / length);
 
@@ -427,6 +430,8 @@ namespace DemoLA.Editor.SkillTool
                 EditorGUI.DrawRect(new Rect(x(t) - 1.0f, bar.y + 8.0f, 3.0f, bar.height - 8.0f), HitColor);
                 GUI.Label(new Rect(x(t) + 3.0f, bar.y + 10.0f, 24.0f, 14.0f), $"{i + 1}", EditorStyles.miniBoldLabel);
             }
+
+            drawCueLanes(new Rect(bar.x, bar.yMax + 2.0f, bar.width, CueLaneHeight - 2.0f), InSkill, x);
 
             // 현재 시간
             EditorGUI.DrawRect(new Rect(x(Time) - 1.0f, InRect.y, 2.0f, InRect.height), CursorColor);
@@ -489,6 +494,7 @@ namespace DemoLA.Editor.SkillTool
             EditorGUILayout.LabelField($"[{Selected.SkillId}] {Selected.DisplayName}{(Selected.IsAwakening ? " (각성기)" : string.Empty)}", EditorStyles.largeLabel);
 
             drawAnimationSection(so);
+            drawCueSection(so);
             section("기본");
             prop(so, nameof(SkillDefinition.SkillId));
             prop(so, nameof(SkillDefinition.DisplayName), "이름");

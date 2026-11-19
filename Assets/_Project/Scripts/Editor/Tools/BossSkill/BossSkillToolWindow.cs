@@ -198,7 +198,7 @@ namespace DemoLA.Editor.BossTool
             {
                 if (GUILayout.Button(new GUIContent("GAS Tool", "이 패턴의 카운터 · 대상 · 무력화 설정"), EditorStyles.toolbarButton, GUILayout.Width(70.0f)) == true)
                 {
-                    Gas.GasToolWindow.OpenPattern(Selected.PatternTag);
+                    Gas.DemoLAGasTool.OpenPattern(Selected.PatternTag);
                 }
             }
 

@@ -23,7 +23,6 @@ namespace DemoLA.Boss
         private readonly Dictionary<ETag, BossGimmick> gimmicks = new Dictionary<ETag, BossGimmick>();
         private readonly List<CombatActor> playerBuffer = new List<CombatActor>();
         private readonly List<ETag> queuedPatterns = new List<ETag>();
-        private readonly HashSet<ETag> endedPatterns = new HashSet<ETag>();
         private int lastHpLine;
         private float hpPerLine = 1.0f;
         private CombatActor lockedTarget;
@@ -328,15 +327,6 @@ namespace DemoLA.Boss
             for (int i = 0; i < definition.FollowUpPatternTags.Count; ++i)
             {
                 QueuePattern(definition.FollowUpPatternTags[i]);
-            }
-
-            // 처음 한 번만 이어지는 패턴 (도입: 첫 돌진 → 도약 십자 → 외곽 이탈 도약). 이후 돌진에서는 외곽으로 빠지지 않는다.
-            if (endedPatterns.Add(definition.PatternTag) == true)
-            {
-                for (int i = 0; i < definition.FirstTimeFollowUpPatternTags.Count; ++i)
-                {
-                    QueuePattern(definition.FirstTimeFollowUpPatternTags[i]);
-                }
             }
 
             nextPatternTime = Time.time + (Definition != null ? Definition.PatternGap : 0.0f);

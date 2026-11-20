@@ -97,6 +97,9 @@ DemoLATables + GameDatabase ── Addressables 로컬 그룹 "DemoLA Data" ─�
 - `setup overwrite` 는 데이터 에셋과 `Raid.unity` 를 다시 만든다. `Data/Generated` 를 인스펙터에서 직접 고친 값은 사라진다 (원본은 CSV · `DefaultContent` · `PatternPresets`).
 - 데이터 에셋끼리의 참조(직업 → 스킬, 보스 → 패턴 · AI)는 **참조되는 쪽부터** 만들어야 한다. 반대로 하면 fileID 0(빈 참조)으로 저장되고 `SetDirty` · 재직렬화로도 고쳐지지 않는 경우가 있었다 (`DemoLAProjectSetup.creationOrder`).
 - 예전 저장 데이터(`LocalJsonSaveService`)의 빌드는 새 기본값(악세 수치 · 스킬 슬롯 등)을 자동으로 따라가지 않는다 → 능력치 창 "기본값으로" 또는 `GameSession.ResetBuild`.
+- (4차) 월드 Prefab 은 `DemoLA/Prefabs/월드 프리팹 굽기` (CLI: `unity command script eval --code 'return DemoLA.Editor.WorldPrefabBaker.BakeAll(UnityEditor.AssetDatabase.LoadAssetAtPath<DemoLA.Data.GameDatabase>(DemoLA.Editor.DemoLAProjectSetup.DatabasePath));'`) 또는 전체 셋업이 굽는다. 직업 · 보스 데이터나 조립 코드를 바꾸면 다시 굽는다 — 굽지 않으면 예전 Prefab 이 쓰인다.
+- (4차) 열린 씬이 "수정됨" 이면 EditMode 테스트가 보이지 않는 저장 대화상자에서 멈춘다 (CLI 시간 초과, 결과 없음). 굽기는 임시 씬에서 하도록 고쳤지만, 같은 증상이면 Unity 창의 "Scene(s) Have Been Modified" 를 확인한다.
+- (4차) 프레임워크를 로컬로 개발할 때: manifest 를 `file:E:/PhilJoon/UnityProject/unity-framework` 로 바꾸고 `UnityEditor.PackageManager.Client.Resolve()` → 컴파일. 끝나면 git URL 로 되돌리고 `packages-lock.json` 의 해시를 새 커밋으로 바꾼 뒤 다시 Resolve.
 
 ## 6. 데이터 기반 시나리오 테스트 (3차)
 
@@ -129,6 +132,8 @@ IScenarioHost (프로젝트 어댑터)
 | 이벤트 (DemoLA) | `Damage.ToParty` · `Damage.ToBoss` · `Hit.Party` · `Hit.PartyCrit` · `Pattern.Started(.ID)` · `Pattern.Ended(.ID)` · `Telegraph` · `Knockback` · `Structure.Broken(.Pillar/.Wall)` · `Died.Party/Boss` · `Message` · **(4차)** `Cue` · `Cue.{이름표}.{Active/Removed/Executed}` (값 = Magnitude) · `Skill.Cast` · `Skill.Ended` | `DemoLAScenarioHost` 가 EventBus · 정적 이벤트에서 기록. 큐는 프레임워크 `GameplayCueManager.OnCueInvoked` — 이름표는 `LabelCue(id, 이름)` 로 붙인 것(스킬 구간 PreCast 등), 없으면 큐 태그 이름 |
 | 관측값 (DemoLA) | `Boss.HpLines` · `Boss.HpPercent` · `Boss.Moved` · `Boss.Groggy` · `Party.Alive` · `Party.MinHpPercent` · `Party.KnockedBack` · `Party.CritRate` · `Party0.DistanceFromCenter` · `Telegraph.Visible` · `Structures.Destroyed` · `Pickups` · **(4차)** `Cue.Views` (재생 중인 셰이더 GameplayCue 뷰 수 = 프레임워크 `GameplayCueView.ActiveCount`) | |
 | 정리 훅 (4차) | `DemoLAScenarioHost.AddCleanup(Action)` | 단계가 데이터(스킬 정의 등)를 잠깐 바꿨다면 되돌릴 일을 등록 → `TearDown` 에서 역순 실행 |
+| 월드 Prefab (4차) | `DemoLAScenarioHost.SetUp` | `WorldPrefabs.PreloadRoutine()` 로 Addressables 월드 Prefab 을 받은 뒤 보스 · 파티 · 장판 · 구슬을 Prefab 으로 만든다. 경기장이 없으면 경기장 Prefab (NavMesh 포함) |
+| 패턴 종료 대기 (11-20 수정) | `ActivatePatternStep` | 종료 이벤트를 태그 표기 `Pattern.Ended.Pattern.G1.X` 로 기다린다 (예전 enum 표기는 항상 시간 초과였다) |
 | 인스펙터 | `[SubclassSelector]` 드로어 | Steps · Expectations 원소마다 형식 드롭다운 (다른 어셈블리의 단계도 자동 표시). "+" 로 늘린 원소가 앞 원소와 참조를 공유하면 복사본으로 바꾼다 |
 
 ### 6-2. 만들어 둔 시나리오 (`DemoLA/Tests/시나리오 생성`, `dev.sh scenarios`)
@@ -136,7 +141,7 @@ IScenarioHost (프로젝트 어댑터)
 | 분류 | 개수 | 내용 |
 |---|---|---|
 | `Pattern.Gate1` · `Pattern.Gate2` | 20 · 21 | 구현된 패턴마다 자동 생성: 보스(AI 끔) + 더미 4명 → 발동 → 끝날 때까지. 검증 = 시작 · 끝남 · (장판이 있으면) 장판 표시. 측정 = 파티 피해 · 넉백 · 취소 여부 |
-| `Mechanics` | 5 | G2-23 동시 장판 5개 · 보스 이동 · 넉백 / G2-11 기둥 파괴 1 · 구슬 2 · 그로기 / G2-03 구조물 14개 파괴 / 넉백 낙사 / 넉백 없으면 구출 |
+| `Mechanics` | 6 | G2-23 동시 장판 5개 · 보스 이동 · 넉백 / G2-11 기둥 파괴 1 · 구슬 2 · 그로기 / G2-03 구조물 14개 파괴 / 넉백 낙사 / 지형 파괴 전 넉백 구출 / 넉백 없으면 구출. (G2-28 외곽 이탈 시나리오는 패턴 삭제에 따라 11-20 삭제) |
 | `Balance` | 1 | AI 파티 4명 60초 (보스 AI 끔): 체력 줄 변화량 범위 · 치명타 비율 범위 + 피해 합 · 타격 수 측정 |
 | `SkillCue` (4차) | 1 | `TS_SkillCue_Slayer_CastPhases`: 무적 슬레이어 1명 → Q 에 마법진(시전 전) · 천상 궤적(시전 중) · 방사 광선(시전 후) 큐 → 시전 → 1.5초. 검증 = 시전 1회 · 큐마다 켜짐/꺼짐 1회 · 분출 1회 · 아우라 → 궤적 → 분출 순서 · 분출이 스킬 끝 전 · 동시에 그려진 큐 ≥ 1 · 끝나면 0. 측정 = 시전 → 분출 시간 · 큐 호출 수 |
 

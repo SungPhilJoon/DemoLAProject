@@ -87,11 +87,23 @@ namespace DemoLA.Testing
             Database = loadDatabase(bootstrap);
             StatFormula.Settings = Database.StatFormula;
 
+            // 월드 프리팹(Addressables)을 미리 받는다 — 보스 · 파티 · 장판 · 구슬 생성이 프리팹을 쓴다.
+            yield return WorldPrefabs.PreloadRoutine();
+
             Arena = Object.FindAnyObjectByType<ArenaFloor>();
             if (Arena == null)
             {
-                Arena = ArenaBuilder.Build(null);
-                Arena.Surface.BuildNavMesh();
+                Arena = WorldPrefabs.Instantiate<ArenaFloor>(WorldPrefabs.Arena, Vector3.zero, Quaternion.identity);
+                if (Arena == null)
+                {
+                    Arena = ArenaBuilder.Build(null);
+                }
+
+                if (Arena.Surface != null && Arena.Surface.navMeshData == null)
+                {
+                    Arena.Surface.BuildNavMesh();
+                }
+
                 builtArena = true;
             }
 

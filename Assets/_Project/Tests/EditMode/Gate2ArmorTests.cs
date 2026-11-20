@@ -156,7 +156,7 @@ namespace DemoLA.Tests
             Assert.IsTrue(boss.HasTag((int)ETag.State_Groggy), "충돌 그로기로 돌진이 끊김");
             Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.PeekQueuedPattern(), "그래도 도약 십자 + 추적 휠윈드가 이어진다");
             Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.ConsumeQueuedPattern());
-            Assert.AreEqual(ETag.None, boss.ConsumeQueuedPattern(), "첫 돌진 뒤에도 외곽 이탈 도약(xlsx G2-28, 삭제)은 없다");
+            Assert.AreEqual(ETag.None, boss.ConsumeQueuedPattern(), "돌진 뒤 후속 패턴은 Pattern.G2.LeapSmashWhirlwind 하나");
 
             boss.NotifyPatternEnded(boss.GetPattern(ETag.Pattern_G2_Charge), true);
             Assert.AreEqual(ETag.Pattern_G2_LeapSmashWhirlwind, boss.ConsumeQueuedPattern());
@@ -164,16 +164,6 @@ namespace DemoLA.Tests
             var cross = boss.Definition.GetPattern(ETag.Pattern_G2_LeapSmashWhirlwind).Steps[0];
             Assert.AreEqual(4, cross.ArmCount);
             Assert.IsFalse(cross.RandomCrossOrX, "십자 고정");
-        }
-
-        [Test]
-        public void ExitLeap_Removed()
-        {
-            // 외곽 이탈 도약(xlsx G2-28)은 삭제 — 보스가 외곽에 머물러 공격이 끊겼다. 태그도 만들지 않았다.
-            foreach (var pattern in boss.Definition.Patterns)
-            {
-                Assert.IsTrue(pattern == null || pattern.DisplayName.Contains("외곽 이탈") == false, $"{pattern?.TagName} 외곽 이탈 도약은 삭제됨");
-            }
         }
     }
 }

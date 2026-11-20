@@ -211,8 +211,8 @@ namespace DemoLA.Tests
             var db = TestWorld.Database;
             var gate1 = db.GetBoss("Gate1");
             var gate2 = db.GetBoss("Gate2");
-            // xlsx 패턴목록 43개 + 프로젝트 자체 추가 3개 (Pattern.G2.Whirlwind 휠윈드 · Pattern.G2.TripleSlash 3연 베기 · Pattern.G2.LeapSmashWhirlwind 도약 강타 → 추적 휠윈드).
-            Assert.AreEqual(43 + 8, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 8개");
+            // xlsx 패턴목록 43개 + 프로젝트 자체 추가 7개 (BossPatternTable.csv 221~227: Whirlwind · TripleSlash · LeapSmashWhirlwind · AxeChopCounter · Skyfall · ReLeap · PillarCoverDrop).
+            Assert.AreEqual(43 + 7, gate1.Patterns.Count + gate2.Patterns.Count, "xlsx 패턴목록 43개 + 자체 추가 7개");
             Assert.AreEqual(5, gate1.Phases.Count);
             Assert.AreEqual(4, gate2.Phases.Count);
             Assert.AreEqual(EPatternCategory.PartyGimmick, gate1.GetPattern(ETag.Pattern_G1_OrbStagger).Category);

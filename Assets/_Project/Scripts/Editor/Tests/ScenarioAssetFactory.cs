@@ -64,7 +64,6 @@ namespace DemoLA.Editor
             save(knockbackFall(), $"{Root}/Mechanics", "TS_Fall_KnockbackAfterCollapse", InOverwrite, ref created, ref skipped);
             save(knockbackRescuedBeforeCollapse(), $"{Root}/Mechanics", "TS_Fall_KnockbackRescuedAtWall", InOverwrite, ref created, ref skipped);
             save(rescueWithoutKnockback(), $"{Root}/Mechanics", "TS_Fall_RescueWithoutKnockback", InOverwrite, ref created, ref skipped);
-            save(edgeExitOnlyOnce(), $"{Root}/Mechanics", "TS_EdgeExitLeap_Removed", InOverwrite, ref created, ref skipped);
             save(balanceGate("Gate1", 15.0f), $"{Root}/Balance", "TS_Balance_Gate1_15s", InOverwrite, ref created, ref skipped);
             save(skillCuePhases(), $"{Root}/SkillCue", "TS_SkillCue_Slayer_CastPhases", InOverwrite, ref created, ref skipped);
             AssetDatabase.SaveAssets();
@@ -203,24 +202,6 @@ namespace DemoLA.Editor
             s.Steps.Add(new WaitSecondsStep { Seconds = 4.0f });
             s.Expectations.Add(new EventExpectation { Label = "사망 없음", EventName = "Died.Party", Compare = EScenarioCompare.Equal, Value = 0 });
             s.Expectations.Add(new ProbeExpectation { Label = "바닥 안으로 돌아옴", Probe = "Party0.DistanceFromCenter", Compare = EScenarioCompare.LessOrEqual, Value = 27 });
-            return s;
-        }
-
-        /// <summary>2관문 보스 AI 를 2분 돌린다: 돌진은 여러 번, 외곽 이탈 도약(G2-28, 삭제)은 한 번도 없다.</summary>
-        private static TestScenarioAsset edgeExitOnlyOnce()
-        {
-            var s = make("G2-28 외곽 이탈 없음", "보스 AI 로 2분: 돌진(Pattern.G2.Charge)이 여러 번 나와도 외곽 이탈 도약(G2-28)은 나오지 않는다 (삭제 — 보스가 외곽 구석에 머물러 공격이 끊겼다)", "Mechanics");
-            s.Timeout = 140.0f;
-            s.TimeScale = 3.0f;
-            s.Steps.Add(new SpawnBossStep { BossId = "Gate2", Position = new Vector3(0.0f, 0.0f, 6.0f), FaceTowards = new Vector3(0.0f, 0.0f, -6.0f), EnableAI = true });
-            var party = new SpawnPartyStep { Label = "무적 더미 2명" };
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Slayer, Position = new Vector3(-2.0f, 0.0f, -4.0f), Invulnerable = true });
-            party.Members.Add(new PartyMemberSpec { Class = ECharacterClass.Artist, Position = new Vector3(2.0f, 0.0f, -6.0f), Invulnerable = true });
-            s.Steps.Add(party);
-            s.Steps.Add(new WaitSecondsStep { Seconds = 120.0f });
-            s.Expectations.Add(new EventExpectation { Label = "돌진 여러 번", EventName = "Pattern.Started.Pattern.G2.Charge", Compare = EScenarioCompare.GreaterOrEqual, Value = 2 });
-            s.Expectations.Add(new EventExpectation { Label = "외곽 이탈 도약 없음", EventName = "Pattern.Started.G2-28", Compare = EScenarioCompare.Equal, Value = 0 });
-            s.Expectations.Add(new EventExpectation { Label = "패턴 수", EventName = "Pattern.Started", ReportOnly = true });
             return s;
         }
 

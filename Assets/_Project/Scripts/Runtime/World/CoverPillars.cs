@@ -51,32 +51,52 @@ namespace DemoLA.World
             Clear();
             for (int i = 0; i < InPositions.Length; ++i)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                go.name = $"CoverPillar_{i}";
-                DemoLA.Core.ObjectUtil.SafeDestroy(go.GetComponent<Collider>());
-                go.transform.localScale = new Vector3(PillarRadius * 2.0f, PillarHeight * 0.5f, PillarRadius * 2.0f);
-                go.transform.position = new Vector3(InPositions[i].x, -PillarHeight * 0.5f, InPositions[i].z);
-                var renderer = go.GetComponent<Renderer>();
-                if (material == null)
+                var position = new Vector3(InPositions[i].x, -PillarHeight * 0.5f, InPositions[i].z);
+                var structure = DemoLA.Core.WorldPrefabs.Instantiate<ArenaStructure>(DemoLA.Core.WorldPrefabs.CoverPillar, position, Quaternion.identity);
+                if (structure == null)
                 {
-                    material = new Material(renderer.sharedMaterial) { name = "M_CoverPillar", color = new Color(0.78f, 0.66f, 0.42f) };
+                    structure = Build(null);
+                    structure.transform.position = position;
                 }
 
-                renderer.sharedMaterial = material;
-                var structure = go.AddComponent<ArenaStructure>();
-                structure.Kind = EStructureKind.Cover;
-                structure.Radius = PillarRadius;
-                structure.LifeOrbCount = 0;
-                var obstacle = go.AddComponent<NavMeshObstacle>();
-                obstacle.shape = NavMeshObstacleShape.Capsule;
-                obstacle.carving = true;
-                go.AddComponent<CoverPillarMotion>().Rise(PillarHeight * 0.5f);
+                structure.gameObject.name = $"CoverPillar_{i}";
+                structure.GetComponent<CoverPillarMotion>().Rise(PillarHeight * 0.5f);
                 Active.Add(structure);
             }
 
             DemoLA.Player.QuarterViewCamera.Shake(0.35f, 0.8f);
             Spawned?.Invoke(InPositions);
         }
+
+        /// <summary>
+        /// 엄폐 기둥 하나 (원기둥 · 판정 ArenaStructure(Cover) · NavMesh 장애물 · 솟아오름 연출). 프리팹 굽기 · 코드 조립 공용.
+        /// InMaterial 이 null 이면 런타임 머티리얼.
+        /// </summary>
+        public static ArenaStructure Build(Material InMaterial)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            go.name = "CoverPillar";
+            DemoLA.Core.ObjectUtil.SafeDestroy(go.GetComponent<Collider>());
+            go.transform.localScale = new Vector3(PillarRadius * 2.0f, PillarHeight * 0.5f, PillarRadius * 2.0f);
+            var renderer = go.GetComponent<Renderer>();
+            if (InMaterial == null && material == null)
+            {
+                material = new Material(renderer.sharedMaterial) { name = "M_CoverPillar", color = PillarColor };
+            }
+
+            renderer.sharedMaterial = InMaterial != null ? InMaterial : material;
+            var structure = go.AddComponent<ArenaStructure>();
+            structure.Kind = EStructureKind.Cover;
+            structure.Radius = PillarRadius;
+            structure.LifeOrbCount = 0;
+            var obstacle = go.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Capsule;
+            obstacle.carving = true;
+            go.AddComponent<CoverPillarMotion>();
+            return structure;
+        }
+
+        public static readonly Color PillarColor = new Color(0.78f, 0.66f, 0.42f);
 
         /// <summary>남은 기둥을 땅속으로 내리고 없앤다.</summary>
         public static void Clear()
@@ -173,50 +193,6 @@ namespace DemoLA.World
             }
 
             return best;
-        }
-    }
-
-    /// <summary>엄폐 기둥이 솟아나고 / 가라앉는 움직임.</summary>
-    public class CoverPillarMotion : MonoBehaviour
-    {
-        private const float Duration = 0.8f;
-
-        private float fromY;
-        private float toY;
-        private float elapsed = Duration;
-        private bool destroyAtEnd;
-
-        public void Rise(float InTargetY)
-        {
-            fromY = transform.position.y;
-            toY = InTargetY;
-            elapsed = 0.0f;
-        }
-
-        public void SinkAndDestroy()
-        {
-            fromY = transform.position.y;
-            toY = -CoverPillars.PillarHeight * 0.5f;
-            elapsed = 0.0f;
-            destroyAtEnd = true;
-        }
-
-        private void Update()
-        {
-            if (elapsed >= Duration)
-            {
-                return;
-            }
-
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / Duration);
-            var p = transform.position;
-            p.y = Mathf.Lerp(fromY, toY, t * t * (3.0f - 2.0f * t));
-            transform.position = p;
-            if (t >= 1.0f && destroyAtEnd == true)
-            {
-                Destroy(gameObject);
-            }
         }
     }
 }

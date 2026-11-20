@@ -9,6 +9,8 @@ namespace DemoLA.World
     /// <summary>
     /// 기둥 붕괴 연출. 원본 기둥은 즉시 비활성(판정/내비 장애물 해제)하고, 복제 메시를 충돌 반대 방향으로
     /// 기울이며 바닥으로 가라앉힌다. 동시에 파편이 튀고 바닥에 먼지 고리가 퍼진다. 판정에는 관여하지 않는다.
+    /// 오브젝트(Body · Dust · 파편 템플릿 · 먼지 머티리얼 에셋)는 프리팹 WorldPrefabs.PillarCollapseFx 에 미리 구워 두고,
+    /// 런타임에는 원본 기둥의 메시 · 머티리얼 · 위치만 넣고 파편을 템플릿에서 복제한다. 프리팹이 없으면 Build 로 코드 조립.
     /// </summary>
     public class PillarCollapseFx : BaseBehaviour
     {
@@ -19,6 +21,11 @@ namespace DemoLA.World
         public float ChunkLifetime = 2.2f;
 
         private static Material dustMaterial;
+
+        [SerializeField] private MeshFilter bodyFilter;
+        [SerializeField] private MeshRenderer bodyRenderer;
+        [SerializeField] private Renderer dustTemplate;
+        [SerializeField] private GameObject chunkTemplate;
 
         private Transform body;
         private Vector3 pivot;
@@ -44,20 +51,58 @@ namespace DemoLA.World
                 return;
             }
 
-            var root = new GameObject($"{InSource.name}_Collapse");
-            var fx = root.AddComponent<PillarCollapseFx>();
+            var fx = WorldPrefabs.Instantiate<PillarCollapseFx>(WorldPrefabs.PillarCollapseFx, Vector3.zero, Quaternion.identity);
+            if (fx == null)
+            {
+                fx = new GameObject().AddComponent<PillarCollapseFx>();
+                fx.Build(null);
+            }
+
+            fx.gameObject.name = $"{InSource.name}_Collapse";
             fx.setup(InSource, sourceFilter.sharedMesh, sourceRenderer.sharedMaterial, sourceRenderer.bounds, InPushDirection);
+        }
+
+        /// <summary>
+        /// Body(메시는 비움) · Dust(원판) · 파편 템플릿(꺼 둔 큐브 + Rigidbody)을 만든다 (프리팹 굽기 · 코드 조립 공용).
+        /// InDustMaterial 이 null 이면 런타임 머티리얼 (Sprites/Default).
+        /// </summary>
+        public void Build(Material InDustMaterial)
+        {
+            var bodyGo = new GameObject("Body");
+            bodyGo.transform.SetParent(transform, false);
+            bodyFilter = bodyGo.AddComponent<MeshFilter>();
+            bodyRenderer = bodyGo.AddComponent<MeshRenderer>();
+
+            var dustGo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            dustGo.name = "Dust";
+            ObjectUtil.SafeDestroy(dustGo.GetComponent<Collider>());
+            dustGo.transform.SetParent(transform, false);
+            dustTemplate = dustGo.GetComponent<Renderer>();
+            if (InDustMaterial == null && dustMaterial == null)
+            {
+                dustMaterial = new Material(Shader.Find("Sprites/Default")) { color = new Color(0.75f, 0.7f, 0.62f, 0.5f) };
+                dustMaterial.renderQueue = 3002;
+            }
+
+            dustTemplate.sharedMaterial = InDustMaterial != null ? InDustMaterial : dustMaterial;
+            dustTemplate.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+            chunkTemplate = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            chunkTemplate.name = "ChunkTemplate";
+            chunkTemplate.layer = 2; // Ignore Raycast — 클릭 이동 레이캐스트를 막지 않는다.
+            chunkTemplate.transform.SetParent(transform, false);
+            var rigidbody = chunkTemplate.AddComponent<Rigidbody>();
+            rigidbody.mass = 0.3f;
+            chunkTemplate.SetActive(false);
         }
 
         private void setup(GameObject InSource, Mesh InMesh, Material InMaterial, Bounds InBounds, Vector3 InPushDirection)
         {
-            var bodyGo = new GameObject("Body");
-            body = bodyGo.transform;
-            body.SetParent(transform, false);
+            body = bodyFilter.transform;
             body.SetPositionAndRotation(InSource.transform.position, InSource.transform.rotation);
             body.localScale = InSource.transform.lossyScale;
-            bodyGo.AddComponent<MeshFilter>().sharedMesh = InMesh;
-            bodyGo.AddComponent<MeshRenderer>().sharedMaterial = InMaterial;
+            bodyFilter.sharedMesh = InMesh;
+            bodyRenderer.sharedMaterial = InMaterial;
 
             height = InBounds.size.y;
             pivot = new Vector3(InBounds.center.x, InBounds.min.y, InBounds.center.z);
@@ -80,10 +125,9 @@ namespace DemoLA.World
         {
             for (int i = 0; i < ChunkCount; ++i)
             {
-                var chunk = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                var chunk = Instantiate(chunkTemplate, transform, false);
                 chunk.name = "Chunk";
-                chunk.layer = 2; // Ignore Raycast — 클릭 이동 레이캐스트를 막지 않는다.
-                chunk.transform.SetParent(transform, false);
+                chunk.SetActive(true);
                 float size = Random.Range(0.25f, 0.6f);
                 var scale = new Vector3(size, size * Random.Range(0.6f, 1.2f), size * Random.Range(0.6f, 1.2f));
                 chunk.transform.localScale = scale;
@@ -94,8 +138,7 @@ namespace DemoLA.World
                 chunk.transform.rotation = Random.rotation;
                 chunk.GetComponent<Renderer>().sharedMaterial = InMaterial;
 
-                var body = chunk.AddComponent<Rigidbody>();
-                body.mass = 0.3f;
+                var rigidbody = chunk.GetComponent<Rigidbody>();
                 var outward = HitGeometry.Flat(chunk.transform.position - InBounds.center);
                 if (outward.sqrMagnitude < 0.0001f)
                 {
@@ -105,8 +148,8 @@ namespace DemoLA.World
 
                 // 돌진 방향으로 더 많이 튄다.
                 var direction = (outward.normalized + InPush * 1.2f).normalized;
-                body.linearVelocity = direction * Random.Range(1.5f, 4.0f) + Vector3.up * Random.Range(2.0f, 4.5f);
-                body.angularVelocity = Random.insideUnitSphere * 10.0f;
+                rigidbody.linearVelocity = direction * Random.Range(1.5f, 4.0f) + Vector3.up * Random.Range(2.0f, 4.5f);
+                rigidbody.angularVelocity = Random.insideUnitSphere * 10.0f;
                 chunks.Add(chunk.transform);
                 chunkScales.Add(scale);
             }
@@ -114,21 +157,10 @@ namespace DemoLA.World
 
         private void spawnDust(Vector3 InPosition, float InRadius)
         {
-            var go = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            go.name = "Dust";
-            ObjectUtil.SafeDestroy(go.GetComponent<Collider>());
-            go.transform.SetParent(transform, false);
+            var go = dustTemplate.gameObject;
             go.transform.position = new Vector3(InPosition.x, 0.06f, InPosition.z);
             go.transform.localScale = new Vector3(InRadius * 2.0f, 0.01f, InRadius * 2.0f);
-            if (dustMaterial == null)
-            {
-                dustMaterial = new Material(Shader.Find("Sprites/Default")) { color = new Color(0.75f, 0.7f, 0.62f, 0.5f) };
-                dustMaterial.renderQueue = 3002;
-            }
-
-            dustRenderer = go.GetComponent<Renderer>();
-            dustRenderer.sharedMaterial = dustMaterial;
-            dustRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            dustRenderer = dustTemplate;
             dust = go.transform;
             dustRadius = InRadius;
         }

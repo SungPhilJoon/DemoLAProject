@@ -74,6 +74,8 @@ namespace DemoLA.Editor
 
             var controls = EnsureInputAsset();
             RegisterAddressables(database, tables, controls);
+            // 런타임에 코드로 조립하던 월드 오브젝트(캐릭터 · 보스 · 경기장 · 대기실 · 연출 · 카메라 리그)를 프리팹으로 굽고 Addressables 에 등록.
+            Debug.Log($"[DemoLA] {WorldPrefabBaker.BakeAll(database)}");
             if (InCreateScene == true)
             {
                 CreateRaidScene(database, controls);

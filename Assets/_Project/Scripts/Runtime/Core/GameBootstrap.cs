@@ -28,7 +28,8 @@ namespace DemoLA.Core
     /// 파티는 실제 플레이어만 (아군 AI 없음). 오프라인은 혼자(1인 파티), 함께 하려면 멀티플레이(F7)로 최대 4인.
     /// 보스 체력 · 무력화 · 피해는 들어온 인원에 맞춘다 (PartyBalance).
     /// </summary>
-    public class GameBootstrap : BaseBehaviour
+    /// <remarks>GameDatabase 를 Addressables 로 불러오므로 에셋 소유자(AssetOwnerBehaviour)다 — 파괴될 때 Handle 을 반납한다.</remarks>
+    public class GameBootstrap : AssetOwnerBehaviour
     {
         [SerializeField] private GameDatabase database;
         [SerializeField] private bool loadFromAddressables = true;
@@ -141,6 +142,8 @@ namespace DemoLA.Core
             }
 
             await session.LoadAsync();
+            // 월드 프리팹(캐릭터 · 보스 · 경기장 · 대기실 · 연출 · 카메라 리그)을 Addressables 로 미리 받아 둔다.
+            await WorldPrefabs.PreloadAsync();
 
             if (arena == null)
             {
@@ -149,7 +152,12 @@ namespace DemoLA.Core
 
             if (arena == null)
             {
-                arena = ArenaBuilder.Build(null);
+                // 씬에 경기장이 없으면 프리팹, 그것도 없으면 코드 조립.
+                arena = WorldPrefabs.Instantiate<ArenaFloor>(WorldPrefabs.Arena, Vector3.zero, Quaternion.identity);
+                if (arena == null)
+                {
+                    arena = ArenaBuilder.Build(null);
+                }
             }
 
             if (arena.Surface != null && arena.Surface.navMeshData == null)
@@ -160,7 +168,11 @@ namespace DemoLA.Core
             ensureLight();
             hud = new GameObject("[HUD]").AddComponent<HudView>();
             window = new GameObject("[BuildWindow]").AddComponent<BuildWindow>();
-            cameraRig = new GameObject("[Camera]").AddComponent<QuarterViewCamera>();
+            cameraRig = WorldPrefabs.Instantiate<QuarterViewCamera>(WorldPrefabs.QuarterViewCamera, Vector3.zero, Quaternion.identity);
+            if (cameraRig == null)
+            {
+                cameraRig = new GameObject("[Camera]").AddComponent<QuarterViewCamera>();
+            }
             controller = new GameObject("[PlayerController]").AddComponent<PlayerController>();
             controller.Setup(controls);
             mobileControls = new GameObject("[MobileControls]").AddComponent<MobileControls>();
@@ -213,19 +225,15 @@ namespace DemoLA.Core
         {
             try
             {
-                var locations = await Addressables.LoadResourceLocationsAsync(GameDatabase.Address, typeof(GameDatabase)).Task;
-                if (locations == null || locations.Count == 0)
+                // 위치가 없으면(Addressables 미등록) 로드 오류를 내지 않고 기본 콘텐츠로 간다. 위치 조회 Handle 은 바로 반납된다.
+                var addresses = await AssetHandleContainer.FindAddressesAsync(GameDatabase.Address, typeof(GameDatabase));
+                if (addresses.Count == 0)
                 {
                     return null;
                 }
 
-                var loader = Managers.Get<AssetLoader>();
-                if (loader == null)
-                {
-                    loader = Managers.Regist(new AssetLoader());
-                }
-
-                return await loader.LoadAsync<GameDatabase>(GameDatabase.Address, this);
+                // Handle 은 이 부트스트랩(IAssetOwner)의 컨테이너가 든다 — 파괴되면 반납.
+                return await Assets.LoadAssetAsync<GameDatabase>(GameDatabase.Address);
             }
             catch (System.Exception e)
             {
@@ -352,12 +360,14 @@ namespace DemoLA.Core
             }
         }
 
-        protected override void OnUnityDestroy()
+        protected override void OnAssetOwnerDestroy()
         {
             BuildWindow.OnApplied -= handleBuildApplied;
             PlayerController.OnBuildWindowToggle -= toggleWindow;
             PlayerController.IsInputBlocked = null;
             CombatRegistry.Clear();
+            // 미리 받은 월드 프리팹 반납 (다음 플레이에서 다시 받는다 — 도메인 리로드를 꺼도 끊긴 참조가 남지 않게).
+            WorldPrefabs.ReleaseAll();
         }
 
         private void toggleWindow()
@@ -495,11 +505,23 @@ namespace DemoLA.Core
                 return;
             }
 
+            if (WorldPrefabs.Instantiate(WorldPrefabs.DirectionalLight, Vector3.zero, DefaultLightRotation) == null)
+            {
+                BuildDefaultLight();
+            }
+        }
+
+        public static readonly Quaternion DefaultLightRotation = Quaternion.Euler(50.0f, -30.0f, 0.0f);
+
+        /// <summary>씬에 조명이 없을 때의 기본 해 (프리팹 굽기 · 코드 조립 공용).</summary>
+        public static GameObject BuildDefaultLight()
+        {
             var go = new GameObject("Directional Light");
             var light = go.AddComponent<Light>();
             light.type = LightType.Directional;
             light.intensity = 1.1f;
-            go.transform.rotation = Quaternion.Euler(50.0f, -30.0f, 0.0f);
+            go.transform.rotation = DefaultLightRotation;
+            return go;
         }
     }
 }

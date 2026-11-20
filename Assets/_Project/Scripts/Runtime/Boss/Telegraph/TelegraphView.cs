@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DemoLA.Combat;
+using DemoLA.Core;
 using Framework;
 using UnityEngine;
 
@@ -7,20 +8,25 @@ namespace DemoLA.Boss.Telegraph
 {
     /// <summary>
     /// 바닥 장판 (전조). 바깥 윤곽 + 진행도만큼 커지는 안쪽 채움. 직접 만든 풀로 재사용한다.
+    /// 오브젝트(윤곽 · Fill · 머티리얼 에셋 3종)는 프리팹 WorldPrefabs.Telegraph 에 미리 구워 두고, 풀이 비면 그 프리팹을 Instantiate 한다.
+    /// 범위 메시는 모양마다 런타임에 만든다 (TelegraphMeshBuilder). 프리팹이 없으면 Build 로 코드 조립 (Sprites/Default 런타임 머티리얼).
     /// </summary>
     public class TelegraphView : BaseBehaviour
     {
         private static readonly Stack<TelegraphView> Pool = new Stack<TelegraphView>();
         private static readonly List<TelegraphView> Active = new List<TelegraphView>();
-        private static Material outlineMaterial;
-        private static Material fillMaterial;
-        private static Material safeMaterial;
+        private static Material runtimeOutline;
+        private static Material runtimeFill;
+        private static Material runtimeSafe;
 
-        private MeshFilter outlineFilter;
-        private MeshFilter fillFilter;
-        private MeshRenderer outlineRenderer;
-        private MeshRenderer fillRenderer;
-        private Transform fillTransform;
+        [SerializeField] private Material outlineMaterial;
+        [SerializeField] private Material fillMaterial;
+        [SerializeField] private Material safeMaterial;
+        [SerializeField] private MeshFilter outlineFilter;
+        [SerializeField] private MeshFilter fillFilter;
+        [SerializeField] private MeshRenderer outlineRenderer;
+        [SerializeField] private MeshRenderer fillRenderer;
+        [SerializeField] private Transform fillTransform;
         private HitArea area;
         private bool safeZone;
         private float flashRemaining;
@@ -72,9 +78,12 @@ namespace DemoLA.Boss.Telegraph
 
             if (view == null)
             {
-                var go = new GameObject("Telegraph");
-                view = go.AddComponent<TelegraphView>();
-                view.build();
+                view = WorldPrefabs.Instantiate<TelegraphView>(WorldPrefabs.Telegraph, Vector3.zero, Quaternion.identity);
+                if (view == null)
+                {
+                    view = new GameObject("Telegraph").AddComponent<TelegraphView>();
+                    view.Build(null, null, null);
+                }
             }
 
             view.gameObject.SetActive(true);
@@ -238,9 +247,20 @@ namespace DemoLA.Boss.Telegraph
             Active.Remove(this);
         }
 
-        private void build()
+        /// <summary>
+        /// 윤곽(자기 자신) · Fill 자식을 만든다 (프리팹 굽기 · 코드 조립 공용). 머티리얼이 null 이면 런타임 머티리얼 (Sprites/Default).
+        /// </summary>
+        public void Build(Material InOutline, Material InFill, Material InSafe)
         {
-            ensureMaterials();
+            if (InOutline == null || InFill == null || InSafe == null)
+            {
+                ensureRuntimeMaterials();
+            }
+
+            outlineMaterial = InOutline != null ? InOutline : runtimeOutline;
+            fillMaterial = InFill != null ? InFill : runtimeFill;
+            safeMaterial = InSafe != null ? InSafe : runtimeSafe;
+
             outlineFilter = gameObject.AddComponent<MeshFilter>();
             outlineRenderer = gameObject.AddComponent<MeshRenderer>();
             outlineRenderer.sharedMaterial = outlineMaterial;
@@ -258,21 +278,32 @@ namespace DemoLA.Boss.Telegraph
             fillRenderer.receiveShadows = false;
         }
 
-        private static void ensureMaterials()
+        /// <summary>굽기용 머티리얼 색 · 렌더 큐 (윤곽 · 채움 · 안전 구역).</summary>
+        public static void ConfigureMaterials(Material InOutline, Material InFill, Material InSafe)
         {
-            if (outlineMaterial != null)
+            InOutline.color = OutlineColor;
+            InFill.color = FillColor;
+            InSafe.color = SafeColor;
+            InOutline.renderQueue = 3000;
+            InFill.renderQueue = 3001;
+            InSafe.renderQueue = 3000;
+        }
+
+        private static readonly Color SafeColor = new Color(0.2f, 0.6f, 1.0f, 0.3f);
+
+        private static void ensureRuntimeMaterials()
+        {
+            if (runtimeOutline != null)
             {
                 return;
             }
 
             // Sprites/Default 는 기본 Always Included 셰이더라 빌드에서도 빠지지 않는다. URP 에서도 Unlit 으로 그려진다.
             var shader = Shader.Find("Sprites/Default");
-            outlineMaterial = new Material(shader) { color = OutlineColor };
-            fillMaterial = new Material(shader) { color = FillColor };
-            safeMaterial = new Material(shader) { color = new Color(0.2f, 0.6f, 1.0f, 0.3f) };
-            outlineMaterial.renderQueue = 3000;
-            fillMaterial.renderQueue = 3001;
-            safeMaterial.renderQueue = 3000;
+            runtimeOutline = new Material(shader);
+            runtimeFill = new Material(shader);
+            runtimeSafe = new Material(shader);
+            ConfigureMaterials(runtimeOutline, runtimeFill, runtimeSafe);
         }
     }
 }

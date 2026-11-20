@@ -206,7 +206,7 @@ namespace DemoLA.Content
                     steps(InPattern, bossCharge);
                     InPattern.MaxRange = 16.0f;
                     InPattern.Weight = 2.0f;
-                    // 돌진 뒤에는 (그로기로 끝나도) 도약 십자 + 추적 휠윈드. (외곽 이탈 도약 G2-28 은 삭제 — 보스가 구석에 머물러 공격이 끊겼다)
+                    // 돌진 뒤에는 (그로기로 끝나도) 도약 십자 + 추적 휠윈드.
                     InPattern.FollowUpPatternTags = new List<ETag> { ETag.Pattern_G2_LeapSmashWhirlwind };
                     break;
                 case ETag.Pattern_G2_AxeChopCounter:

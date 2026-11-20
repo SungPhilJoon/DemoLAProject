@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: DemoLA World Prefabs
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: DemoLA World Prefabs
+  m_GUID: b92e6310a1ee31d4180f6d08a5dceae3
+  m_SerializeEntries:
+  - m_GUID: 05f86cedaf7a36040ad01345d26c4059
+    m_Address: World/Actors/Character_Artist
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1209b09e03ab115438504989ec6b690b
+    m_Address: World/Lobby
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25df9a9a559788a45a96021ef4db5946
+    m_Address: World/Fx/CueFlash
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46143b190d1858d4dbe0d4d3a86eb9ca
+    m_Address: World/Fx/BossImpactFx
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d3d74a588808a8408860562f1aeb3a9
+    m_Address: World/Camera/QuarterViewCamera
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc03eda20419434d8a9debb40b26c2b
+    m_Address: World/Env/DirectionalLight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cc9181495457dc4abba87f3208f6d02
+    m_Address: World/Actors/Boss_Gate2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 905fdc522a430b9438bf86f00de2ead9
+    m_Address: World/Actors/Character_Infighter
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92ff28b3bf0624f40b306a8936e0746b
+    m_Address: World/Fx/PillarCollapseFx
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95ac533b376c95f46b465d4f5b51f29f
+    m_Address: World/Actors/Boss_Gate1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95c8c0d23187b0d48b9710c533ff142d
+    m_Address: World/Fx/Telegraph
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aaeb24ead7c746a4795c0f045a1ef4af
+    m_Address: World/Gimmick/CoverPillar
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0f55888b5f6b884e8f9ed69b171f3f2
+    m_Address: World/Gimmick/RaidPickup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b762b1db5e799f3499aa74c480a3d221
+    m_Address: World/Actors/Character_Slayer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb5d3c01791aa874b8396bd555332e0e
+    m_Address: World/Camera/BossCinematicCamera
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2bbb2e6bcf9af741aca8d5eb7d4fb5c
+    m_Address: World/Actors/Character_Summoner
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3fd9296f08da904e97e7db865de6b0a
+    m_Address: World/Arena
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DemoLA.WorldPrefab
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: ed7851dccae00a84fa3dd076f04a1d4f, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 8038ed5c544e157419c240e67c7cdfba, type: 2}
+    - {fileID: 11400000, guid: ae3d01c957a46a945bad15523734abcc, type: 2}

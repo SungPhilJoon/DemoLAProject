@@ -29,9 +29,10 @@ namespace DemoLA.Player
         private float zoom = 1.0f;
         private CameraOcclusionSystem occlusion;
 #if DEMOLA_CINEMACHINE
-        private CinemachineCamera virtualCamera;
-        private CinemachineFollow follow;
-        private CinemachineCameraOffset shakeOffset;
+        // 프리팹(WorldPrefabs.QuarterViewCamera)에 미리 구운 자식 "CM QuarterView". 없으면 BuildRig 가 만든다.
+        [SerializeField] private CinemachineCamera virtualCamera;
+        [SerializeField] private CinemachineFollow follow;
+        [SerializeField] private CinemachineCameraOffset shakeOffset;
 #endif
 
         private static float shakeAmplitude;
@@ -95,6 +96,35 @@ namespace DemoLA.Player
             PlayerController.OnZoom -= handleZoom;
         }
 
+        /// <summary>
+        /// 쿼터뷰 가상 카메라(자식 "CM QuarterView": CinemachineCamera · Follow · Offset)를 만든다. 이미 있으면 건너뛴다.
+        /// 프리팹 굽기(WorldPrefabBaker) · 코드 조립 공용 — 게임에서는 프리팹에 이미 있다.
+        /// </summary>
+        public void BuildRig()
+        {
+#if DEMOLA_CINEMACHINE
+            if (virtualCamera != null)
+            {
+                return;
+            }
+
+            var go = new GameObject("CM QuarterView");
+            go.transform.SetParent(transform, false);
+            virtualCamera = go.AddComponent<CinemachineCamera>();
+            // 기본 게임 카메라 우선순위. 연출 카메라(진입 60 · 도약 50)보다 낮고, 기본값 0 인 다른 카메라와 동점이 되지 않게.
+            virtualCamera.Priority = GameplayPriority;
+            follow = go.AddComponent<CinemachineFollow>();
+            shakeOffset = go.AddComponent<CinemachineCameraOffset>();
+            var tracker = follow.TrackerSettings;
+            tracker.BindingMode = BindingMode.WorldSpace;
+            tracker.PositionDamping = Vector3.one * damping;
+            follow.TrackerSettings = tracker;
+            var lens = virtualCamera.Lens;
+            lens.FieldOfView = fieldOfView;
+            virtualCamera.Lens = lens;
+#endif
+        }
+
         public void SetTarget(Transform InTarget)
         {
             target = InTarget;
@@ -121,23 +151,7 @@ namespace DemoLA.Player
                 mainCamera.gameObject.AddComponent<CinemachineBrain>();
             }
 
-            if (virtualCamera == null)
-            {
-                var go = new GameObject("CM QuarterView");
-                go.transform.SetParent(transform, false);
-                virtualCamera = go.AddComponent<CinemachineCamera>();
-                // 기본 게임 카메라 우선순위. 연출 카메라(진입 60 · 도약 50)보다 낮고, 기본값 0 인 다른 카메라와 동점이 되지 않게.
-                virtualCamera.Priority = GameplayPriority;
-                follow = go.AddComponent<CinemachineFollow>();
-                shakeOffset = go.AddComponent<CinemachineCameraOffset>();
-                var tracker = follow.TrackerSettings;
-                tracker.BindingMode = BindingMode.WorldSpace;
-                tracker.PositionDamping = Vector3.one * damping;
-                follow.TrackerSettings = tracker;
-                var lens = virtualCamera.Lens;
-                lens.FieldOfView = fieldOfView;
-                virtualCamera.Lens = lens;
-            }
+            BuildRig();
 
             follow.FollowOffset = offset * zoom;
             virtualCamera.transform.SetPositionAndRotation(InTarget.position + offset * zoom, rotation);

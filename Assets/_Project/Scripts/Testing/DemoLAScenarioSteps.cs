@@ -151,7 +151,8 @@ namespace DemoLA.Testing
                 yield break;
             }
 
-            string endEvent = $"Pattern.Ended.{PatternTag}";
+            // 호스트는 태그 표기(Pattern.G1.X)로 기록한다 — enum 이름(Pattern_G1_X)이 아니라.
+            string endEvent = $"Pattern.Ended.{GameTags.ToTagString(PatternTag)}";
             float end = InContext.Elapsed + Timeout;
             while (InContext.Recorder.Count(endEvent) == 0)
             {

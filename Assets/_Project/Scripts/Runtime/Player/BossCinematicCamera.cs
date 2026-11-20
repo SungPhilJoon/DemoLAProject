@@ -21,9 +21,10 @@ namespace DemoLA.Player
 
         private float remaining;
 #if DEMOLA_CINEMACHINE
-        private CinemachineCamera cinematic;
-        private CinemachineFollow follow;
-        private CinemachineRotationComposer composer;
+        // 프리팹(WorldPrefabs.BossCinematicCamera)에 미리 구운 컴포넌트. 없으면 BuildRig 가 붙인다.
+        [SerializeField] private CinemachineCamera cinematic;
+        [SerializeField] private CinemachineFollow follow;
+        [SerializeField] private CinemachineRotationComposer composer;
 #endif
 
         public static bool IsPlaying
@@ -42,9 +43,14 @@ namespace DemoLA.Player
 
             if (instance == null)
             {
-                var go = new GameObject("CM BossCinematic");
-                instance = go.AddComponent<BossCinematicCamera>();
-                instance.build();
+                instance = DemoLA.Core.WorldPrefabs.Instantiate<BossCinematicCamera>(DemoLA.Core.WorldPrefabs.BossCinematicCamera, Vector3.zero, Quaternion.identity);
+                if (instance == null)
+                {
+                    instance = new GameObject("CM BossCinematic").AddComponent<BossCinematicCamera>();
+                }
+
+                instance.BuildRig();
+                instance.applyBlend();
             }
 
             instance.begin(InBoss, InDuration);
@@ -52,12 +58,27 @@ namespace DemoLA.Player
         }
 
 #if DEMOLA_CINEMACHINE
-        private void build()
+        /// <summary>장면 카메라의 Brain 블렌드 (씬 오브젝트라 런타임에 정한다).</summary>
+        private void applyBlend()
         {
-            var brain = Camera.main.GetComponent<CinemachineBrain>();
+            var brain = Camera.main != null ? Camera.main.GetComponent<CinemachineBrain>() : null;
             if (brain != null)
             {
                 brain.DefaultBlend = new CinemachineBlendDefinition(CinemachineBlendDefinition.Styles.EaseInOut, BlendTime);
+            }
+        }
+#endif
+
+        /// <summary>
+        /// 시네마틱 가상 카메라(CinemachineCamera · Follow · RotationComposer)를 붙인다. 이미 있으면 건너뛴다.
+        /// 프리팹 굽기(WorldPrefabBaker) · 코드 조립 공용.
+        /// </summary>
+        public void BuildRig()
+        {
+#if DEMOLA_CINEMACHINE
+            if (cinematic != null)
+            {
+                return;
             }
 
             cinematic = gameObject.AddComponent<CinemachineCamera>();
@@ -76,8 +97,10 @@ namespace DemoLA.Player
             follow.FollowOffset = new Vector3(0.0f, 4.0f, -20.0f);
             composer = gameObject.AddComponent<CinemachineRotationComposer>();
             composer.Damping = new Vector2(0.4f, 0.4f);
+#endif
         }
 
+#if DEMOLA_CINEMACHINE
         private void begin(Transform InBoss, float InDuration)
         {
             // 위치는 바닥의 보스(루트)를 따라가고, 시선은 포물선으로 떠오르는 몸(Body)을 올려다본다.

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: cdf57b3f022774742bdd40ff5b46fb04
   m_currentHash:
     serializedVersion: 2
-    Hash: d1a4c1d7f6710948735dcf47ca11ebc4
+    Hash: 00000000000000000000000000000000
   m_DisableWriteTypeTree: 0
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
@@ -63,6 +63,7 @@ MonoBehaviour:
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
   - {fileID: 11400000, guid: 2bf780a33049f2d4ebfe32136ad1bee3, type: 2}
+  - {fileID: 11400000, guid: 7074cbac836e2c84a86d5d2171eac0d4, type: 2}
   - {fileID: 11400000, guid: f636566e9512f8b458fdab4d890dfb84, type: 2}
   m_BuildSettings:
     m_LogResourceManagerExceptions: 1
@@ -103,6 +104,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - DemoLA.WorldPrefab
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 97f11ee0f32ebce4fab12bab110f2513, type: 2}

@@ -9,6 +9,7 @@ namespace DemoLA.Boss
     /// <summary>
     /// 보스 발밑 백어택 / 헤드어택 범위 표시. 판정과 같은 각도(StatFormula.BackAttackAngle / HeadAttackAngle)로
     /// 보스 몸 바깥에 고리 조각 두 개를 그리고 보스와 함께 돈다.
+    /// 조각 오브젝트(BackAttackZone · HeadAttackZone)는 보스 프리팹에 미리 구워 두고, 없으면(코드 조립) Awake 에서 만든다. 메시는 각도에 맞춰 런타임에 만든다.
     ///  - 뒤쪽(백어택) = 붉은 주황, 앞쪽(헤드어택) = 하늘색
     ///  - 내 캐릭터가 그 범위 안에 서 있으면 해당 조각이 밝아지며 맥동한다.
     /// </summary>
@@ -20,6 +21,12 @@ namespace DemoLA.Boss
         private static readonly Color BackColor = new Color(1.0f, 0.35f, 0.2f);
         private static readonly Color HeadColor = new Color(0.3f, 0.75f, 1.0f);
         private static readonly int ColorId = Shader.PropertyToID("_Color");
+        public const string BackPartName = "BackAttackZone";
+        public const string HeadPartName = "HeadAttackZone";
+
+        /// <summary>굽기용 머티리얼 에셋 (WorldPrefabBaker 가 넣는다). 런타임 코드 조립은 인스턴스 머티리얼을 만든다.</summary>
+        public static Material BakedMaterial;
+
         private static Material material;
 
         private BossActor boss;
@@ -30,28 +37,51 @@ namespace DemoLA.Boss
         private float builtHeadAngle = -1.0f;
         private float builtRadius = -1.0f;
 
+        /// <summary>렌더러 · 오브젝트 이름이 발밑 표시 조각인가 (카운터 빛 · 몸 복제에서 뺀다).</summary>
+        public static bool IsPartName(string InName)
+        {
+            return InName == BackPartName || InName == HeadPartName;
+        }
+
         protected override void OnUnityAwake()
         {
-            // BossActor 는 이 컴포넌트보다 나중에 붙으므로 여기서 찾지 않는다 (LateUpdate 에서 찾는다).
+            // BossActor 는 이 컴포넌트보다 나중에 붙을 수 있으므로 여기서 찾지 않는다 (LateUpdate 에서 찾는다).
             block = new MaterialPropertyBlock();
-            if (material == null)
+            EnsureParts(null);
+        }
+
+        /// <summary>조각 두 개를 찾거나 만든다. InMaterial 이 있으면 그것을 (굽기), 없으면 공용 런타임 머티리얼을 쓴다.</summary>
+        public void EnsureParts(Material InMaterial)
+        {
+            backRenderer = findOrCreatePart(BackPartName, InMaterial);
+            headRenderer = findOrCreatePart(HeadPartName, InMaterial);
+        }
+
+        private MeshRenderer findOrCreatePart(string InName, Material InMaterial)
+        {
+            var existing = transform.Find(InName);
+            if (existing != null && existing.GetComponent<MeshRenderer>() != null)
+            {
+                return existing.GetComponent<MeshRenderer>();
+            }
+
+            if (InMaterial == null && material == null)
             {
                 material = new Material(Shader.Find("Sprites/Default"));
                 material.renderQueue = 2999; // 장판(3000~) 아래
             }
 
-            backRenderer = createPart("BackAttackZone");
-            headRenderer = createPart("HeadAttackZone");
+            return createPart(InName, InMaterial != null ? InMaterial : material);
         }
 
-        private MeshRenderer createPart(string InName)
+        private MeshRenderer createPart(string InName, Material InMaterial)
         {
             var go = new GameObject(InName);
             go.transform.SetParent(transform, false);
             go.transform.localPosition = new Vector3(0.0f, Height, 0.0f);
             go.AddComponent<MeshFilter>();
             var renderer = go.AddComponent<MeshRenderer>();
-            renderer.sharedMaterial = material;
+            renderer.sharedMaterial = InMaterial;
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
             return renderer;

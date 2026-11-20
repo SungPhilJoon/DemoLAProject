@@ -28,6 +28,27 @@ namespace DemoLA.Editor
             Debug.Log($"[DemoLA] 경기장 텍스처 생성 → {TextureRoot}");
         }
 
+        /// <summary>
+        /// 경기장 텍스처 머티리얼(바닥 · 중앙 · 기둥)을 ArenaBuilder 에 넣고 InBuild 를 실행한 뒤 되돌린다 (월드 프리팹 굽기 — 기본 도형 메시).
+        /// </summary>
+        public static void WithArenaMaterials(System.Action InBuild)
+        {
+            var materials = createMaterials(false);
+            ArenaBuilder.FloorMaterial = materials.Floor;
+            ArenaBuilder.CenterMaterial = materials.Center;
+            ArenaBuilder.PillarMaterial = materials.Pillar;
+            try
+            {
+                InBuild();
+            }
+            finally
+            {
+                ArenaBuilder.FloorMaterial = null;
+                ArenaBuilder.CenterMaterial = null;
+                ArenaBuilder.PillarMaterial = null;
+            }
+        }
+
         public static ArenaFloor BuildArena()
         {
             var materials = createMaterials(false);

@@ -62,8 +62,6 @@ namespace DemoLA.Boss
         ArenaCenter = 4,
         /// <summary>보스 위치, 어그로 대상 방향.</summary>
         BossTowardAggro = 5,
-        /// <summary>파티(살아 있는 플레이어 무게중심) 반대편 경기장 가장자리 (EdgeDistance). 정면 = 경기장 중심 쪽.</summary>
-        ArenaEdgeAwayFromParty = 6,
     }
 
     public enum EStaggerFailOutcome
@@ -129,8 +127,6 @@ namespace DemoLA.Boss
         public HitArea Area = HitArea.Circle(4.0f);
         [Tooltip("판정 원점을 정면 방향으로 옮긴다 (m). 도끼 찍기처럼 '찍은 곳' 에 범위를 만들 때. 음수 = 뒤쪽")]
         public float ForwardOffset;
-        [Tooltip("ArenaEdgeAwayFromParty: 경기장 중심에서 이 거리 (m). 외곽 벽 링(21m) 바깥이면 맵 밖으로 빠진 것처럼 보인다")]
-        public float EdgeDistance = 23.5f;
         [Tooltip("전조 시간 (초). xlsx 에서 미측정 — 자리 표시 값")]
         public float TelegraphTime = 1.2f;
         [Tooltip("전조 중 대상을 따라간다 (추적 장판)")]

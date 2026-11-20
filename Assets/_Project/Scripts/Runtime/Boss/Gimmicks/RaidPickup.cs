@@ -77,22 +77,45 @@ namespace DemoLA.Boss
             All.Remove(this);
         }
 
+        /// <summary>
+        /// 구슬을 만든다. 구체 · 머티리얼 에셋은 프리팹 WorldPrefabs.RaidPickup 에 미리 구워 두고, 색 · 크기 · 이름만 런타임에 정한다 (색은 인스턴스 머티리얼).
+        /// 프리팹이 없으면 Build 로 코드 조립.
+        /// </summary>
         public static RaidPickup Create(string InName, Vector3 InPosition, Color InColor, float InScale)
         {
+            var position = InPosition + Vector3.up * 0.8f;
+            var pickup = DemoLA.Core.WorldPrefabs.Instantiate<RaidPickup>(DemoLA.Core.WorldPrefabs.RaidPickup, position, Quaternion.identity);
+            if (pickup == null)
+            {
+                pickup = Build(null);
+                pickup.transform.position = position;
+            }
+
+            pickup.gameObject.name = InName;
+            pickup.transform.localScale = Vector3.one * InScale;
+            var renderer = pickup.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material.color = InColor;
+            }
+
+            return pickup;
+        }
+
+        /// <summary>구체(콜라이더 없음) + RaidPickup (프리팹 굽기 · 코드 조립 공용). InMaterial 이 null 이면 기본 머티리얼.</summary>
+        public static RaidPickup Build(Material InMaterial)
+        {
             var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            go.name = InName;
+            go.name = "RaidPickup";
             var collider = go.GetComponent<Collider>();
             if (collider != null)
             {
                 ObjectUtil.SafeDestroy(collider);
             }
 
-            go.transform.position = InPosition + Vector3.up * 0.8f;
-            go.transform.localScale = Vector3.one * InScale;
-            var renderer = go.GetComponent<Renderer>();
-            if (renderer != null)
+            if (InMaterial != null)
             {
-                renderer.material.color = InColor;
+                go.GetComponent<Renderer>().sharedMaterial = InMaterial;
             }
 
             return go.AddComponent<RaidPickup>();

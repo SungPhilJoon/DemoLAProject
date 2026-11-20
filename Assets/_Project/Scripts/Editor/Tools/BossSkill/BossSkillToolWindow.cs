@@ -545,9 +545,6 @@ namespace DemoLA.Editor.BossTool
                 case EPatternTargeting.ArenaCenter:
                     OutOrigin = Vector3.zero;
                     break;
-                case EPatternTargeting.ArenaEdgeAwayFromParty:
-                    OutOrigin = new Vector3(0.0f, 0.0f, -InStep.EdgeDistance);
-                    break;
                 default:
                     OutOrigin = InTarget;
                     break;

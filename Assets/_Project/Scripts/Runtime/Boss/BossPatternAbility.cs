@@ -1043,18 +1043,6 @@ namespace DemoLA.Boss
                     OutOrigin = ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero;
                     OutForward = Vector3.forward;
                     break;
-                case EPatternTargeting.ArenaEdgeAwayFromParty:
-                    var arenaCenter = HitGeometry.Flat(ArenaFloor.Current != null ? ArenaFloor.Current.Center : Vector3.zero);
-                    var away = arenaCenter - partyCenter(InBoss, arenaCenter);
-                    if (away.sqrMagnitude < 0.25f)
-                    {
-                        away = -InBoss.Forward;
-                    }
-
-                    away = HitGeometry.Flat(away).normalized;
-                    OutOrigin = arenaCenter + away * InStep.EdgeDistance;
-                    OutForward = -away;
-                    break;
                 default:
                     OutOrigin = targetPosition;
                     OutForward = toTarget;
@@ -1066,24 +1054,6 @@ namespace DemoLA.Boss
                 // 찍은 곳에 범위: 원점을 정면(음수면 뒤)으로 옮긴다. 방향은 그대로.
                 OutOrigin += HitGeometry.Flat(OutForward).normalized * InStep.ForwardOffset;
             }
-        }
-
-        /// <summary>살아 있는 플레이어 위치 평균 (없으면 InFallback).</summary>
-        private static Vector3 partyCenter(BossActor InBoss, Vector3 InFallback)
-        {
-            var players = InBoss.AlivePlayers();
-            if (players.Count == 0)
-            {
-                return InFallback;
-            }
-
-            var sum = Vector3.zero;
-            for (int i = 0; i < players.Count; ++i)
-            {
-                sum += HitGeometry.Flat(players[i].Position);
-            }
-
-            return sum / players.Count;
         }
 
         /// <summary>판정 순간 장판을 번쩍이고 사라지게 한다.</summary>
